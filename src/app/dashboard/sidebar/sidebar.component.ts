@@ -7,7 +7,7 @@ import { AfterViewInit, ElementRef } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css'
+  styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
 
