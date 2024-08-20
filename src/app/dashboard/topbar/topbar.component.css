@@ -1,0 +1,9 @@
+.navbar {
+    padding: 0.5rem 1rem;
+  }
+  
+  .profile-menu {
+    width: 150px;
+    z-index: 1000;
+  }
+  
