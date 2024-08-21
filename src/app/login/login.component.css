@@ -69,3 +69,47 @@
     max-width: 100%;
   }
 }
+.card {
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  overflow: hidden;
+}
+
+.no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.form-container {
+  padding: 20px;
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.justify-content-center {
+  justify-content: center !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}
+
+.vh-100 {
+  height: 100vh !important;
+}
+
+.order-md-2 {
+  order: 2;
+}
+
+.order-md-1 {
+  order: 1;
+}

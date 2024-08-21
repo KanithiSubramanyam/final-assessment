@@ -1,85 +1,86 @@
 <div class="container d-flex justify-content-center align-items-center vh-100">
-  <div class="row w-100">
-    <div class="col-md-8 d-flex justify-content-center align-items-center">
-      <div class="row w-100">
-      
-        <div class="col-md-6 d-flex justify-content-center align-items-center" [ngClass]="{'order-md-2': isLoginMode, 'order-md-1': !isLoginMode}">
-          <img *ngIf="isLoginMode; else signupImage" src="https://via.placeholder.com/300" alt="Login Image" class="img-fluid">
-          <ng-template #signupImage>
-            <img src="https://via.placeholder.com/300?text=Sign+Up+Image" alt="Sign Up Image" class="img-fluid">
-          </ng-template>
-        </div>
-
-       
-        <div class="col-md-6 d-flex justify-content-center align-items-center" [ngClass]="{'order-md-1': isLoginMode, 'order-md-2': !isLoginMode}">
-          <div class="form-container">
+  <div class="row w-100 justify-content-center">
+    <div class="col-md-8">
+      <div class="card border rounded-3 shadow-lg">
+        <div class="row no-gutters">
           
-            <div *ngIf="isLoginMode">
-              <h1 class="h4 mb-3 fw-normal text-center">Please sign in</h1>
-              <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                <div class="form-floating mb-3">
-                  <input type="email" id="loginEmail" class="form-control" placeholder="name@example.com" formControlName="email">
-                  <label for="loginEmail">Email address</label>
-                  <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)" class="text-danger">
-                    <div *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</div>
-                    <div *ngIf="loginForm.get('email')?.errors?.['email']">Invalid email format.</div>
-                  </div>
-                </div>
-                <div class="form-floating mb-3">
-                  <input type="password" id="loginPassword" class="form-control" placeholder="Password" formControlName="password">
-                  <label for="loginPassword">Password</label>
-                  <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="text-danger">
-                    <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
-                    <div *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</div>
-                  </div>
-                </div>
-                <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="loginForm.invalid">Sign in</button>
-                <a href="#" class="d-block mb-3 text-center">Forgot password?</a>
-                <a href="#" class="d-block text-center" (click)="onSwitchMode()">Create account?</a>
-              </form>
-            </div>
+          <div class="col-md-6 d-flex justify-content-center align-items-center p-0" [ngClass]="{'order-md-2': isLoginMode, 'order-md-1': !isLoginMode}">
+            <img *ngIf="isLoginMode; else signupImage" src="https://via.placeholder.com/300" alt="Login Image" class="w-100 h-100 ">
+            <ng-template #signupImage>
+              <img src="https://via.placeholder.com/300?text=Sign+Up+Image" alt="Sign Up Image" class="">
+            </ng-template>
+          </div>
 
-        
-            <div *ngIf="!isLoginMode">
-              <h1 class="h4 mb-3 fw-normal text-center">Create an account</h1>
-              <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-                <div class="form-floating mb-3">
-                  <input type="text" id="firstName" class="form-control" placeholder="First Name" formControlName="firstName">
-                  <label for="firstName">First Name</label>
-                  <div *ngIf="signupForm.get('firstName')?.invalid && (signupForm.get('firstName')?.dirty || signupForm.get('firstName')?.touched)" class="text-danger">
-                    <div *ngIf="signupForm.get('firstName')?.errors?.['required']">First Name is required.</div>
-                    <div *ngIf="signupForm.get('firstName')?.errors?.['minlength']">First Name must be at least 2 characters.</div>
+          <div class="col-md-6 d-flex justify-content-center align-items-center" [ngClass]="{'order-md-1': isLoginMode, 'order-md-2': !isLoginMode}">
+            <div class="form-container p-4 w-100">
+              <div *ngIf="isLoginMode">
+                <h1 class="h4 mb-3 fw-normal text-center">Please sign in</h1>
+                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                  <div class="form-floating mb-3">
+                    <input type="email" id="loginEmail" class="form-control" placeholder="name@example.com" formControlName="email">
+                    <label for="loginEmail">Email address</label>
+                    <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)" class="text-danger">
+                      <div *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</div>
+                      <div *ngIf="loginForm.get('email')?.errors?.['email']">Invalid email format.</div>
+                    </div>
                   </div>
-                </div>
-                <div class="form-floating mb-3">
-                  <input type="text" id="lastName" class="form-control" placeholder="Last Name" formControlName="lastName">
-                  <label for="lastName">Last Name</label>
-                  <div *ngIf="signupForm.get('lastName')?.invalid && (signupForm.get('lastName')?.dirty || signupForm.get('lastName')?.touched)" class="text-danger">
-                    <div *ngIf="signupForm.get('lastName')?.errors?.['required']">Last Name is required.</div>
-                    <div *ngIf="signupForm.get('lastName')?.errors?.['minlength']">Last Name must be at least 2 characters.</div>
+                  <div class="form-floating mb-3">
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Password" formControlName="password">
+                    <label for="loginPassword">Password</label>
+                    <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="text-danger">
+                      <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
+                      <div *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</div>
+                    </div>
                   </div>
-                </div>
-                <div class="form-floating mb-3">
-                  <input type="email" id="signupEmail" class="form-control" placeholder="name@example.com" formControlName="email">
-                  <label for="signupEmail">Email address</label>
-                  <div *ngIf="signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched)" class="text-danger">
-                    <div *ngIf="signupForm.get('email')?.errors?.['required']">Email is required.</div>
-                    <div *ngIf="signupForm.get('email')?.errors?.['email']">Invalid email format.</div>
+                  <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="loginForm.invalid">Sign in</button>
+                  <a href="#" class="d-block mb-3 text-center">Forgot password?</a>
+                  <a href="#" class="d-block text-center" (click)="onSwitchMode()">Create account?</a>
+                </form>
+              </div>
+
+              <div *ngIf="!isLoginMode">
+                <h1 class="h4 mb-3 fw-normal text-center">Create an account</h1>
+                <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+                  <div class="form-floating mb-3">
+                    <input type="text" id="firstName" class="form-control" placeholder="First Name" formControlName="firstName">
+                    <label for="firstName">First Name</label>
+                    <div *ngIf="signupForm.get('firstName')?.invalid && (signupForm.get('firstName')?.dirty || signupForm.get('firstName')?.touched)" class="text-danger">
+                      <div *ngIf="signupForm.get('firstName')?.errors?.['required']">First Name is required.</div>
+                      <div *ngIf="signupForm.get('firstName')?.errors?.['minlength']">First Name must be at least 2 characters.</div>
+                    </div>
                   </div>
-                </div>
-                <div class="form-floating mb-3">
-                  <input type="password" id="signupPassword" class="form-control" placeholder="Password" formControlName="password">
-                  <label for="signupPassword">Password</label>
-                  <div *ngIf="signupForm.get('password')?.invalid && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched)" class="text-danger">
-                    <div *ngIf="signupForm.get('password')?.errors?.['required']">Password is required.</div>
-                    <div *ngIf="signupForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</div>
+                  <div class="form-floating mb-3">
+                    <input type="text" id="lastName" class="form-control" placeholder="Last Name" formControlName="lastName">
+                    <label for="lastName">Last Name</label>
+                    <div *ngIf="signupForm.get('lastName')?.invalid && (signupForm.get('lastName')?.dirty || signupForm.get('lastName')?.touched)" class="text-danger">
+                      <div *ngIf="signupForm.get('lastName')?.errors?.['required']">Last Name is required.</div>
+                      <div *ngIf="signupForm.get('lastName')?.errors?.['minlength']">Last Name must be at least 2 characters.</div>
+                    </div>
                   </div>
-                </div>
-                <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="signupForm.invalid">Sign up</button>
-                <a href="#" class="d-block text-center" (click)="onSwitchMode()">Back to login</a>
-              </form>
+                  <div class="form-floating mb-3">
+                    <input type="email" id="signupEmail" class="form-control" placeholder="name@example.com" formControlName="email">
+                    <label for="signupEmail">Email address</label>
+                    <div *ngIf="signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched)" class="text-danger">
+                      <div *ngIf="signupForm.get('email')?.errors?.['required']">Email is required.</div>
+                      <div *ngIf="signupForm.get('email')?.errors?.['email']">Invalid email format.</div>
+                    </div>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="password" id="signupPassword" class="form-control" placeholder="Password" formControlName="password">
+                    <label for="signupPassword">Password</label>
+                    <div *ngIf="signupForm.get('password')?.invalid && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched)" class="text-danger">
+                      <div *ngIf="signupForm.get('password')?.errors?.['required']">Password is required.</div>
+                      <div *ngIf="signupForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</div>
+                    </div>
+                  </div>
+                  <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="signupForm.invalid">Sign up</button>
+                  <a href="#" class="d-block text-center" (click)="onSwitchMode()">Back to login</a>
+                </form>
+              </div>
+
             </div>
           </div>
+
         </div>
       </div>
     </div>
