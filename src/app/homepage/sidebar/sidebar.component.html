@@ -1,6 +1,6 @@
-<main class="d-flex flex-nowrap shadow-lg">
+<div class="d-flex flex-nowrap shadow-lg bg-white">
     <!-- Sidebar -->
-    <div class="d-flex flex-column flex-shrink-0 bg-light sidebar" 
+    <div class="d-flex flex-column flex-shrink-0 sidebar bg-white" 
          [ngClass]="{'icon-sidebar': isCollapsed}" 
          [ngStyle]="{'width': isCollapsed ? '4.5rem' : '280px'}">
       <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none sidebar-toggle" 
@@ -11,55 +11,39 @@
       <hr>
       <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-          <a href="#" class="nav-link active" aria-current="page">
-            <i class="fas fa-home me-2"></i>
-            <span *ngIf="!isCollapsed">Home</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-link link-dark" [routerLink] = "['/dashboard']">
+          <a [routerLink]="['/dashboard']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}" class="nav-link active" aria-current="page">
             <i class="fas fa-tachometer-alt me-2"></i>
             <span *ngIf="!isCollapsed">Dashboard</span>
           </a>
         </li>
-        <li>
-          <a href="#" class="nav-link link-dark">
-            <i class="fas fa-shopping-cart me-2"></i>
-            <span *ngIf="!isCollapsed">Orders</span>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle link-dark d-flex align-items-center" 
+             href="#" id="userManagementDropdown" role="button" 
+             data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user me-2"></i>
+            <span *ngIf="!isCollapsed">User Management</span>
           </a>
+          <ul class="dropdown-menu" aria-labelledby="userManagementDropdown">
+            <li>
+              <a class="dropdown-item" [routerLink]="['/userManagement/viewUsers']">View Users</a>
+            </li>
+            <li>
+              <a class="dropdown-item" [routerLink]="['/userManagement/addUser']">Add User</a>
+            </li>
+            <li>
+              <a class="dropdown-item" [routerLink]="['/userManagement/editUser']">Edit User</a>
+            </li>
+          </ul>
         </li>
-        <li>
-          <a href="#" class="nav-link link-dark">
-            <i class="fas fa-box-open me-2"></i>
-            <span *ngIf="!isCollapsed">Products</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="nav-link link-dark">
-            <i class="fas fa-users me-2"></i>
-            <span *ngIf="!isCollapsed">Customers</span>
-          </a>
-        </li>
+        
       </ul>
       <hr>
-      <div class="dropdown">
-        <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-          <strong *ngIf="!isCollapsed">mdo</strong>
+      <div class="">
+        <a href="#" class="d-flex align-items-center link-dark text-decoration-none" [routerLink]="['/login']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}" >
+          <i class="fa-solid fa-right-from-bracket"></i>
+         <span>Logout</span>
         </a>
-        <ul class="dropdown-menu text-small shadow">
-          <li><a class="dropdown-item" href="#">New project...</a></li>
-          <li><a class="dropdown-item" href="#">Settings</a></li>
-          <li><a class="dropdown-item" href="#">Profile</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="#">Sign out</a></li>
-        </ul>
       </div>
     </div>
-    
-    <!-- Content Area -->
-    <div class="content-area flex-grow-1">
-      <!-- Your content goes here -->
-    </div>
-  </main>
+  </div>
   

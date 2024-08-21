@@ -9,4 +9,7 @@ import { Component } from '@angular/core';
 })
 export class DashboardComponent {
 
+  ngOnInit(): void {
+    console.log("DashboardComponent");
+  }
 }
