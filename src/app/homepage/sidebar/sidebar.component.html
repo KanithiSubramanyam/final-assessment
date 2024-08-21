@@ -16,26 +16,12 @@
             <span *ngIf="!isCollapsed">Dashboard</span>
           </a>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle link-dark d-flex align-items-center" 
-             href="#" id="userManagementDropdown" role="button" 
-             data-bs-toggle="dropdown" aria-expanded="false">
+        <li>
+          <a [routerLink]="['/userManagement']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}" class="nav-link link-dark">
             <i class="fas fa-user me-2"></i>
             <span *ngIf="!isCollapsed">User Management</span>
           </a>
-          <ul class="dropdown-menu" aria-labelledby="userManagementDropdown">
-            <li>
-              <a class="dropdown-item" [routerLink]="['/userManagement/viewUsers']">View Users</a>
-            </li>
-            <li>
-              <a class="dropdown-item" [routerLink]="['/userManagement/addUser']">Add User</a>
-            </li>
-            <li>
-              <a class="dropdown-item" [routerLink]="['/userManagement/editUser']">Edit User</a>
-            </li>
-          </ul>
         </li>
-        
       </ul>
       <hr>
       <div class="">
@@ -47,3 +33,60 @@
     </div>
   </div>
   
+
+
+
+
+  <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 280px;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+      <span class="fs-4">Sidebar</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        <a href="#" class="nav-link active" aria-current="page" [routerLink]="['/dashboard']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+          Home
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link link-dark">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link link-dark">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Orders
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link link-dark">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+          Products
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-link link-dark">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
+          Customers
+        </a>
+      </li>
+    </ul>
+    <hr>
+    <div class="dropdown">
+      <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+        <strong>mdo</strong>
+      </a>
+      <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+        <li><a class="dropdown-item" href="#">New project...</a></li>
+        <li><a class="dropdown-item" href="#">Settings</a></li>
+        <li><a class="dropdown-item" href="#">Profile</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#">Sign out</a></li>
+      </ul>
+    </div>
+  </div>
