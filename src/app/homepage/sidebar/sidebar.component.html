@@ -26,6 +26,20 @@
           </ul>
         </div>
       </li>
+      <li class="nav-item">
+        <!-- [routerLink]="['/userManagement']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}" -->
+        <a class="nav-link link-dark" data-bs-toggle="collapse" aria-current="page" data-bs-target="#dashboard-collapse" aria-expanded="false" [routerLinkActive]="'active'">
+          <i class="fas fa-user me-2"></i>
+          Task & Dairy Management
+          <i class="fa-solid fa-angle-down"></i>
+        </a>
+        <div class="collapse ps-3" id="dashboard-collapse" >
+          <ul class="nav nav-pills flex-column mb-auto" style="--bs-nav-link-color:black;">
+            <li class="nav-item"><a  class="nav-link" aria-current="page"  [routerLink]="['/taskManagement']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}"> <i class="fa-solid fa-users  me-2"></i> Task Management</a></li>
+            <li class="nav-item"><a  class="nav-link" aria-current="page"  [routerLink]="['/dairyManagement/roles']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}"><i class="fa-solid fa-user-shield  me-2"></i> Dairy Management</a></li>
+          </ul>
+        </div>
+      </li>
     </ul>
     <hr>
       <a [routerLink]="['/login']" class="d-flex align-items-center link-dark text-decoration-none ">
