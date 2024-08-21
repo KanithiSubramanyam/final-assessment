@@ -1,99 +1,168 @@
-<div class="container mt-4">
-    <div class="row">
-      <!-- Profile Photo and Username Column -->
-      <div class="col-md-4 text-center shadow-lg pb-4 rounded-3" style="height:fit-content;">
-        <img [src]="profile" alt="Profile Photo" class="rounded-circle img-fluid mb-3" width="150" height="150">
-        <h3>{{userForm.get('username')?.value}}</h3>
-        <p>created on:12/12/2024</p>
-        <button  *ngIf="!showChangePasswordForm" class="btn btn-primary mt-2" (click)="onChangePassword()">Change Password</button>
-        <div class="change-password-section" *ngIf="showChangePasswordForm">
-            <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePasswordSubmit()">
-              <div class="mb-3 pt-3">
-                <div class="col-md-4">
-                    <label for="oldPassword" class="form-label">Old Password</label>
-                  </div>
-                  <div class="col-md-12">
-                    <input type="password" id="oldPassword" class="form-control" formControlName="oldPassword">
-                  </div>
-              </div>
-              <div class="mb-3">
-                <div class="col-md-4">
-                <label for="newPassword" class="form-label">New Password</label>
-                </div>
-                <div class="col-md-12">
-                    <input type="password" id="newPassword" class="form-control" formControlName="newPassword">
-                </div>
-                
-              </div>
-              <div class="mb-3">
-                <div class="col-md-4">
-                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                </div>
-                <div class="col-md-12">
-                    <input type="password" id="confirmPassword" class="form-control" formControlName="confirmPassword">
-                </div>
-                
-                
-              </div>
-              <button type="submit" class="btn btn-success" (click)="cancelChangePassword()">Update Password</button>
-            </form>
+<div class="container pt-4">
+  <div class="row px-3">
+    <!-- Profile Photo and Username Column -->
+    <div
+      class="col-md-4 text-center shadow-lg pb-4 rounded-3"
+      style="height: fit-content"
+    >
+      <img
+        [src]="profile"
+        alt="Profile Photo"
+        class="rounded-circle img-fluid mb-3"
+        width="150"
+        height="150"
+      />
+      <h3>{{ userForm.get("username")?.value }}</h3>
+      <p>created on:12/12/2024</p>
+      <button
+        *ngIf="!showChangePasswordForm"
+        class="btn btn-primary mt-2"
+        (click)="onChangePassword()"
+      >
+        Change Password
+      </button>
+      <div class="change-password-section" *ngIf="showChangePasswordForm">
+        <form
+          [formGroup]="changePasswordForm"
+          (ngSubmit)="onChangePasswordSubmit()"
+        >
+          <div class="mb-3 pt-3">
+            <div class="col-md-4">
+              <label for="oldPassword" class="form-label">Old Password</label>
+            </div>
+            <div class="col-md-12">
+              <input
+                type="password"
+                id="oldPassword"
+                class="form-control"
+                formControlName="oldPassword"
+              />
+            </div>
           </div>
-        
+          <div class="mb-3">
+            <div class="col-md-4">
+              <label for="newPassword" class="form-label">New Password</label>
+            </div>
+            <div class="col-md-12">
+              <input
+                type="password"
+                id="newPassword"
+                class="form-control"
+                formControlName="newPassword"
+              />
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="col-md-4">
+              <label for="confirmPassword" class="form-label"
+                >Confirm New Password</label
+              >
+            </div>
+            <div class="col-md-12">
+              <input
+                type="password"
+                id="confirmPassword"
+                class="form-control"
+                formControlName="confirmPassword"
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            class="btn btn-success"
+            (click)="cancelChangePassword()"
+          >
+            Update Password
+          </button>
+        </form>
       </div>
-  
-      <!-- Profile Details Column -->
-      <div class="col-md-8">
-        <div class="profile-details-card">
-          <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="firstName" class="form-label">First Name</label>
-                <input type="text" id="firstName" class="form-control" formControlName="firstName">
-              </div>
-              <div class="col-md-6">
-                <label for="lastName" class="form-label">Last Name</label>
-                <input type="text" id="lastName" class="form-control" formControlName="lastName">
-              </div>
+    </div>
+
+    <!-- Profile Details Column -->
+    <div class="col-md-8">
+      <div class="profile-details-card">
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="firstName" class="form-label">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                class="form-control"
+                formControlName="firstName"
+              />
             </div>
-      
-            <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" id="email" class="form-control" formControlName="email">
+            <div class="col-md-6">
+              <label for="lastName" class="form-label">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                class="form-control"
+                formControlName="lastName"
+              />
             </div>
-      
-            <div class="mb-3">
-              <label for="role" class="form-label">Role</label>
-              <select id="role" class="form-select" formControlName="role">
-                <option value="admin" [selected]="userForm.get('role')?.value === 'admin'">Admin</option>
-                <option value="user" [selected]="userForm.get('role')?.value === 'user'">User</option>
-                <!-- Add more roles as needed -->
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              formControlName="email"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select id="role" class="form-select" formControlName="role">
+              <option
+                value="admin"
+                [selected]="userForm.get('role')?.value === 'admin'"
+              >
+                Admin
+              </option>
+              <option
+                value="user"
+                [selected]="userForm.get('role')?.value === 'user'"
+              >
+                User
+              </option>
+            </select>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="phoneNumber" class="form-label">Phone Number</label>
+              <input
+                type="text"
+                id="phoneNumber"
+                class="form-control"
+                formControlName="phoneNumber"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="gender" class="form-label">Gender</label>
+              <select id="gender" class="form-select" formControlName="gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
               </select>
             </div>
-      
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="phoneNumber" class="form-label">Phone Number</label>
-                <input type="text" id="phoneNumber" class="form-control" formControlName="phoneNumber">
-              </div>
-              <div class="col-md-6">
-                <label for="gender" class="form-label">Gender</label>
-                <select id="gender" class="form-select" formControlName="gender">
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <!-- Add more genders as needed -->
-                </select>
-              </div>
-            </div>
-      
-            <div class="mb-3">
-              <label for="address" class="form-label">Address</label>
-              <textarea id="address" class="form-control" formControlName="address" rows="6"></textarea>
-            </div>
-      
-            <button type="submit" class="btn btn-success">Update Profile</button>
-          </form>
-        </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea
+              id="address"
+              class="form-control"
+              formControlName="address"
+              rows="6"
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-success">Update Profile</button>
+        </form>
       </div>
-      
+    </div>
   </div>
-  
+</div>

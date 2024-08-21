@@ -24,7 +24,7 @@ export class ProfileComponent {
       email: [{ value: 'john.doe@example.com', disabled: true }, [Validators.required, Validators.email]],
       role: [{ value: 'user', disabled: true }, Validators.required],
       phoneNumber: ['123-456-7890', Validators.required],  
-      gender: [{ value: 'Male', disabled: true }, Validators.required],
+      gender: [{ value: 'Male'}, Validators.required],
       address: ['123 Main St, Anytown, USA', Validators.required]  
     });
 
