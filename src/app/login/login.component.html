@@ -32,9 +32,10 @@
                       <div *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</div>
                     </div>
                   </div>
-                  <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="loginForm.invalid">Sign in</button>
-                  <a href="#" class="d-block mb-3 text-center">Forgot password?</a>
-                  <a href="#" class="d-block text-center" (click)="onSwitchMode()">Create account?</a>
+                  <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="loginForm.invalid" (click)="verifyLogin(loginForm.get('email')?.value, loginForm.get('password')?.value)">Sign in</button>
+
+                  <a  class="d-block mb-3 text-center">Forgot password?</a>
+                  <a  class="d-block text-center" (click)="onSwitchMode()">Create account?</a>
                 </form>
               </div>
 
@@ -74,7 +75,7 @@
                     </div>
                   </div>
                   <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="signupForm.invalid">Sign up</button>
-                  <a href="#" class="d-block text-center" (click)="onSwitchMode()">Back to login</a>
+                  <a class="d-block text-center" (click)="onSwitchMode()">Back to login</a>
                 </form>
               </div>
 

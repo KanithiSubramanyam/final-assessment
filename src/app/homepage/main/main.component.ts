@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { Router } from 'express';
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { ProfileComponent } from './profile/profile.component';
 

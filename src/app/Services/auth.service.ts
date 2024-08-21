@@ -1,5 +1,4 @@
 import { inject, Injectable } from "@angular/core";
-import { HttpClient, HttpClientJsonpModule } from "@angular/common/http";
 
 
 @Injectable({
@@ -7,9 +6,5 @@ import { HttpClient, HttpClientJsonpModule } from "@angular/common/http";
 })
 
 export class AuthService{
-
-Http:HttpClient=inject(HttpClient);
-
-http:
 
 }
