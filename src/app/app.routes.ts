@@ -14,9 +14,9 @@ export const routes: Routes = [
     { path: '', component: HomepageComponent, children: [
         { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         { path: 'dashboard', component: DashboardComponent },
-        { path: 'users', component: UsersComponent },
-        { path: 'permissions', component: PermissionsComponent },
-        { path: 'roles', component: RolesComponent },
+        { path: 'userManagement/users', component: UsersComponent },
+        { path: 'userManagement/permissions', component: PermissionsComponent },
+        { path: 'userManagement/roles', component: RolesComponent },
     ]},
     { path: '**', component: NotFoundComponent },
 ];
