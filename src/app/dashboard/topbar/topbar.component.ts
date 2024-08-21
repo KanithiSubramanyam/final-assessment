@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './topbar.component.css'
 })
 export class TopbarComponent {
+  profile = "assets/images/profile.jpg";
   isProfileMenuOpen = false;
 
   toggleProfileMenu() {
