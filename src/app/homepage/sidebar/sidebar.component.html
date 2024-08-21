@@ -13,12 +13,12 @@
       </li>
       <li class="nav-item">
         <!-- [routerLink]="['/userManagement']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}" -->
-        <a class="nav-link link-dark" data-bs-toggle="collapse" aria-current="page" data-bs-target="#dashboard-collapse" aria-expanded="false" [routerLinkActive]="'active'">
+        <a class="nav-link link-dark" data-bs-toggle="collapse" aria-current="page" data-bs-target="#User-Management-collapse" aria-expanded="false" [routerLinkActive]="'active'">
           <i class="fas fa-user me-2"></i>
           User Management
           <i class="fa-solid fa-angle-down"></i>
         </a>
-        <div class="collapse ps-3" id="dashboard-collapse" >
+        <div class="collapse ps-3" id="User-Management-collapse" >
           <ul class="nav nav-pills flex-column mb-auto" style="--bs-nav-link-color:black;">
             <li class="nav-item"><a  class="nav-link" aria-current="page"  [routerLink]="['/userManagement/users']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}"> <i class="fa-solid fa-users  me-2"></i> USERS</a></li>
             <li class="nav-item"><a  class="nav-link" aria-current="page"  [routerLink]="['/userManagement/roles']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}"><i class="fa-solid fa-user-shield  me-2"></i> ROLES</a></li>
@@ -28,14 +28,14 @@
       </li>
       <li class="nav-item">
         <!-- [routerLink]="['/userManagement']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}" -->
-        <a class="nav-link link-dark" data-bs-toggle="collapse" aria-current="page" data-bs-target="#dashboard-collapse" aria-expanded="false" [routerLinkActive]="'active'">
+        <a class="nav-link link-dark" data-bs-toggle="collapse" aria-current="page" data-bs-target="#Task-Management-collapse" aria-expanded="false" [routerLinkActive]="'active'">
           <i class="fas fa-user me-2"></i>
-          Task & Dairy Management
+          Task Management
           <i class="fa-solid fa-angle-down"></i>
         </a>
-        <div class="collapse ps-3" id="dashboard-collapse" >
+        <div class="collapse ps-3" id="Task-Management-collapse" >
           <ul class="nav nav-pills flex-column mb-auto" style="--bs-nav-link-color:black;">
-            <li class="nav-item"><a  class="nav-link" aria-current="page"  [routerLink]="['/taskManagement']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}"> <i class="fa-solid fa-users  me-2"></i> Task Management</a></li>
+            <li class="nav-item"><a  class="nav-link" aria-current="page"  [routerLink]="['/taskManagement']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}"> <i class="fa-solid fa-users  me-2"></i> View All Task</a></li>
             <li class="nav-item"><a  class="nav-link" aria-current="page"  [routerLink]="['/dairyManagement/roles']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}"><i class="fa-solid fa-user-shield  me-2"></i> Dairy Management</a></li>
           </ul>
         </div>
