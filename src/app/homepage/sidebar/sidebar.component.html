@@ -1,6 +1,6 @@
-<div class="d-flex flex-nowrap shadow-lg">
+<div class="d-flex flex-nowrap shadow-lg bg-white">
     <!-- Sidebar -->
-    <div class="d-flex flex-column flex-shrink-0 bg-light sidebar" 
+    <div class="d-flex flex-column flex-shrink-0 sidebar bg-white" 
          [ngClass]="{'icon-sidebar': isCollapsed}" 
          [ngStyle]="{'width': isCollapsed ? '4.5rem' : '280px'}">
       <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none sidebar-toggle" 
@@ -16,12 +16,26 @@
             <span *ngIf="!isCollapsed">Dashboard</span>
           </a>
         </li>
-        <li>
-          <a [routerLink]="['/userManagement']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}" class="nav-link link-dark">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle link-dark d-flex align-items-center" 
+             href="#" id="userManagementDropdown" role="button" 
+             data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-user me-2"></i>
             <span *ngIf="!isCollapsed">User Management</span>
           </a>
+          <ul class="dropdown-menu" aria-labelledby="userManagementDropdown">
+            <li>
+              <a class="dropdown-item" [routerLink]="['/userManagement/viewUsers']">View Users</a>
+            </li>
+            <li>
+              <a class="dropdown-item" [routerLink]="['/userManagement/addUser']">Add User</a>
+            </li>
+            <li>
+              <a class="dropdown-item" [routerLink]="['/userManagement/editUser']">Edit User</a>
+            </li>
+          </ul>
         </li>
+        
       </ul>
       <hr>
       <div class="">

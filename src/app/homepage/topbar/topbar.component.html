@@ -1,11 +1,11 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-lg">
+<nav class="navbar navbar-expand-lg navbar-white bg-white shadow">
   <div class="container-fluid">
     <div class="ms-auto position-relative">
-      <img [src]="profile" alt="Profile" width="40" height="40" class="rounded-circle" (click)="toggleProfileMenu()">
+      <img [src]="profile" loading="lazy" alt="Profile" width="40" height="40" class="rounded-circle" (click)="toggleProfileMenu()">
 
       <div *ngIf="isProfileMenuOpen" class="profile-menu position-absolute end-0 mt-2 p-3 bg-white border rounded shadow-lg">
         <div class="d-flex justify-content-center mb-3">
-          <img [src]="profile" alt="Profile" width="auto" height="100" class="rounded-circle">
+          <img [src]="profile" loading="lazy" alt="Profile" width="auto" height="100" class="rounded-circle">
         </div>
         <div class="d-flex justify-content-between pt-3">
           <button class="btn btn-primary me-2" (click)="closeProfileMenu()">Profile Details</button>
@@ -15,5 +15,4 @@
     </div>
   </div>
 </nav>
-
   
