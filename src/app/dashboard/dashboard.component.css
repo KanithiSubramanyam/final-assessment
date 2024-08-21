@@ -1,0 +1,40 @@
+main {
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+  }
+  
+  app-sidebar {
+    flex-shrink: 0;
+    width: 280px; /* or your preferred width */
+  }
+  
+  .flex-grow-1 {
+    flex-grow: 1;
+    display: flex;
+  flex-direction: column;
+  }
+  
+  app-topbar {
+   width: calc(100% - 280px); /* Adjusts to full width minus the sidebar */
+   position: fixed;
+   top: 0;
+   left: 280px; /* Aligns the topbar right next to the sidebar */
+   z-index: 999;
+   background-color: #f8f9fa; /* Ensure background color matches */
+  }
+  
+  .topbar-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  
+  .topbar-container .navbar {
+    margin-left: 280px; /* same width as sidebar to align correctly */
+  }
+  
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
+  
