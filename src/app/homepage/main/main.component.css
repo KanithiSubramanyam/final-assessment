@@ -1,0 +1,17 @@
+/* main.component.css */
+.container-fluid {
+    height: 100vh; /* Full viewport height */
+  }
+  
+  .flex-grow-1 {
+    flex-grow: 1;
+  }
+  
+  .w-100 {
+    width: 100%;
+  }
+  
+  .h-100 {
+    height: 100%;
+  }
+  
