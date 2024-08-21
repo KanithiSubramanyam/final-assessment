@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { User } from '../Model/User';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -16,6 +17,8 @@ import { User } from '../Model/User';
 export class LoginComponent {
 
   isLoginMode: boolean = true; 
+
+  client : HttpClient = inject(HttpClient);
 
 
   // Login Form Controls
