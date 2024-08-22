@@ -17,9 +17,10 @@ export class User {
   ) {}
 
   
-  // get tokenData(){
-  //   if(!this.expiresIn || this.expiresIn < new Date()){
-  //       return null;
-  //   }
-  //   return this.token;
+  get tokenData(){
+    if(!this.expiresIn || this.expiresIn < new Date()){
+        return null;
+    }
+    return this.token;
+  }
 }

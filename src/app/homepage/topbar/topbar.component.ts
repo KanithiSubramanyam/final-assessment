@@ -21,7 +21,9 @@ export class TopbarComponent {
 
   closeProfileMenu() {
       this.isProfileMenuOpen = false;
-      this.authService.logOut();
+  }
+  logout(){
+    this.authService.logOut();
   }
 
 }
