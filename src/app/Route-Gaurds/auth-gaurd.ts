@@ -14,7 +14,6 @@ export const canActivate = (
 
     return authService.user.pipe(take(1), map((user) => {
         const loggedIn =  user ? true : false;
-
         if(loggedIn){
             return true;
         }else {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -14,7 +14,6 @@ export class ProfileComponent {
   showChangePasswordForm = false; 
   userForm!: FormGroup;
   changePasswordForm:FormGroup;
-  
 
   constructor(private fb: FormBuilder) {
     this.userForm = this.fb.group({
@@ -35,13 +34,13 @@ export class ProfileComponent {
     });
   }
 
+
   onChangePassword() {
     this.showChangePasswordForm = !this.showChangePasswordForm;
   }
 
   onChangePasswordSubmit() {
     if (this.changePasswordForm.valid) {
-      // Logic to handle password change
       console.log('Password change submitted', this.changePasswordForm.value);
     }
   }
@@ -54,7 +53,8 @@ export class ProfileComponent {
   onSubmit() {
     if (this.userForm.valid) {
       console.log('Form Submitted', this.userForm.getRawValue());  // Get full form value including disabled fields
-      // Logic for updating user profile
     }
   }
+
+
 }

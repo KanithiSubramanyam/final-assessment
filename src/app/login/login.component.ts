@@ -19,20 +19,21 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  isLoginMode: boolean = true; 
+  isLoginMode: boolean = true;
 
   client: HttpClient = inject(HttpClient);
 
   authService: AuthService = inject(AuthService);
 
   loginForm: FormGroup;
+
   signupForm: FormGroup;
 
   authObs: Observable<AuthResponse>;
 
-  router : Router = inject(Router);
-  errorMessage: string | null = null;
+  router: Router = inject(Router);
 
+  errorMessage: string | null = null;
 
   constructor(private fb: FormBuilder) {
     this.createForms();
@@ -52,7 +53,7 @@ export class LoginComponent implements OnInit {
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [
-        Validators.required, 
+        Validators.required,
         Validators.email,
         emailDomainValidator(['gmail.com', 'company.com'])
       ]],
@@ -73,7 +74,7 @@ export class LoginComponent implements OnInit {
     } else {
       if (this.signupForm.valid) {
         const user: User = {
-          id:'',
+          id: '',
           firstName: this.signupForm.value.firstName,
           lastName: this.signupForm.value.lastName,
           email: this.signupForm.value.email,
@@ -86,7 +87,7 @@ export class LoginComponent implements OnInit {
           role: 'user',
           createdAt: new Date(),
           lastLoginAt: new Date(),
-          token : '',
+          token: '',
           passwordLastChangedAt: new Date(),
           expiresIn: new Date()
         };
@@ -97,11 +98,11 @@ export class LoginComponent implements OnInit {
     }
 
     this.authObs.subscribe({
-      next: (res) => { 
-        console.log(res);
+      next: (res) => {
+        console.log(res.idToken);
         this.router.navigate(['/dashboard']);
       },
-      error: (errMsg) => { 
+      error: (errMsg) => {
 
         this.errorMessage = errMsg;
       }

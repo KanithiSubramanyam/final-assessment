@@ -1,4 +1,4 @@
-import {  HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { BehaviorSubject, catchError, tap, throwError } from "rxjs";
 import { User } from "../Model/User";
@@ -18,24 +18,29 @@ export class AuthService {
 
   private tokenExpirationTimer: any;
 
+  public signupUrl : string = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=';
+  public signinUrl : string = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
+  public webApi = "AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM";
+
 
   signUp(user: User) {
     const data = { ...user, returnSecureToken: true };
 
-    return this.http.post<AuthResponse>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM', data)
+    this.http.post('https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json', user).subscribe();
+
+    return this.http.post<AuthResponse>(this.signupUrl+this.webApi, data)
       .pipe(catchError(this.handleError), tap((res) => {
         this.handleCreateUser(res)
-      }))
+      }));
   }
 
   logIn(email: string, password: string) {
     const data = { email: email, password: password, returnSecureToken: true };
 
-    return this.http.post<AuthResponse>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM',
-      data
-    ).pipe(catchError(this.handleError), tap((res) => {
+    return this.http.post<AuthResponse>(this.signinUrl+this.webApi, data)
+    .pipe(catchError(this.handleError), tap((res) => {
       this.handleCreateUser(res)
-    }))
+    }));
   }
 
   autoLogin() {
@@ -44,12 +49,12 @@ export class AuthService {
       return;
     }
 
-    const loggedUser = new User(user.id, user.firstName, 
+    const loggedUser = new User(user.id, user.firstName,
       user.lastName, user.email, user.password,
       user.address, user.gender, user.phone,
-       user.photoURL, user.emailVerified, 
-       user.role, user.createdAt, user.lastLoginAt, 
-       user.token, user.passwordLastChangedAt, user.expiresIn);
+      user.photoURL, user.emailVerified,
+      user.role, user.createdAt, user.lastLoginAt,
+      user.token, user.passwordLastChangedAt, user.expiresIn);
 
     if (loggedUser.token) {
       this.user.next(loggedUser);
@@ -91,19 +96,19 @@ export class AuthService {
     const expiresInTs = new Date().getTime() + +res.expiresIn * 1000;
     const expiresIn = new Date(expiresInTs);
     console.log(res);
-    const user = new User(res.localId, res.firstName, 
+    const user = new User(res.localId, res.firstName,
       res.lastName, res.email, res.password,
       res.address, res.gender, res.phone,
-       res.photoURL, res.emailVerified, 
-       res.role, res.createdAt, res.lastLoginAt, 
-       res.idToken, res.passwordLastChangedAt,expiresIn
+      res.photoURL, res.emailVerified,
+      res.role, res.createdAt, res.lastLoginAt,
+      res.idToken, res.passwordLastChangedAt, expiresIn
     );
 
     this.user.next(user);
     this.autoLogout(res.expiresIn * 1000);
     localStorage.setItem('user', JSON.stringify(user));
   }
-  
+
   private handleError(err) {
     let errorMessage = 'An unknown error has occured'
     console.log(err);
