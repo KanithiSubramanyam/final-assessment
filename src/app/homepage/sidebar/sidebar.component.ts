@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { Router } from 'express';
+import { AuthService } from '../../Services/auth.service';
 
 
 @Component({
@@ -14,10 +15,15 @@ import { Router } from 'express';
 export class SidebarComponent {
   isCollapsed: boolean = false;
 
+  authService: AuthService = inject(AuthService)
+
     onClickSideBarToggle(): void {
       this.isCollapsed = !this.isCollapsed;
   }
 
+  logout(){
+    this.authService.logOut();
+  }
 
 
 

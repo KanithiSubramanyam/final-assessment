@@ -1,74 +1,109 @@
-import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { User } from '../Model/User';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '../Services/auth.service';
-import { Observable } from 'rxjs';
 import { passwordValidator } from '../Validators/passwordValidator';
 import { emailDomainValidator } from '../Validators/emailValidators';
+import { UserService } from '../Services/userService.service';
+import { AuthResponse } from '../Model/AuthResponse';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'login',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule,HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css'] // Corrected 'styleUrl' to 'styleUrls'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   isLoginMode: boolean = true; 
-  
-  client : HttpClient = inject(HttpClient);
 
-  authService : AuthService = inject(AuthService);
+  client: HttpClient = inject(HttpClient);
 
-  // Login Form Controls
-  loginForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(6)])
-  });
+  authService: AuthService = inject(AuthService);
 
-  // Signup Form Controls
-  signupForm = new FormGroup({
-    firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    email: new FormControl('', [
-      Validators.required, 
-      Validators.email,
-      emailDomainValidator(['example.com', 'company.com']) // Allowed domains
-    ]),
-    password: new FormControl('', [Validators.required, Validators.minLength(8), passwordValidator])
-  });
+  loginForm: FormGroup;
+  signupForm: FormGroup;
 
-  ngOnInit(){
+  authObs: Observable<AuthResponse>;
+
+  router : Router = inject(Router);
+  errorMessage: string | null = null;
+
+
+  constructor(private fb: FormBuilder) {
+    this.createForms();
+  }
+
+  ngOnInit() {
     this.authService.notifyPasswordExpiration();
+  }
+
+  createForms() {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+
+    this.signupForm = this.fb.group({
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [
+        Validators.required, 
+        Validators.email,
+        emailDomainValidator(['gmail.com', 'company.com'])
+      ]],
+      password: ['', [Validators.required, Validators.minLength(8), passwordValidator]]
+    });
   }
 
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
   }
 
-
   onSubmit() {
     if (this.isLoginMode) {
       if (this.loginForm.valid) {
-        this.authService.logIn(this.loginForm.value.email, this.loginForm.value.password);
+        console.log('login component', this.loginForm.value);
+        this.authObs = this.authService.logIn(this.loginForm.value.email, this.loginForm.value.password);
       }
-    }
-    else {
+    } else {
       if (this.signupForm.valid) {
-        const user = new User(
-          this.signupForm.value.firstName,
-          this.signupForm.value.lastName,
-          this.signupForm.value.email,
-          this.signupForm.value.password
-        );
+        const user: User = {
+          id:'',
+          firstName: this.signupForm.value.firstName,
+          lastName: this.signupForm.value.lastName,
+          email: this.signupForm.value.email,
+          password: this.signupForm.value.password,
+          photoURL: '',
+          emailVerified: false,
+          role: 'user',
+          createdAt: new Date(),
+          lastLoginAt: new Date(),
+          token : '',
+          passwordLastChangedAt: new Date(),
+          expiresIn: new Date()
+        };
 
-        this.authService.signUp(user);
+        this.authObs = this.authService.signUp(user);
         this.isLoginMode = true;
       }
     }
+
+    this.authObs.subscribe({
+      next: (res) => { 
+        console.log(res);
+        this.router.navigate(['/dashboard']);
+      },
+      error: (errMsg) => { 
+
+        this.errorMessage = errMsg;
+      }
+    })
 
     this.loginForm.reset({
       email: '',

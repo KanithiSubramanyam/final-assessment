@@ -74,7 +74,10 @@
                     <label for="signupPassword">Password</label>
                     <div *ngIf="signupForm.get('password')?.invalid && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched)" class="text-danger">
                       <div *ngIf="signupForm.get('password')?.errors?.['required']">Password is required.</div>
-                      <div *ngIf="signupForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</div>
+                      <div *ngIf="signupForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters.</div>
+                      <div *ngIf="signupForm.get('password').hasError('invalidPassword') && signupForm.get('password').touched">
+                        Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.
+                      </div>
                     </div>
                   </div>
                   <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="signupForm.invalid">Sign up</button>

@@ -19,5 +19,10 @@ import { AuthService } from './Services/auth.service';
 export class AppComponent {
   title = 'final-assessment';
 
-  
+  constructor(private authService: AuthService) { }
+
+  ngOnInit() {
+    this.authService.autoLogin();
+  }
+
 }

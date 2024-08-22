@@ -10,22 +10,25 @@ import { RolesComponent } from './homepage/main/user-management/roles/roles.comp
 import { ProfileComponent } from './homepage/main/profile/profile.component';
 import { TaskManagementComponent } from './homepage/main/task-management/task-management.component';
 import { DairyManagementComponent } from './homepage/main/dairy-management/dairy-management.component';
+import { canActivate } from './Route-Gaurds/auth-gaurd';
 
 
 export const routes: Routes = [
-    
-    { path: 'login', component: LoginComponent },
-    { path: '', component: HomepageComponent, children: [
-        { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-        { path: 'dashboard', component: DashboardComponent },
-        { path: 'userManagement/users', component: UsersComponent },
-        { path: 'userManagement/permissions', component: PermissionsComponent },
-        { path: 'userManagement/roles', component: RolesComponent },
-        { path:'user/profile', component:ProfileComponent},
-        { path: 'taskManagement', component: TaskManagementComponent},
-        { path: 'dairyManagement', component: DairyManagementComponent},
-
-    ]},
-    { path: '**', component: NotFoundComponent },
+  { path: 'login', component: LoginComponent },
+  {
+    path: '',
+    component: HomepageComponent,
+    canActivate: [canActivate],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'userManagement/users', component: UsersComponent },
+      { path: 'userManagement/permissions', component: PermissionsComponent },
+      { path: 'userManagement/roles', component: RolesComponent },
+      { path: 'user/profile', component: ProfileComponent },
+      { path: 'taskManagement', component: TaskManagementComponent },
+      { path: 'dairyManagement', component: DairyManagementComponent },
+    ]
+  },
+  { path: '**', component: NotFoundComponent },
 ];
-
