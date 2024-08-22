@@ -1,22 +1,25 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthResponse } from '../Model/AuthResponse';
 import { User } from '../Model/User';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private userInfoUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM';
 
-  dataBaseUrl = "https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json"
+  authService: AuthService = inject(AuthService);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
+
+  dataBaseUrl = `https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json`;
 
   getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.dataBaseUrl).pipe(
+    return this.http.get(this.dataBaseUrl).pipe(
       map((response: any) => {
        const users: User[] = [];
        for (const key in response) {

@@ -22,17 +22,25 @@ export class AuthService {
   public signinUrl : string = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
   public webApi = "AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM";
 
-
+  public token = null;
+  
   signUp(user: User) {
     const data = { ...user, returnSecureToken: true };
-
-    this.http.post('https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json', user).subscribe();
-
-    return this.http.post<AuthResponse>(this.signupUrl+this.webApi, data)
-      .pipe(catchError(this.handleError), tap((res) => {
-        this.handleCreateUser(res)
-      }));
+  
+    return this.http.post<AuthResponse>(this.signupUrl + this.webApi, data)
+      .pipe(
+        tap((res) => {
+          this.handleCreateUser(res);
+          this.token = res.idToken;
+          this.http.post(`https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json?auth=${this.token}`, data)
+            .subscribe(() => {
+              console.log('User successfully added to the database');
+            });
+        }),
+        catchError(this.handleError)
+      );
   }
+  
 
   logIn(email: string, password: string) {
     const data = { email: email, password: password, returnSecureToken: true };
@@ -58,7 +66,7 @@ export class AuthService {
 
     if (loggedUser.token) {
       this.user.next(loggedUser);
-      const timerValue = user._expiresIn.getTime() - new Date().getTime();
+      const timerValue = user.expiresIn.getTime() - new Date().getTime();
       this.autoLogout(timerValue);
     }
   }

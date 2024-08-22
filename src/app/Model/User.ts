@@ -20,7 +20,7 @@ export class User {
   ) {}
 
   
-  // get tokenData(){
+  // get _token(){
   //   if(!this.expiresIn || this.expiresIn < new Date()){
   //       return null;
   //   }
