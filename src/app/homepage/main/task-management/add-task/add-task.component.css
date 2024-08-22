@@ -1,0 +1,19 @@
+
+.card {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  /* .card-body {
+    padding: 2rem;
+  } */
+  
+  /* .btn-primary {
+    width: 100%;
+  }  */
+
+   /* add-task.component.css */
+.card-custom {
+    background-color: #f8f9fa; /* Custom background color */
+  }
+  

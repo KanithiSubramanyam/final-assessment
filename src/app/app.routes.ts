@@ -10,6 +10,8 @@ import { RolesComponent } from './homepage/main/user-management/roles/roles.comp
 import { ProfileComponent } from './homepage/main/profile/profile.component';
 import { TaskManagementComponent } from './homepage/main/task-management/task-management.component';
 import { DairyManagementComponent } from './homepage/main/dairy-management/dairy-management.component';
+import { AddUserComponent } from './homepage/main/user-management/users/add-user/add-user.component';
+import { AddTaskComponent } from './homepage/main/task-management/add-task/add-task.component';
 
 
 export const routes: Routes = [
@@ -24,6 +26,8 @@ export const routes: Routes = [
         { path:'user/profile', component:ProfileComponent},
         { path: 'taskManagement', component: TaskManagementComponent},
         { path: 'dairyManagement', component: DairyManagementComponent},
+        { path: 'userManagement/adduser', component: AddUserComponent },
+        { path: 'taskManagement/addtask', component: AddTaskComponent }, 
 
     ]},
     { path: '**', component: NotFoundComponent },

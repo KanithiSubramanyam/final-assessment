@@ -1,0 +1,51 @@
+<div class="container-fluid h-100 d-flex justify-content-center align-items-center pt-5">
+    <div class="card w-100" style="max-width: 1000px; max-height:2000px;">
+        <div class="card-body">
+            <h4 class="card-title text-center pb-3">Add New User</h4>
+            <form [formGroup]="addUserForm" (ngSubmit)="onSubmit()">
+                <div class="mb-3 row">
+                    <label for="name" class="col-md-2 col-form-label">Name</label>
+                    <div class="col-md-10">
+                        <input type="text" id="name" class="form-control" formControlName="name">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="email" class="col-md-2 col-form-label">Email</label>
+                    <div class="col-md-10">
+                        <input type="email" id="email" class="form-control" formControlName="email">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="mobile" class="col-md-2 col-form-label">Mobile</label>
+                    <div class="col-md-10">
+                        <input type="text" id="mobile" class="form-control" formControlName="mobile">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="address" class="col-md-2 col-form-label">Address</label>
+                    <div class="col-md-10">
+                        <textarea id="address" class="form-control" formControlName="address" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="role" class="col-md-2 col-form-label">Role</label>
+                    <div class="col-md-10">
+                        <select id="role" class="form-select" formControlName="role">
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                            <option value="customer">Customer</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success">Add User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
