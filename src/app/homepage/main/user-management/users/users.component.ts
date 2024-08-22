@@ -19,6 +19,7 @@ export class UsersComponent {
   ngOnInit() {
     this.userService.getAllUsers().subscribe((users: User[]) => {
       this.users = users;
+      console.log(users);
     });
   }
 }

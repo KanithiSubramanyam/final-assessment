@@ -9,13 +9,14 @@ import { User } from '../Model/User';
   providedIn: 'root',
 })
 export class UserService {
+  private userInfoUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM';
 
   dataBaseUrl = "https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json"
 
   constructor(private http: HttpClient) {}
 
   getAllUsers(): Observable<User[]> {
-    return this.http.get(this.dataBaseUrl).pipe(
+    return this.http.get<User[]>(this.dataBaseUrl).pipe(
       map((response: any) => {
        const users: User[] = [];
        for (const key in response) {
@@ -32,5 +33,5 @@ export class UserService {
       })
     );
   }
-
+  
 }
