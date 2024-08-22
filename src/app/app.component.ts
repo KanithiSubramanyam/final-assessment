@@ -5,6 +5,7 @@ import { SidebarComponent } from './homepage/sidebar/sidebar.component';
 import { TopbarComponent } from './homepage/topbar/topbar.component';
 import { MainComponent } from './homepage/main/main.component';
 import { CommonModule } from '@angular/common';
+import { AuthService } from './Services/auth.service';
 
 
 

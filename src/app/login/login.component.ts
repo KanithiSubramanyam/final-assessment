@@ -3,9 +3,10 @@ import { FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular
 import { CommonModule } from '@angular/common';
 import { User } from '../Model/User';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-
-
-
+import { AuthService } from '../Services/auth.service';
+import { Observable } from 'rxjs';
+import { passwordValidator } from '../Validators/passwordValidator';
+import { emailDomainValidator } from '../Validators/emailValidators';
 
 @Component({
   selector: 'login',
@@ -17,7 +18,10 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 export class LoginComponent {
 
   isLoginMode: boolean = true; 
+  
   client : HttpClient = inject(HttpClient);
+
+  authService : AuthService = inject(AuthService);
 
   // Login Form Controls
   loginForm = new FormGroup({
@@ -29,72 +33,53 @@ export class LoginComponent {
   signupForm = new FormGroup({
     firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
     lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(6)])
+    email: new FormControl('', [
+      Validators.required, 
+      Validators.email,
+      emailDomainValidator(['example.com', 'company.com']) // Allowed domains
+    ]),
+    password: new FormControl('', [Validators.required, Validators.minLength(8), passwordValidator])
   });
 
- 
+  ngOnInit(){
+    this.authService.notifyPasswordExpiration();
+  }
 
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
   }
 
+
   onSubmit() {
     if (this.isLoginMode) {
       if (this.loginForm.valid) {
-        // console.log('Login data', this.loginForm.value);
-        // alert('Login successful');
+        this.authService.logIn(this.loginForm.value.email, this.loginForm.value.password);
       }
-    } else {
+    }
+    else {
       if (this.signupForm.valid) {
-         // Create a User object with the form values
-         const user = new User(
+        const user = new User(
           this.signupForm.value.firstName,
           this.signupForm.value.lastName,
           this.signupForm.value.email,
           this.signupForm.value.password
         );
-        console.log('Sign up data', this.signupForm.value);
-        // Log the User object to the console
-        alert('Sign up successful');
-        this.client.post('https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json',user).subscribe((response)=>{
-          console.log(response);
 
-        })
+        this.authService.signUp(user);
+        this.isLoginMode = true;
       }
     }
+
     this.loginForm.reset({
-      email:'',
-      password:'',
-
+      email: '',
+      password: '',
     });
+
     this.signupForm.reset({
-      firstName:'',
-      lastName:'',
-      email:'',
-      password:'',
-
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
     });
   }
-
-   // Verify login credentials with Firebase
-   verifyLogin(email: string, password: string) {
-    this.client.get<{ [key: string]: User }>('https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json')
-      .subscribe(users => {
-        let userFound = false;
-        for (let key in users) {
-          const user = users[key];
-          if (user.email === email && user.password === password) {
-            console.log('Login successful', user);
-            alert('Login successful');
-            userFound = true;
-            break;
-          }
-        }
-        if (!userFound) {
-          alert('Invalid email or password');
-        }
-      });
-  }
-
 }

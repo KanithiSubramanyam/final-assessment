@@ -3,7 +3,6 @@
     <div class="col-md-8">
       <div class="card border rounded-3 shadow-lg">
         <div class="row no-gutters">
-          
           <div class="col-md-6 d-flex justify-content-center align-items-center p-0" [ngClass]="{'order-md-2': isLoginMode, 'order-md-1': !isLoginMode}">
             <img *ngIf="isLoginMode; else signupImage" src="https://via.placeholder.com/300" alt="Login Image" class="w-100 h-100 ">
             <ng-template #signupImage>
@@ -29,10 +28,14 @@
                     <label for="loginPassword">Password</label>
                     <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="text-danger">
                       <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
-                      <div *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</div>
+                      <div *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters.</div>
+                      <div *ngIf="signupForm.get('password').hasError('invalidPassword') && signupForm.get('password').touched">
+                        Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.
+                      </div>
                     </div>
                   </div>
-                  <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="loginForm.invalid" (click)="verifyLogin(loginForm.get('email')?.value, loginForm.get('password')?.value)">Sign in</button>
+                  <!-- (click)="verifyLogin(loginForm.get('email')?.value, loginForm.get('password')?.value)" -->
+                  <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="loginForm.invalid" >Sign in</button>
 
                   <a  class="d-block mb-3 text-center">Forgot password?</a>
                   <a  class="d-block text-center" (click)="onSwitchMode()">Create account?</a>
