@@ -1,10 +1,8 @@
-import { HttpClientModule, HttpClient } from "@angular/common/http";
+import {  HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { BehaviorSubject, catchError, tap, throwError } from "rxjs";
 import { User } from "../Model/User";
 import { Router } from "@angular/router";
-import { error } from "console";
-import { UserService } from "./userService.service";
 import { AuthResponse } from "../Model/AuthResponse";
 
 
@@ -48,6 +46,7 @@ export class AuthService {
 
     const loggedUser = new User(user.id, user.firstName, 
       user.lastName, user.email, user.password,
+      user.address, user.gender, user.phone,
        user.photoURL, user.emailVerified, 
        user.role, user.createdAt, user.lastLoginAt, 
        user.token, user.passwordLastChangedAt, user.expiresIn);
@@ -94,6 +93,7 @@ export class AuthService {
     console.log(res);
     const user = new User(res.localId, res.firstName, 
       res.lastName, res.email, res.password,
+      res.address, res.gender, res.phone,
        res.photoURL, res.emailVerified, 
        res.role, res.createdAt, res.lastLoginAt, 
        res.idToken, res.passwordLastChangedAt,expiresIn

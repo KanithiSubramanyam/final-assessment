@@ -1,12 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { User } from '../Model/User';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '../Services/auth.service';
 import { passwordValidator } from '../Validators/passwordValidator';
 import { emailDomainValidator } from '../Validators/emailValidators';
-import { UserService } from '../Services/userService.service';
 import { AuthResponse } from '../Model/AuthResponse';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
@@ -16,7 +15,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'] // Corrected 'styleUrl' to 'styleUrls'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
 
@@ -79,6 +78,9 @@ export class LoginComponent implements OnInit {
           lastName: this.signupForm.value.lastName,
           email: this.signupForm.value.email,
           password: this.signupForm.value.password,
+          address: '',
+          gender: '',
+          phone: '',
           photoURL: '',
           emailVerified: false,
           role: 'user',
@@ -105,16 +107,8 @@ export class LoginComponent implements OnInit {
       }
     })
 
-    this.loginForm.reset({
-      email: '',
-      password: '',
-    });
+    this.loginForm.reset();
 
-    this.signupForm.reset({
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-    });
+    this.signupForm.reset();
   }
 }

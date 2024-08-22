@@ -10,9 +10,9 @@ import { RolesComponent } from './homepage/main/user-management/roles/roles.comp
 import { ProfileComponent } from './homepage/main/profile/profile.component';
 import { TaskManagementComponent } from './homepage/main/task-management/task-management.component';
 import { DairyManagementComponent } from './homepage/main/dairy-management/dairy-management.component';
-import { canActivate } from './Route-Gaurds/auth-gaurd';
 import { AddUserComponent } from './homepage/main/user-management/users/add-user/add-user.component';
 import { AddTaskComponent } from './homepage/main/task-management/add-task/add-task.component';
+import { canActivate } from './Route-Gaurds/auth-gaurd';
 
 
 export const routes: Routes = [
