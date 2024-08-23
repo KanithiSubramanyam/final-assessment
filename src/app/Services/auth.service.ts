@@ -97,16 +97,6 @@ export class AuthService {
       this.autoLogout(timerValue);
     }
 
-    console.log(this.http.post(this.accountInfo + this.webApi, loggedUser._token).subscribe(
-      (res: any) => {
-        console.log(res);
-      },
-      (error) => {
-        console.log(error);
-      }
-    )
-  )
-
   }
 
   logOut() {

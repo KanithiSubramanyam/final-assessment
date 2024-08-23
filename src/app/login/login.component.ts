@@ -8,12 +8,12 @@ import { passwordValidator } from '../Validators/passwordValidator';
 import { emailDomainValidator } from '../Validators/emailValidators';
 import { AuthResponse } from '../Model/AuthResponse';
 import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
