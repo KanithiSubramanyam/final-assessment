@@ -1,4 +1,3 @@
-<!-- view-appointments.component.html -->
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="text-primary">Appointments</h2>
@@ -8,11 +7,23 @@
   </div>
 
   <div class="row">
-    <div class="col-md-4 mb-4" *ngFor="let appointment of appointments">
+    <div class="col-md-4 mb-4" *ngFor="let appointment of appointments; let i = index">
       <div class="card shadow-lg border-light rounded" style="background-color: #f8f9fa;">
         <div class="card-body">
-          <h5 class="card-title text-primary">{{ appointment.customerName }}</h5>
-          
+          <!-- Icons Section -->
+          <div class="d-flex justify-content-between">
+            <h5 class="card-title text-primary">{{ appointment.customerName }}</h5>
+            <div>
+              <button class="btn btn-outline-secondary btn-sm me-2">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-outline-danger btn-sm" (click)="deleteAppointment(appointment.id, i)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Appointment Details -->
           <p class="card-text">
             <i class="fas fa-envelope"></i> Email: {{ appointment.email }}
           </p>
@@ -37,4 +48,3 @@
     </div>
   </div>
 </div>
-

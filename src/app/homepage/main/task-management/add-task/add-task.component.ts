@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TaskService } from '../../../../Services/task.service';
 
 @Component({
   selector: 'app-add-task',
@@ -14,7 +15,7 @@ import { CommonModule } from '@angular/common';
 export class AddTaskComponent implements OnInit {
   addTaskForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router,private taskService:TaskService) {
     this.addTaskForm = this.fb.group({
       taskTitle: ['', Validators.required],
       description: [''],
@@ -28,15 +29,14 @@ export class AddTaskComponent implements OnInit {
   ngOnInit(): void {}
 
   onSubmit(): void {
+    
     if (this.addTaskForm.valid) {
-      // Simulate task creation
-      console.log('Task Created:', this.addTaskForm.value);
-      
-      // Navigate to the task list or another route after successful sumission
-      this.router.navigate(['/taskManagement']);  // Adjust the route as necessary
-    } else {
-      // Mark all fields as touched to show validation errors
-      this.addTaskForm.markAllAsTouched();
+      this.taskService.saveTask(this.addTaskForm.value).subscribe(response => {
+        console.log('Appointment saved successfully', response);
+        this.addTaskForm.reset();
+        this.router.navigate(['/taskManagement']);
+        // Optionally, navigate to the view appointments page
+      });
     }
   }
 }
