@@ -9,54 +9,22 @@ import { AuthService } from './auth.service';
 @Injectable({
   providedIn: 'root',
 })
+
 export class UserService {
 
   authService: AuthService = inject(AuthService);
+  http: HttpClient = inject(HttpClient);
 
-  constructor(private http: HttpClient) {
-  }
 
-  // dataBaseUrl = `https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json`;
+  dataBaseUrl = `https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json`;
 
+  //all users data in the database
   getAllUsers() {
-   
-    this.authService.user.pipe(take(1),exhaustMap(user =>{
-      console.log('Token:', user.token);
-      return this.http.get('https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json',{params: new HttpParams().set('auth',user.token)})
-
-    }),map((response: any) => {
-      const users: User[] = [];
-      for (const key in response) {
-         if (response.hasOwnProperty(key)) {
-           const user = response[key];
-           user.id = key;
-           users.push(user);
-         }
-       }
-       return users;
-     }),
-     catchError((error) => {
-       return throwError(error);
-     })).subscribe((user)=>{
-      console.log(user)
-
-    })
-  //   return this.http.get(this.dataBaseUrl).pipe(
-  //     map((response: any) => {
-  //      const users: User[] = [];
-  //      for (const key in response) {
-  //         if (response.hasOwnProperty(key)) {
-  //           const user = response[key];
-  //           user.id = key;
-  //           users.push(user);
-  //         }
-  //       }
-  //       return users;
-  //     }),
-  //     catchError((error) => {
-  //       return throwError(error);
-  //     })
-  //   );
+    this.authService.user.pipe(
+      exhaustMap(user => this.http.get(this.dataBaseUrl)),
+      map(response => Object.entries(response).map(([key, user]) => ({ ...user, id: key }))),
+      catchError(error => throwError(() => error))
+    ).subscribe(users => console.log(users));
   }
-  
+
 }

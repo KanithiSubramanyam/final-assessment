@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent  {
+export class LoginComponent implements OnInit {
 
   isLoginMode: boolean = true;
 
@@ -39,9 +39,9 @@ export class LoginComponent  {
     this.createForms();
   }
 
-  // ngOnInit() {
-  //   this.authService.notifyPasswordExpiration();
-  // }
+  ngOnInit() {
+    // this.authService.notifyPasswordExpiration();
+  }
 
   createForms() {
     this.loginForm = this.fb.group({
@@ -74,24 +74,13 @@ export class LoginComponent  {
       }
     } else {
       if (this.signupForm.valid) {
-        const user: User = {
-          id: '',
+        const user = {
           firstName: this.signupForm.value.firstName,
           lastName: this.signupForm.value.lastName,
           email: this.signupForm.value.email,
           password: this.signupForm.value.password,
-          address: '',
-          gender: '',
-          phone: '',
-          photoURL: '',
-          emailVerified: false,
-          role: 'user',
-          createdAt: new Date(),
-          lastLoginAt: new Date(),
-          token: '',
-          passwordLastChangedAt: new Date(),
-          expiresIn: new Date()
         };
+
 
         this.authObs = this.authService.signUp(user);
         // this.isLoginMode = true;
