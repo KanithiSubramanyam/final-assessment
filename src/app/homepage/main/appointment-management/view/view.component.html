@@ -1,0 +1,22 @@
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Appointments</h2>
+      <button class="btn btn-primary" [routerLink]="['/schedule-appointment']">
+        Schedule Appointment
+      </button>
+    </div>
+  
+    <div class="row">
+      <div class="col-md-4" *ngFor="let appointment of appointments">
+        <div class="card mb-4 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{{ appointment.customerName }}</h5>
+            <p class="card-text">Date: {{ appointment.date | date }}</p>
+            <p class="card-text">Time: {{ appointment.time }}</p>
+            <p class="card-text">Purpose: {{ appointment.purpose }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
