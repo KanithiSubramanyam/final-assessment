@@ -19,10 +19,9 @@ export class UserService {
   // dataBaseUrl = `https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json`;
 
   getAllUsers() {
-   
     this.authService.user.pipe(take(1),exhaustMap(user =>{
-      console.log('Token:', user.token);
-      return this.http.get('https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json',{params: new HttpParams().set('auth',user.token)})
+      // console.log('Token:', user.token);
+      return this.http.get('https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json')
 
     }),map((response: any) => {
       const users: User[] = [];

@@ -14,18 +14,17 @@ export class User {
     public role: string,
     public createdAt: Date,
     public lastLoginAt: Date,
-    public token: string,
+    public _token: string,
     // private token: string,
     public passwordLastChangedAt: Date,
-    public expiresIn: Date
+    public _expiresIn: Date
   ) {}
 
-  
-  // get token(){
-  //   if(!this.expiresIn || this.expiresIn < new Date()){
-  //       return null;
-  //   }
-  //   return this.token;
-  // }
+  get token(){
+    if(!this._expiresIn || this._expiresIn < new Date()){
+        return null;
+    }
+    return this._token;
+  }
   
 }

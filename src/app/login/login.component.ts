@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.notifyPasswordExpiration();
+    // this.authService.notifyPasswordExpiration();
   }
 
   createForms() {
@@ -74,24 +74,13 @@ export class LoginComponent implements OnInit {
       }
     } else {
       if (this.signupForm.valid) {
-        const user: User = {
-          id: '',
+        const user = {
           firstName: this.signupForm.value.firstName,
           lastName: this.signupForm.value.lastName,
           email: this.signupForm.value.email,
           password: this.signupForm.value.password,
-          address: '',
-          gender: '',
-          phone: '',
-          photoURL: '',
-          emailVerified: false,
-          role: 'user',
-          createdAt: new Date(),
-          lastLoginAt: new Date(),
-          token: '',
-          passwordLastChangedAt: new Date(),
-          expiresIn: new Date()
         };
+
 
         this.authObs = this.authService.signUp(user);
         // this.isLoginMode = true;

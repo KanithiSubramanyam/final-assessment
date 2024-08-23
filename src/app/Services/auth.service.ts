@@ -1,9 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { BehaviorSubject, catchError, tap, throwError } from "rxjs";
+import { BehaviorSubject, catchError, map, tap, throwError } from "rxjs";
 import { User } from "../Model/User";
 import { Router } from "@angular/router";
 import { AuthResponse } from "../Model/AuthResponse";
+import { error } from "console";
 
 
 @Injectable({
@@ -23,37 +24,50 @@ export class AuthService {
   public webApi = "AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM";
 
   public token = null;
-  
-  // signUp(user: User) {
-  //   const data = { ...user, returnSecureToken: true };
-  
-  //   return this.http.post<AuthResponse>(this.signupUrl + this.webApi, data)
-  //     .pipe(
-  //       tap((res) => {
-  //         this.handleCreateUser(res);
-  //         this.token = res.idToken;
-  //         this.http.post(`https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json?auth=${this.token}`, data)
-  //           .subscribe(() => {
-  //             console.log('User successfully added to the database');
-  //           });
-  //       }),
-  //       catchError(this.handleError)
-  //     );
-  // }
-  signUp(user:User){
-    const data = { ...user, returnSecureToken: true }
+
+
+
+  signUp(user){
+    const data = { email: user.email, password: user.password, returnSecureToken: true };
     return this.http.post<AuthResponse>(
       'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM',data
     ).pipe(catchError(this.handleError),tap((res)=>{
-      this.handleCreateUser(res)
-    }))
-  }
+
+      let userData : User= {
+        id: '',
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        password: user.password,
+        address: '',
+        gender: '',
+        phone: '',
+        photoURL: '',
+        emailVerified: false,
+        role: 'user',
+        createdAt: new Date(),
+        lastLoginAt: new Date(),
+        _token: res.idToken,
+        passwordLastChangedAt: new Date(),
+        _expiresIn: new Date(),
+        token:res.idToken
+      };
+      this.handleCreateUser(res);
+      this.http.post(`https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json?auth=${res.idToken}`, userData)
+        .subscribe({
+          next: () => {
+            console.log('User successfully added to the database')
+          },
+          error: (error) => {
+            console.log(error);
+          }
+        });
+    }),
+)}
+
+
 
   logIn(email: string, password: string) {
-    // const data = { email: email, password: password, returnSecureToken: true }
-    // return this.http.post<AuthResponse>(
-    //   'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM',data
-    // ).pipe(catchError(this.handleError))
     const data = { email: email, password: password, returnSecureToken: true };
 
     return this.http.post<AuthResponse>(this.signinUrl+this.webApi, data)
@@ -62,22 +76,26 @@ export class AuthService {
     }));
   }
 
+
   autoLogin() {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(localStorage.getItem('localUser'));
+    // console.log('auto login user', user);
     if (!user) {
       return;
     }
-
     const loggedUser = new User(user.id, user.firstName,
       user.lastName, user.email, user.password,
       user.address, user.gender, user.phone,
       user.photoURL, user.emailVerified,
       user.role, user.createdAt, user.lastLoginAt,
-      user.token, user.passwordLastChangedAt, user.expiresIn);
+      user._token, user.passwordLastChangedAt, user._expiresIn);
+      // console.log('log in user', loggedUser);
 
-    if (loggedUser.token) {
+    if (loggedUser._token) {
+      loggedUser._expiresIn = new Date(loggedUser._expiresIn);
+      // console.log('log in user', loggedUser._expiresIn);
       this.user.next(loggedUser);
-      const timerValue = user.expiresIn.getTime() - new Date().getTime();
+      const timerValue = loggedUser._expiresIn.getTime() - new Date().getTime();
       this.autoLogout(timerValue);
     }
   }
@@ -85,7 +103,7 @@ export class AuthService {
   logOut() {
     this.user.next(null);
     this.router.navigate(['/login']);
-    localStorage.removeItem('user');
+    localStorage.removeItem('localUser');
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
     }
@@ -98,33 +116,34 @@ export class AuthService {
     }, expirationDuration);
   }
 
-  checkPasswordExpiration(): boolean {
-    const expirationPeriod = 90;
-    const currentDate = new Date();
-    const daysSinceChange = Math.floor((currentDate.getTime() - this.user.value?.passwordLastChangedAt?.getTime()) / (1000 * 60 * 60 * 24));
-    return daysSinceChange >= expirationPeriod;
-  }
+  // checkPasswordExpiration(): boolean {
+  //   const expirationPeriod = 90;
+  //   const currentDate = new Date();
+  //   const daysSinceChange = Math.floor((currentDate.getTime() - this.user.value?.passwordLastChangedAt?.getTime()) / (1000 * 60 * 60 * 24));
+  //   return daysSinceChange >= expirationPeriod;
+  // }
 
-  notifyPasswordExpiration() {
-    if (this.checkPasswordExpiration()) {
-      alert('Your password has expired. Please change it immediately.');
-    }
-  }
+  // notifyPasswordExpiration() {
+  //   if (this.checkPasswordExpiration()) {
+  //     alert('Your password has expired. Please change it immediately.');
+  //   }
+  // }
 
   private handleCreateUser(res) {
     const expiresInTs = new Date().getTime() + +res.expiresIn * 1000;
     const expiresIn = new Date(expiresInTs);
-    console.log(res);
-    const user = new User(res.localId, res.firstName,
+    // console.log(expiresIn);
+    const localUser = new User(res.localId, res.firstName,
       res.lastName, res.email, res.password,
       res.address, res.gender, res.phone,
       res.photoURL, res.emailVerified,
       res.role, res.createdAt, res.lastLoginAt,
       res.idToken, res.passwordLastChangedAt, expiresIn
     );
-    this.user.next(user);
+    // console.log('after login',localUser);
+    this.user.next(localUser);
     this.autoLogout(res.expiresIn * 1000);
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('localUser', JSON.stringify(localUser));
   }
 
   private handleError(err) {
