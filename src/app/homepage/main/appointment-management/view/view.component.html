@@ -13,10 +13,10 @@
         <div class="card-body">
           <h5 class="card-title text-primary">{{ appointment.customerName }}</h5>
           <p class="card-text">
-            <i class="fas fa-calendar-day"></i> Date: {{ appointment.date | date:'longDate' }}
+            <i class="fas fa-calendar-day"></i> Date: {{ appointment.appointmentDate | date:'longDate' }}
           </p>
           <p class="card-text">
-            <i class="fas fa-clock"></i> Time: {{ appointment.time }}
+            <i class="fas fa-clock"></i> Time: {{ appointment.appointmentTime }}
           </p>
           <p class="card-text">
             <i class="fas fa-info-circle"></i> Purpose: {{ appointment.purpose }}

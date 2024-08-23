@@ -27,9 +27,12 @@ export class ScheduleComponent {
 
   onSubmit(): void {
     if (this.scheduleForm.valid) {
-      this.appointmentService.addAppointment(this.scheduleForm.value);
-      this.scheduleForm.reset();
+      this.appointmentService.saveAppointment(this.scheduleForm.value).subscribe(response => {
+        console.log('Appointment saved successfully', response);
+        this.scheduleForm.reset();
+        // Optionally, navigate to the view appointments page
+      });
     }
-  }
  
+}
 }

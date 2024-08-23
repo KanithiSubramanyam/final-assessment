@@ -1,26 +1,21 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-
-export interface Appointment {
-  customerName: string;
-  phoneNumber: string;
-  email: string;
-  date: string;
-  time: string;
-  purpose: string;
-}
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppointmentService {
-  private appointmentsSource = new BehaviorSubject<Appointment[]>([]);
-  appointments$ = this.appointmentsSource.asObservable();
 
-  constructor() { }
+  private apiUrl ='https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/appointments.json'; // Mock API URL
 
-  addAppointment(appointment: Appointment) {
-    const currentAppointments = this.appointmentsSource.value;
-    this.appointmentsSource.next([...currentAppointments, appointment]);
+  constructor(private http: HttpClient) {}
+
+  saveAppointment(appointmentData: any): Observable<any> {
+    return this.http.post(this.apiUrl, appointmentData);
+  }
+
+  getAppointments(): Observable<any> {
+    return this.http.get(this.apiUrl);
   }
 }
