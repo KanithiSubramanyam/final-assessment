@@ -17,7 +17,7 @@ export class ViewComponent implements OnInit{
   constructor(private appointmentService: AppointmentService) {}
 
    ngOnInit(): void {
-    
+
     this.fetchAppointments();
   
    }
@@ -29,6 +29,7 @@ export class ViewComponent implements OnInit{
         id: key,
         ...data[key]
       }));
+      console.log(this.appointments);
     });
   }
 
