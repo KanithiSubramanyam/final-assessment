@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent  {
 
   isLoginMode: boolean = true;
 
@@ -39,9 +39,9 @@ export class LoginComponent implements OnInit {
     this.createForms();
   }
 
-  ngOnInit() {
-    this.authService.notifyPasswordExpiration();
-  }
+  // ngOnInit() {
+  //   this.authService.notifyPasswordExpiration();
+  // }
 
   createForms() {
     this.loginForm = this.fb.group({
@@ -68,8 +68,9 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     if (this.isLoginMode) {
       if (this.loginForm.valid) {
-        console.log('login component', this.loginForm.value);
+        // console.log('login component', this.loginForm.value);
         this.authObs = this.authService.logIn(this.loginForm.value.email, this.loginForm.value.password);
+        
       }
     } else {
       if (this.signupForm.valid) {
@@ -93,13 +94,18 @@ export class LoginComponent implements OnInit {
         };
 
         this.authObs = this.authService.signUp(user);
-        this.isLoginMode = true;
+        // this.isLoginMode = true;
+        // this.authService.signUp(user).subscribe({
+        //   next:(res)=>{console.log(res)},
+        //   error:(err)=>{console.log(err)}
+        // })
       }
     }
 
     this.authObs.subscribe({
       next: (res) => {
-        console.log(res.idToken);
+        // console.log(res.idToken);
+        // console.log(res)
         this.router.navigate(['/dashboard']);
       },
       error: (errMsg) => {

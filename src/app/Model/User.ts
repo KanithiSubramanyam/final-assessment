@@ -15,15 +15,17 @@ export class User {
     public createdAt: Date,
     public lastLoginAt: Date,
     public token: string,
+    // private token: string,
     public passwordLastChangedAt: Date,
     public expiresIn: Date
   ) {}
 
   
-  // get _token(){
+  // get token(){
   //   if(!this.expiresIn || this.expiresIn < new Date()){
   //       return null;
   //   }
   //   return this.token;
   // }
+  
 }
