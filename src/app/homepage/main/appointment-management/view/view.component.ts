@@ -33,4 +33,12 @@ export class ViewComponent implements OnInit{
     });
   }
 
+  deleteAppointment(id: string, index: number): void {
+    this.appointmentService.deleteAppointment(id).subscribe(() => {
+      // Remove the task from the local tasks array
+      this.appointments.splice(index, 1);
+      console.log(`Task with ID ${id} has been deleted`);
+    });
+  }
+
 }
