@@ -40,7 +40,22 @@
           </ul>
         </div>
       </li>
+      <li class="nav-item">
+        <a class="nav-link link-dark" data-bs-toggle="collapse" aria-current="page" data-bs-target="#Appointment-Management-collapse" aria-expanded="false" [routerLinkActive]="'active'">
+          <i class="fas fa-calendar-alt me-2"></i>
+          Appointments <i class="fa-solid fa-angle-down"></i>
+          
+        </a>
+        <div class="collapse ps-3" id="Appointment-Management-collapse">
+          <ul class="nav nav-pills flex-column mb-auto" style="--bs-nav-link-color:black;">
+            <li class="nav-item"><a class="nav-link" aria-current="page" [routerLink]="['/appointmentManagement/view']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{ exact: true }"> <i class="fa-solid fa-calendar-check  me-2"></i> View Appointments</a></li>
+            <li class="nav-item"><a class="nav-link" aria-current="page" [routerLink]="['/appointmentManagement/schedule']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{ exact: true }"><i class="fa-solid fa-calendar-plus  me-2"></i> Schedule Appointment</a></li>
+          </ul>
+        </div>
+      </li>
     </ul>
+    
+ 
     <hr>
       <a (click)="logout()" class="d-flex align-items-center link-dark text-decoration-none ">
         <strong>Logout  </strong>

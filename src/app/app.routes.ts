@@ -13,6 +13,9 @@ import { DairyManagementComponent } from './homepage/main/dairy-management/dairy
 import { AddUserComponent } from './homepage/main/user-management/users/add-user/add-user.component';
 import { AddTaskComponent } from './homepage/main/task-management/add-task/add-task.component';
 import { canActivate } from './Route-Gaurds/auth-gaurd';
+import { AppointmentManagementComponent } from './homepage/main/appointment-management/appointment-management.component';
+import { ViewComponent } from './homepage/main/appointment-management/view/view.component';
+import { ScheduleComponent } from './homepage/main/appointment-management/schedule/schedule.component';
 
 
 export const routes: Routes = [
@@ -24,7 +27,14 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'userManagement/users', component: UsersComponent },
+      { 
+        path: 'userManagement', 
+        component: UserManagementComponent, 
+        children: [
+          { path: 'users', component: UsersComponent },
+          { path: 'users/adduser', component: AddUserComponent }
+        ]
+      },
       { path: 'userManagement/permissions', component: PermissionsComponent },
       { path: 'userManagement/roles', component: RolesComponent },
       { path: 'user/profile', component: ProfileComponent },
@@ -32,6 +42,14 @@ export const routes: Routes = [
       { path: 'dairyManagement', component: DairyManagementComponent },
       { path: 'userManagement/users/adduser', component: AddUserComponent },
       { path: 'taskManagement/addtask', component: AddTaskComponent },
+      {
+        path: 'appointmentManagement',
+        component: AppointmentManagementComponent, // This should have a router-outlet
+        children: [
+          { path: 'view', component: ViewComponent },
+          { path: 'schedule', component: ScheduleComponent },
+        ]
+      }
     ]
   },
   { path: '**', component: NotFoundComponent },

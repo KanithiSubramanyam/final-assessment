@@ -1,22 +1,28 @@
+<!-- view-appointments.component.html -->
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2>Appointments</h2>
-      <button class="btn btn-primary" [routerLink]="['/schedule-appointment']">
-        Schedule Appointment
-      </button>
-    </div>
-  
-    <div class="row">
-      <div class="col-md-4" *ngFor="let appointment of appointments">
-        <div class="card mb-4 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">{{ appointment.customerName }}</h5>
-            <p class="card-text">Date: {{ appointment.date | date }}</p>
-            <p class="card-text">Time: {{ appointment.time }}</p>
-            <p class="card-text">Purpose: {{ appointment.purpose }}</p>
-          </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-primary">Appointments</h2>
+    <button class="btn btn-primary" [routerLink]="['/appointmentManagement/schedule']">
+      Schedule Appointment
+    </button>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-4" *ngFor="let appointment of appointments">
+      <div class="card shadow-lg border-light rounded" style="background-color: #f8f9fa;">
+        <div class="card-body">
+          <h5 class="card-title text-primary">{{ appointment.customerName }}</h5>
+          <p class="card-text">
+            <i class="fas fa-calendar-day"></i> Date: {{ appointment.date | date:'longDate' }}
+          </p>
+          <p class="card-text">
+            <i class="fas fa-clock"></i> Time: {{ appointment.time }}
+          </p>
+          <p class="card-text">
+            <i class="fas fa-info-circle"></i> Purpose: {{ appointment.purpose }}
+          </p>
         </div>
       </div>
     </div>
   </div>
-  
+</div>
