@@ -24,6 +24,7 @@ export class AuthService {
   public webApi = "AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM";
   public databaseUrl = "https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json";
   public token = null;
+  public accountInfo = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=";
 
   signUp(user) {
     const data = { email: user.email, password: user.password, returnSecureToken: true };
@@ -70,6 +71,7 @@ export class AuthService {
       .pipe(catchError(this.handleError), tap((res) => {
         this.handleCreateUser(res)
       }));
+
   }
 
 
@@ -94,6 +96,17 @@ export class AuthService {
       const timerValue = loggedUser._expiresIn.getTime() - new Date().getTime();
       this.autoLogout(timerValue);
     }
+
+    console.log(this.http.post(this.accountInfo + this.webApi, loggedUser._token).subscribe(
+      (res: any) => {
+        console.log(res);
+      },
+      (error) => {
+        console.log(error);
+      }
+    )
+  )
+
   }
 
   logOut() {
