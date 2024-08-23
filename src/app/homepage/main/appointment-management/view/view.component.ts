@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { AppointmentService,Appointment } from '../../../../Services/appointment.service';
+import { AppointmentService} from '../../../../Services/appointment.service';
 
 @Component({
   selector: 'app-view',
@@ -11,14 +11,24 @@ import { AppointmentService,Appointment } from '../../../../Services/appointment
   styleUrl: './view.component.css'
 })
 export class ViewComponent implements OnInit{
+  appointments: any[] = [];
  
-  appointments: Appointment[] = [];
 
   constructor(private appointmentService: AppointmentService) {}
 
-  ngOnInit(): void {
-    this.appointmentService.appointments$.subscribe(data => {
-      this.appointments = data;
+   ngOnInit(): void {
+    
+    this.fetchAppointments();
+  
+   }
+
+
+   fetchAppointments(): void {
+    this.appointmentService.getAppointments().subscribe(data => {
+      this.appointments = Object.keys(data).map(key => ({
+        id: key,
+        ...data[key]
+      }));
     });
   }
 
