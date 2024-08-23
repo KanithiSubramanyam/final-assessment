@@ -27,4 +27,32 @@ export class UserService {
     );
   }
 
+  getCurrentUser() {
+    // Get the user from local storage (or however you're storing the logged-in user)
+    const loggedInUser = JSON.parse(localStorage.getItem('localUser') || '{}');
+  
+    if (!loggedInUser || !loggedInUser.email) {
+      return throwError(() => new Error('No user is logged in.'));
+    }
+  
+    // Ensure email is URL-encoded if necessary
+    const userUrl = `${this.dataBaseUrl}`;
+  
+    return this.http.get<{ [key: string]: User }>(userUrl).pipe(
+      map(response => {
+        const usersArray = Object.values(response); 
+        const matchedUser = usersArray.find(userData => userData.email === loggedInUser.email);
+        if (matchedUser) {
+          return { ...matchedUser, id: matchedUser.id };
+        } else {
+          throw new Error('User not found');
+        }
+      }),
+      catchError(error => throwError(() => error))
+    );
+  }
+  
+  
+  
+
 }

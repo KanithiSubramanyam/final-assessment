@@ -12,8 +12,10 @@
         width="150"
         height="150"
       />
-      <h3>{{ userForm.get("username")?.value }}</h3>
-      <p>created on:12/12/2024</p>
+      <h3>{{ userForm.get("username")?.value }}
+        
+      </h3>
+      <p>created on:{{ userData.createdAt }}</p>
       <button
         *ngIf="!showChangePasswordForm"
         class="btn btn-primary mt-2"
@@ -90,6 +92,7 @@
                 id="firstName"
                 class="form-control"
                 formControlName="firstName"
+                [value]="userData.firstName"
               />
             </div>
             <div class="col-md-6">
@@ -99,6 +102,7 @@
                 id="lastName"
                 class="form-control"
                 formControlName="lastName"
+                [value]="userData.lastName"
               />
             </div>
           </div>
@@ -110,12 +114,15 @@
               id="email"
               class="form-control"
               formControlName="email"
+              [value]="userData.email"
             />
           </div>
 
           <div class="mb-3">
             <label for="role" class="form-label">Role</label>
-            <select id="role" class="form-select" formControlName="role">
+            <select id="role" class="form-select" formControlName="role" 
+            [value]="userData.role"
+            >
               <option
                 value="admin"
                 [selected]="userForm.get('role')?.value === 'admin'"
@@ -139,11 +146,14 @@
                 id="phoneNumber"
                 class="form-control"
                 formControlName="phoneNumber"
+                [value]="userData.phoneNumber"
               />
             </div>
             <div class="col-md-6">
               <label for="gender" class="form-label">Gender</label>
-              <select id="gender" class="form-select" formControlName="gender">
+              <select id="gender" class="form-select" formControlName="gender"
+              [value]="userData.gender"
+              >
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </select>
@@ -157,6 +167,7 @@
               class="form-control"
               formControlName="address"
               rows="6"
+              [value]="userData.address"
             ></textarea>
           </div>
 
