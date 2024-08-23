@@ -8,7 +8,8 @@ import { AuthInterceptorService } from './Services/auth-interceptor.service';
 
 export const appConfig: ApplicationConfig = {
   //to use httpClient need to import provideHttpClient
-  providers: [provideRouter(routes), provideClientHydration(), provideHttpClient(), provideHttpClient(withFetch()), provideHttpClient(withInterceptorsFromDi()), 
+  providers: [provideRouter(routes), provideClientHydration(), provideHttpClient(),
+    provideHttpClient(withInterceptorsFromDi(), withFetch()), 
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}
   ]
 };

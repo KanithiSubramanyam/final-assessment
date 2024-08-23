@@ -7,7 +7,7 @@ export class AuthInterceptorService implements HttpInterceptor{
     authService: AuthService = inject(AuthService);
 
     intercept(req: HttpRequest<any>, next: HttpHandler){
-        console.log('Intercepted!', req);
+        // console.log('Intercepted!', req);
         return this.authService.user.pipe(take(1), exhaustMap(user => {
             if(!user){
                 return next.handle(req);

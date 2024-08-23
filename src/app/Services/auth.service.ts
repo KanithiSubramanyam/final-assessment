@@ -19,21 +19,19 @@ export class AuthService {
 
   private tokenExpirationTimer: any;
 
-  public signupUrl : string = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=';
-  public signinUrl : string = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
+  public signupUrl: string = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=';
+  public signinUrl: string = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
   public webApi = "AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM";
-
+  public databaseUrl = "https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json";
   public token = null;
 
-
-
-  signUp(user){
+  signUp(user) {
     const data = { email: user.email, password: user.password, returnSecureToken: true };
     return this.http.post<AuthResponse>(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM',data
-    ).pipe(catchError(this.handleError),tap((res)=>{
+      this.signupUrl + this.webApi, data
+    ).pipe(catchError(this.handleError), tap((res) => {
 
-      let userData : User= {
+      let userData: User = {
         id: '',
         firstName: user.firstName,
         lastName: user.lastName,
@@ -50,10 +48,10 @@ export class AuthService {
         _token: res.idToken,
         passwordLastChangedAt: new Date(),
         _expiresIn: new Date(),
-        token:res.idToken
+        token: res.idToken
       };
       this.handleCreateUser(res);
-      this.http.post(`https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json?auth=${res.idToken}`, userData)
+      this.http.post(this.databaseUrl, userData)
         .subscribe({
           next: () => {
             console.log('User successfully added to the database')
@@ -63,17 +61,15 @@ export class AuthService {
           }
         });
     }),
-)}
-
-
+    )
+  }
 
   logIn(email: string, password: string) {
     const data = { email: email, password: password, returnSecureToken: true };
-
-    return this.http.post<AuthResponse>(this.signinUrl+this.webApi, data)
-    .pipe(catchError(this.handleError), tap((res) => {
-      this.handleCreateUser(res)
-    }));
+    return this.http.post<AuthResponse>(this.signinUrl + this.webApi, data)
+      .pipe(catchError(this.handleError), tap((res) => {
+        this.handleCreateUser(res)
+      }));
   }
 
 
@@ -89,7 +85,7 @@ export class AuthService {
       user.photoURL, user.emailVerified,
       user.role, user.createdAt, user.lastLoginAt,
       user._token, user.passwordLastChangedAt, user._expiresIn);
-      // console.log('log in user', loggedUser);
+    // console.log('log in user', loggedUser);
 
     if (loggedUser._token) {
       loggedUser._expiresIn = new Date(loggedUser._expiresIn);
