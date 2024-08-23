@@ -79,8 +79,11 @@ export class LoginComponent implements OnInit {
           lastName: this.signupForm.value.lastName,
           email: this.signupForm.value.email,
           password: this.signupForm.value.password,
+          address: '',
+          gender: '',
+          phone: '',
+          photoURL: '',
         };
-
 
         this.authObs = this.authService.signUp(user);
         // this.isLoginMode = true;
@@ -93,9 +96,13 @@ export class LoginComponent implements OnInit {
 
     this.authObs.subscribe({
       next: (res) => {
-        // console.log(res.idToken);
-        // console.log(res)
-        this.router.navigate(['/dashboard']);
+        if(this.isLoginMode){
+          this.router.navigate(['/dashboard']);
+        }
+        else{
+          this.isLoginMode = true;
+          this.router.navigate(['/login']);
+        }
       },
       error: (errMsg) => {
 

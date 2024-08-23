@@ -20,11 +20,11 @@ export class UserService {
 
   //all users data in the database
   getAllUsers() {
-    this.authService.user.pipe(
+    return this.authService.user.pipe(
       exhaustMap(user => this.http.get(this.dataBaseUrl)),
       map(response => Object.entries(response).map(([key, user]) => ({ ...user, id: key }))),
       catchError(error => throwError(() => error))
-    ).subscribe(users => console.log(users));
+    );
   }
 
 }
