@@ -1,27 +1,3 @@
-// import { HttpClient } from "@angular/common/http";
-// import { inject, Injectable } from "@angular/core";
-// import { User } from "../Model/User";
-// import { AuthResponse } from "../Model/AuthResponse";
-// @Injectable({
-//      providedIn: 'root'
-//    })
-
-//    export class AuthService {
-//     http:HttpClient=inject(HttpClient)
-
-    // signUp(user:User){
-    //   const data = { ...user, returnSecureToken: true }
-    //   return this.http.post<AuthResponse>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM',data)
-
-    // }
-//    }
-
-
-
-
-
-
-
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { BehaviorSubject, catchError, tap, throwError } from "rxjs";
@@ -70,22 +46,20 @@ export class AuthService {
       'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM',data
     ).pipe(catchError(this.handleError),tap((res)=>{
       this.handleCreateUser(res)
-
-
     }))
   }
 
   logIn(email: string, password: string) {
-    const data = { email: email, password: password, returnSecureToken: true }
-    return this.http.post<AuthResponse>(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM',data
-    ).pipe(catchError(this.handleError))
-    // const data = { email: email, password: password, returnSecureToken: true };
+    // const data = { email: email, password: password, returnSecureToken: true }
+    // return this.http.post<AuthResponse>(
+    //   'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM',data
+    // ).pipe(catchError(this.handleError))
+    const data = { email: email, password: password, returnSecureToken: true };
 
-    // return this.http.post<AuthResponse>(this.signinUrl+this.webApi, data)
-    // .pipe(catchError(this.handleError), tap((res) => {
-    //   this.handleCreateUser(res)
-    // }));
+    return this.http.post<AuthResponse>(this.signinUrl+this.webApi, data)
+    .pipe(catchError(this.handleError), tap((res) => {
+      this.handleCreateUser(res)
+    }));
   }
 
   autoLogin() {
@@ -148,7 +122,6 @@ export class AuthService {
       res.role, res.createdAt, res.lastLoginAt,
       res.idToken, res.passwordLastChangedAt, expiresIn
     );
-
     this.user.next(user);
     this.autoLogout(res.expiresIn * 1000);
     localStorage.setItem('user', JSON.stringify(user));

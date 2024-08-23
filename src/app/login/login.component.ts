@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent  {
+export class LoginComponent implements OnInit {
 
   isLoginMode: boolean = true;
 
@@ -39,9 +39,9 @@ export class LoginComponent  {
     this.createForms();
   }
 
-  // ngOnInit() {
-  //   this.authService.notifyPasswordExpiration();
-  // }
+  ngOnInit() {
+    this.authService.notifyPasswordExpiration();
+  }
 
   createForms() {
     this.loginForm = this.fb.group({
