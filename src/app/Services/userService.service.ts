@@ -41,7 +41,10 @@ export class UserService {
     return this.http.get<{ [key: string]: User }>(userUrl).pipe(
       map(response => {
         const usersArray = Object.values(response); 
+        console.log('usersArray', usersArray);
+        console.log('email', loggedInUser.email);
         const matchedUser = usersArray.find(userData => userData.email === loggedInUser.email);
+        console.log('matchedUser', matchedUser);
         if (matchedUser) {
           return { ...matchedUser, id: matchedUser.id };
         } else {

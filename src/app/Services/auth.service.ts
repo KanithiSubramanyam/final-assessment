@@ -25,6 +25,8 @@ export class AuthService {
   public databaseUrl = "https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json";
   public token = null;
   public accountInfo = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=";
+  private updateProfileUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.webApi}`;
+
 
   signUp(user) {
     const data = { email: user.email, password: user.password, returnSecureToken: true };

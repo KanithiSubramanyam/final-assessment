@@ -15,7 +15,7 @@
       <h3>{{ userForm.get("username")?.value }}
         
       </h3>
-      <p>created on:{{ userData.createdAt }}</p>
+      <p>created on:{{ userData?.createdAt }}</p>
       <button
         *ngIf="!showChangePasswordForm"
         class="btn btn-primary mt-2"
@@ -92,7 +92,7 @@
                 id="firstName"
                 class="form-control"
                 formControlName="firstName"
-                [value]="userData.firstName"
+                [value]="userData?.firstName"
               />
             </div>
             <div class="col-md-6">
@@ -102,7 +102,7 @@
                 id="lastName"
                 class="form-control"
                 formControlName="lastName"
-                [value]="userData.lastName"
+                [value]="userData?.lastName"
               />
             </div>
           </div>
@@ -114,14 +114,14 @@
               id="email"
               class="form-control"
               formControlName="email"
-              [value]="userData.email"
+              [value]="userData?.email"
             />
           </div>
 
           <div class="mb-3">
             <label for="role" class="form-label">Role</label>
             <select id="role" class="form-select" formControlName="role" 
-            [value]="userData.role"
+            [value]="userData?.role"
             >
               <option
                 value="admin"
@@ -146,13 +146,14 @@
                 id="phoneNumber"
                 class="form-control"
                 formControlName="phoneNumber"
-                [value]="userData.phoneNumber"
+                [value]="userData?.phoneNumber"
+                placeholder="Enter your phone number"
               />
             </div>
             <div class="col-md-6">
               <label for="gender" class="form-label">Gender</label>
               <select id="gender" class="form-select" formControlName="gender"
-              [value]="userData.gender"
+              [value]="userData?.gender"
               >
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -167,7 +168,7 @@
               class="form-control"
               formControlName="address"
               rows="6"
-              [value]="userData.address"
+              [value]="userData?.address"
             ></textarea>
           </div>
 
