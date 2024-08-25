@@ -28,6 +28,7 @@ export class AuthService {
   public accountInfo = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=";
   private updateProfileUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.webApi}`;
   private updatePasswordUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.webApi}`;
+  private deleteAccountUrl = `https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${this.webApi}`;  
   public userDataUrl = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=`;
 
 
@@ -208,7 +209,43 @@ export class AuthService {
       catchError((error) => throwError(() => new Error('Error changing password')))
     );
   }
+
+  // deleteAccount(idToken: string): Observable<any> {
+  //   return this.http.post(this.deleteAccountUrl, {idToken}).pipe(
+  //     map((response) => {
+  //       console.log(response);
+  //       this.getUserProfile(idToken).subscribe(userData => {
+  //         console.log(userData);
+  //         this.http.delete(`${this.databaseUrl}/users/${idToken}.json`)
+  //       });
+  //       return response;
+  //     }),
+  //     catchError((error) => throwError(() => new Error('Error changing password')))
+  //   );
+  // }
+
+
+  getToken(){
+    const user = JSON.parse(localStorage.getItem('localUser'));
+    return user ? user._token : null;
+  }
+
+
+  //not working
+  deleteAccount(uid: string, idToken: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${idToken}`,
+      'Content-Type': 'application/json'
+    });
+
+    const body = {
+      localId: uid
+    };
+
+    return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${this.webApi}`, body, { headers });
+  }
 }
+
 
 //userdata
   // getUserData(idToken: string): Observable<any> {

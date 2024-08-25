@@ -12,11 +12,10 @@
         width="150"
         height="150"
       />
-      <h3>{{ userForm.get("username")?.value }}
-        
-      </h3>
+      <h3>{{ userForm.get("firstName")?.value | uppercase }} {{ userForm.get("lastName")?.value | uppercase }}</h3>
       <p>created on:{{ userData?.createdAt }}</p>
-      <change-password></change-password>
+      <change-password *ngIf="isReadOnly"></change-password>
+      <button class="btn btn-primary mt-3" *ngIf="backToUser" [routerLink] = "['/userManagement/users']">Back to Users</button>
     </div>
 
     <!-- Profile Details Column -->
@@ -111,7 +110,7 @@
             ></textarea>
           </div>
 
-          <button type="submit" class="btn btn-success">Update Profile</button>
+          <button type="submit" class="btn btn-success" *ngIf="isReadOnly">Update Profile</button>
         </form>
       </div>
     </div>

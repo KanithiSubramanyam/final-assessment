@@ -45,6 +45,8 @@ export const routes: Routes = [
       { path: 'taskManagement', component: TaskManagementComponent },
       { path: 'dairyManagement', component: DairyManagementComponent },
       { path: 'userManagement/users/adduser', component: AddUserComponent },
+      { path: 'userManagement/users/viewProfile/:id', component: ProfileComponent },
+      { path: 'userManagement/users/editProfile/:id', component: ProfileComponent },
       { path: 'taskManagement/addtask', component: AddTaskComponent },
       {
         path: 'appointmentManagement',

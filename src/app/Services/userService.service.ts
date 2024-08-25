@@ -77,6 +77,25 @@ export class UserService {
     );
   }
   
-  
+  //get user by id
+  getUserById(position: number): Observable<userDetails> {
+    return new Observable<userDetails>(observer => {
+      this.getAllUsers().pipe(
+        map(users => Object.values(users))
+      ).subscribe(
+        users => {
+          console.log('userdata', users);
+          if (position >= 0 && position < users.length) {
+            const user = users[position];
+            observer.next(user);
+            observer.complete();
+          } else {
+            observer.error('Position out of bounds');
+          }
+        },
+        error => observer.error(error)
+      );
+    });
+  }  
 
 }

@@ -10,7 +10,7 @@ import { userDetails } from '../../../../Model/userDetails';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [AddUserComponent, RouterLink, CommonModule],
+  imports: [AddUserComponent, RouterLink, CommonModule, RouterLink],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
@@ -24,11 +24,23 @@ export class UsersComponent implements OnInit{
   ngOnInit() {
     this.userService.getAllUsers().subscribe({
       next: (res) => {
-        this.users = Object.values(res);  // Convert the object to an array
+        this.users = Object.values(res); 
       },
       error: (err) => {
         console.log(err);
       }
     });
   }
+  deleteAccount(user : userDetails){
+    const token = this.authService.getToken();
+    this.authService.deleteAccount(user.id, token).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
 }
