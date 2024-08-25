@@ -75,22 +75,13 @@ export class LoginComponent implements OnInit {
     } else {
       if (this.signupForm.valid) {
         const user = {
-          firstName: this.signupForm.value.firstName,
-          lastName: this.signupForm.value.lastName,
           email: this.signupForm.value.email,
           password: this.signupForm.value.password,
-          address: '',
-          gender: '',
-          phone: '',
-          photoURL: '',
+          firstName: this.signupForm.value.firstName,
+          lastName: this.signupForm.value.lastName,
         };
 
         this.authObs = this.authService.signUp(user);
-        // this.isLoginMode = true;
-        // this.authService.signUp(user).subscribe({
-        //   next:(res)=>{console.log(res)},
-        //   error:(err)=>{console.log(err)}
-        // })
       }
     }
 
@@ -105,7 +96,6 @@ export class LoginComponent implements OnInit {
         }
       },
       error: (errMsg) => {
-
         this.errorMessage = errMsg;
       }
     })

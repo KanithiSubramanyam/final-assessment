@@ -5,6 +5,7 @@ import { catchError, exhaustMap, map, take } from 'rxjs/operators';
 import { AuthResponse } from '../Model/AuthResponse';
 import { User } from '../Model/User';
 import { AuthService } from './auth.service';
+import { userDetails } from '../Model/userDetails';
 
 @Injectable({
   providedIn: 'root',
@@ -20,22 +21,27 @@ export class UserService {
 
   //all users data in the database
   getAllUsers() {
-    return this.authService.user.pipe(
-      exhaustMap(user => this.http.get(this.dataBaseUrl)),
-      map(response => Object.entries(response).map(([key, user]) => ({ ...user, id: key }))),
-      catchError(error => throwError(() => error))
+    return this.http.get<{ [key: string]: userDetails }>(this.dataBaseUrl).pipe(
+      map(response => {
+        const usersArray = Object.values(response);
+        return usersArray;
+      })
     );
+  }
+
+  private getIdToken(): string {
+    // Implement logic to get the current user's ID token from local storage or another source
+    return localStorage.getItem('idToken') || '';
   }
 
   getCurrentUser() {
     // Get the user from local storage (or however you're storing the logged-in user)
+    
     const loggedInUser = JSON.parse(localStorage.getItem('localUser') || '{}');
   
     if (!loggedInUser || !loggedInUser.email) {
       return throwError(() => new Error('No user is logged in.'));
     }
-  
-    // Ensure email is URL-encoded if necessary
     const userUrl = `${this.dataBaseUrl}`;
   
     return this.http.get<{ [key: string]: User }>(userUrl).pipe(
@@ -54,8 +60,4 @@ export class UserService {
       catchError(error => throwError(() => error))
     );
   }
-  
-  
-  
-
 }
