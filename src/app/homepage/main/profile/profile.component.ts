@@ -3,19 +3,19 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../Services/userService.service';
 import { User } from '../../../Model/User';
+import { ChangePasswordComponent } from "./change-password/change-password.component";
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ChangePasswordComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent {
   profile = "assets/images/profile.jpg";
-  showChangePasswordForm = false; 
+
   userForm!: FormGroup;
-  changePasswordForm:FormGroup;
 
   userService : UserService = inject(UserService);
 
@@ -28,17 +28,11 @@ export class ProfileComponent {
       lastName: [{ value: 'Doe', disabled: true }, Validators.required],
       email: [{ value: 'john.doe@example.com', disabled: true }, [Validators.required, Validators.email]],
       role: [{ value: 'user', disabled: true }, Validators.required],
-      phoneNumber: ['123-456-7890', Validators.required],  
+      phone: ['', Validators.required],  
       gender: [{ value: 'Male'}, Validators.required],
       address: ['123 Main St, Anytown, USA', Validators.required]  
     });
 
-    this.changePasswordForm = this.fb.group({
-      oldPassword: ['', Validators.required],
-      newPassword: ['', Validators.required],
-      confirmPassword: ['', Validators.required]
-    });
-    
      this.userService.getCurrentUser().subscribe(
       {
         next: (data: User) => {
@@ -49,7 +43,7 @@ export class ProfileComponent {
             lastName: this.userData.lastName,
             email: this.userData.email,
             role: this.userData.role,
-            phoneNumber: this.userData.phone,
+            phone: this.userData.phone,
             gender: this.userData.gender,
             address: this.userData.address
           });
@@ -61,22 +55,23 @@ export class ProfileComponent {
     );
     
   }
-  onChangePassword() {
-    this.showChangePasswordForm = !this.showChangePasswordForm;
-  }
-  onChangePasswordSubmit() {
-    if (this.changePasswordForm.valid) {
-      console.log('Password change submitted', this.changePasswordForm.value);
-    }
-  }
-  cancelChangePassword() {
-    this.showChangePasswordForm = false;
-    this.changePasswordForm.reset();
-  }
+  
   onSubmit() {
     if (this.userForm.valid) {
-      console.log('Form Submitted', this.userForm.getRawValue());  // Get full form value including disabled fields
+      const updatedData = {
+        phone: this.userForm.get('phone')?.value,
+        gender: this.userForm.get('gender')?.value,
+        address: this.userForm.get('address')?.value
+      };
+  
+      this.userService.updateUserDetails(updatedData).subscribe(
+        response => {
+          // console.log('User details updated successfully:', response);
+        },
+        error => {
+          console.error('Error updating user details:', error);
+        }
+      );
     }
   }
-
 }

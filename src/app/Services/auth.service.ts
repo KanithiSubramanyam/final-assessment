@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from "rxjs";
 import { User } from "../Model/User";
@@ -27,9 +27,13 @@ export class AuthService {
   public token = null;
   public accountInfo = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=";
   private updateProfileUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.webApi}`;
-
+  private updatePasswordUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.webApi}`;
   public userDataUrl = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=`;
 
+
+  private apiUrl = 'https://identitytoolkit.googleapis.com/admin/v1/projects/PROJECT_ID/config';
+  private totpApiUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:generateTotpSecret';
+  private verifyToptApiUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:verifyTotpCode';
 
   signUp(user: { email: string, password: string, firstName: string, lastName: string }) {
     const signupData = {
@@ -146,9 +150,10 @@ export class AuthService {
 
     this.user.next(localUser);
     this.autoLogout(+res.expiresIn * 1000);
-    if(login){
-      localStorage.setItem('localUser', JSON.stringify(localUser));
-    }
+    // if(login){
+    //   localStorage.setItem('localUser', JSON.stringify(localUser));
+    // }
+    localStorage.setItem('localUser', JSON.stringify(localUser));
   }
   
   private handleError(err: any) {
@@ -182,9 +187,28 @@ export class AuthService {
     return throwError(() => errorMessage);
   }
   
+  changePassword(idToken: string, newPassword: string, userId : string): Observable<any> {
+    const body = {
+      idToken: idToken,
+      password: newPassword,
+      returnSecureToken: true,
+    };
+
+    return this.http.post(this.updatePasswordUrl, body).pipe(
+      map((response) => {
+
+        this.getUserProfile(userId).subscribe(userData => {
+          // Update last password change date
+          userData.passwordLastChangedAt = new Date();
+          this.http.put(`${this.databaseUrl}/users/${userId}.json`, userData)
+            .subscribe();
+        });
+        return response;
+      }),
+      catchError((error) => throwError(() => new Error('Error changing password')))
+    );
+  }
 }
-
-
 
 //userdata
   // getUserData(idToken: string): Observable<any> {
@@ -228,3 +252,67 @@ export class AuthService {
   // }
   
   
+  
+  // enableTotpMfa() {
+  //   const headers = new HttpHeaders({
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM'
+  //   });
+
+  //   const body = {
+  //     'mfa': {
+  //       'providerConfigs': [{
+  //         'state': 'ENABLED',
+  //         'totpProviderConfig': {
+  //           'adjacentIntervals': 5
+  //         }
+  //       }]
+  //     }
+  //   };
+
+  //   return this.http.patch(this.apiUrl, body, { headers: headers });
+  // }
+  // generateTotpSecret(userId: string) {
+  //   const headers = new HttpHeaders({
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM'
+  //   });
+
+  //   const body = {
+  //     'uid': userId
+  //   };
+
+  //   return this.http.post(this.totpApiUrl, body, { headers: headers });
+  // }
+
+  // verifyTotpCode(userId: string, totpCode: string) {
+  //   const headers = new HttpHeaders({
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM'
+  //   });
+
+  //   const body = {
+  //     'uid': userId,
+  //     'totpCode': totpCode
+  //   };
+
+  //   return this.http.post(this.verifyToptApiUrl, body, { headers: headers });
+  // }
+
+
+  // signInWithTotp(totpCode: string, totpSecret: string): Observable<any> {
+  //   // Verify the TOTP code
+  //   return this.verifyTotpCode(totpCode, totpSecret).pipe(
+  //     tap((response) => {
+  //       if (response.success) {
+  //         // Sign in the user
+  //         return this.http.post(`https://identitytoolkit.googleapis.com/admin/v2/accounts:signInWithIdp?key=${this.webApi}`, {
+  //           requestUri: 'http://localhost',
+  //           returnSecureToken: true
+  //         });
+  //       } else {
+  //         throw new Error('Invalid TOTP code');
+  //       }
+  //     })
+  //   );
+  // }

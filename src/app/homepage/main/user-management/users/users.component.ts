@@ -10,27 +10,25 @@ import { userDetails } from '../../../../Model/userDetails';
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [AddUserComponent,RouterLink,CommonModule],
+  imports: [AddUserComponent, RouterLink, CommonModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
 export class UsersComponent implements OnInit{
 
-  userService : UserService = inject(UserService);
-  authService:AuthService=inject(AuthService)
+  userService: UserService = inject(UserService);
+  authService: AuthService = inject(AuthService);
   
   users: userDetails[] = [];
   
-
   ngOnInit() {
-    
     this.userService.getAllUsers().subscribe({
       next: (res) => {
-        this.users = res;
+        this.users = Object.values(res);  // Convert the object to an array
       },
       error: (err) => {
         console.log(err);
       }
-    })
+    });
   }
 }

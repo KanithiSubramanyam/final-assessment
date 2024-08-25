@@ -20,23 +20,17 @@ export class UserService {
   dataBaseUrl = `https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/users.json`;
 
   //all users data in the database
-  getAllUsers() {
+  getAllUsers(): Observable<{ [key: string]: userDetails }> {
     return this.http.get<{ [key: string]: userDetails }>(this.dataBaseUrl).pipe(
       map(response => {
-        const usersArray = Object.values(response);
-        return usersArray;
+        return response;
       })
     );
   }
+  
 
-  private getIdToken(): string {
-    // Implement logic to get the current user's ID token from local storage or another source
-    return localStorage.getItem('idToken') || '';
-  }
-
-  getCurrentUser() {
-    // Get the user from local storage (or however you're storing the logged-in user)
-    
+  //get current user data
+  getCurrentUser() {    
     const loggedInUser = JSON.parse(localStorage.getItem('localUser') || '{}');
   
     if (!loggedInUser || !loggedInUser.email) {
@@ -47,10 +41,7 @@ export class UserService {
     return this.http.get<{ [key: string]: User }>(userUrl).pipe(
       map(response => {
         const usersArray = Object.values(response); 
-        console.log('usersArray', usersArray);
-        console.log('email', loggedInUser.email);
         const matchedUser = usersArray.find(userData => userData.email === loggedInUser.email);
-        console.log('matchedUser', matchedUser);
         if (matchedUser) {
           return { ...matchedUser, id: matchedUser.id };
         } else {
@@ -60,4 +51,32 @@ export class UserService {
       catchError(error => throwError(() => error))
     );
   }
+
+
+  updateUserDetails(updatedData: Partial<userDetails>): Observable<any> {
+    const loggedInUser = JSON.parse(localStorage.getItem('localUser') || '{}');
+    
+    if (!loggedInUser || !loggedInUser.email) {
+      return throwError(() => new Error('No user is logged in.'));
+    }
+  
+    // Fetch all users and find the key for the current user
+    return this.getAllUsers().pipe(
+      take(1),
+      exhaustMap(users => {
+        const userKey = Object.keys(users).find(key => users[key].email === loggedInUser.email);
+        
+        if (!userKey) {
+          throw new Error('User not found');
+        }
+  
+        const userUrl = `${this.dataBaseUrl.replace('.json', '')}/${userKey}.json`;
+        return this.http.patch(userUrl, updatedData);
+      }),
+      catchError(error => throwError(() => error))
+    );
+  }
+  
+  
+
 }
