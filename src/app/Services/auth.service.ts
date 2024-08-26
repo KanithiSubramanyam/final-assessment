@@ -20,21 +20,17 @@ export class AuthService {
 
   private tokenExpirationTimer: any;
 
+  public token = null;
+
   public signupUrl: string = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=';
   public signinUrl: string = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
   public webApi = "AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM";
   public databaseUrl = "https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app";
-  public token = null;
   public accountInfo = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=";
   private updateProfileUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.webApi}`;
   private updatePasswordUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.webApi}`;
   private deleteAccountUrl = `https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${this.webApi}`;  
   public userDataUrl = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=`;
-
-
-  private apiUrl = 'https://identitytoolkit.googleapis.com/admin/v1/projects/PROJECT_ID/config';
-  private totpApiUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:generateTotpSecret';
-  private verifyToptApiUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:verifyTotpCode';
 
   signUp(user: { email: string, password: string, firstName: string, lastName: string }) {
     const signupData = {
@@ -62,7 +58,9 @@ export class AuthService {
             'user', // role
             new Date(), // passwordLastChangedAt
             new Date(), // createdAt
-            new Date() // lastLoginAt
+            new Date(),
+            false,
+            ''
           );
           this.handleCreateUser(res, false);
 
@@ -244,112 +242,24 @@ export class AuthService {
 
     return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${this.webApi}`, body, { headers });
   }
+
+
+
+
+
+  generateMsAuthenticatoQrCode(secert:string, email : string, issuer : string){
+    return `otpauth://totp/${issuer}:${email}?secret=${secert}&issuer=${issuer}`;
+  }
+
+
+  //update mfabtn and mfasecertkey
+  isMfaEnabled(mfaBtn : boolean, uid:string, secertKey : string){
+    this.getUserProfile(uid).subscribe(userData => {
+      userData.mfaBtn = true;
+      userData.mfaSecertKey = secertKey
+      this.http.put(`${this.databaseUrl}/users/${uid}.json`, userData)
+        .subscribe();
+    });
+    return true;
+  }
 }
-
-
-//userdata
-  // getUserData(idToken: string): Observable<any> {
-  //   const url = `${this.accountInfo}${this.webApi}`;
-  //   const body = {
-  //     idToken: idToken
-  //   };
-  
-  //   return this.http.post<any>(url, body).pipe(
-  //     catchError(error => {
-  //       console.error('Error retrieving user data:', error);
-  //       return throwError(() => new Error('Error retrieving user data'));
-  //     }),
-  //     map(response => {
-  //       if (response && response.users && response.users.length > 0) {
-  //         // Assuming the first user in the array is the one you're looking for
-  //         return response.users[0];
-  //       } else {
-  //         throw new Error('No user data found');
-  //       }
-  //     })
-  //   );
-  // }
-
-  
-//email verified 
-  // sendEmailVerification(idToken: string): Observable<any> {
-  //   const url = `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${this.webApi}`;
-  //   const body = {
-  //     requestType: 'VERIFY_EMAIL',
-  //     idToken: idToken
-  //   };
-  
-  //   return this.http.post<any>(url, body)
-  //     .pipe(
-  //       catchError(error => {
-  //         console.error('Error sending email verification:', error);
-  //         return throwError(() => new Error('Error sending email verification'));
-  //       })
-  //     );
-  // }
-  
-  
-  
-  // enableTotpMfa() {
-  //   const headers = new HttpHeaders({
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM'
-  //   });
-
-  //   const body = {
-  //     'mfa': {
-  //       'providerConfigs': [{
-  //         'state': 'ENABLED',
-  //         'totpProviderConfig': {
-  //           'adjacentIntervals': 5
-  //         }
-  //       }]
-  //     }
-  //   };
-
-  //   return this.http.patch(this.apiUrl, body, { headers: headers });
-  // }
-  // generateTotpSecret(userId: string) {
-  //   const headers = new HttpHeaders({
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM'
-  //   });
-
-  //   const body = {
-  //     'uid': userId
-  //   };
-
-  //   return this.http.post(this.totpApiUrl, body, { headers: headers });
-  // }
-
-  // verifyTotpCode(userId: string, totpCode: string) {
-  //   const headers = new HttpHeaders({
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM'
-  //   });
-
-  //   const body = {
-  //     'uid': userId,
-  //     'totpCode': totpCode
-  //   };
-
-  //   return this.http.post(this.verifyToptApiUrl, body, { headers: headers });
-  // }
-
-
-  // signInWithTotp(totpCode: string, totpSecret: string): Observable<any> {
-  //   // Verify the TOTP code
-  //   return this.verifyTotpCode(totpCode, totpSecret).pipe(
-  //     tap((response) => {
-  //       if (response.success) {
-  //         // Sign in the user
-  //         return this.http.post(`https://identitytoolkit.googleapis.com/admin/v2/accounts:signInWithIdp?key=${this.webApi}`, {
-  //           requestUri: 'http://localhost',
-  //           returnSecureToken: true
-  //         });
-  //       } else {
-  //         throw new Error('Invalid TOTP code');
-  //       }
-  //     })
-  //   );
-  // }

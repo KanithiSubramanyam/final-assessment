@@ -1,0 +1,15 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow-lg" style="max-width: 400px; width: 100%;">
+        <h3 class="text-center mb-4">Verify 2FA</h3>
+        <form [formGroup]="otpForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+                <label for="otpInput" class="form-label">Enter OTP</label>
+                <input type="text" class="form-control" id="otpInput" placeholder="OTP" required formControlName="otp">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Verify OTP</button>
+        </form>
+        <!-- <div class="text-center mt-3">
+            <a href="#" id="resendOtpLink" class="text-secondary">Resend OTP</a>
+        </div> -->
+    </div>
+</div>
