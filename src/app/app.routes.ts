@@ -17,7 +17,6 @@ import { AppointmentManagementComponent } from './homepage/main/appointment-mana
 import { ViewComponent } from './homepage/main/appointment-management/view/view.component';
 import { ScheduleComponent } from './homepage/main/appointment-management/schedule/schedule.component';
 import { ForgetPasswordComponent } from './login/forget-password/forget-password.component';
-import { TotpComponent } from './login/totp/totp.component';
 
 
 export const routes: Routes = [
