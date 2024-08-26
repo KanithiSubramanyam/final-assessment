@@ -11,7 +11,7 @@ import { RouterModule } from '@angular/router';
 export class UserManagementComponent {
 
   constructor() { 
-    console.log("User Management Component");
+    // console.log("User Management Component");
   }
 
 }

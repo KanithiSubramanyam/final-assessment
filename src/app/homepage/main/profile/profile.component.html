@@ -12,72 +12,10 @@
         width="150"
         height="150"
       />
-      <h3>{{ userForm.get("username")?.value }}
-        
-      </h3>
+      <h3>{{ userForm.get("firstName")?.value | uppercase }} {{ userForm.get("lastName")?.value | uppercase }}</h3>
       <p>created on:{{ userData?.createdAt }}</p>
-      <button
-        *ngIf="!showChangePasswordForm"
-        class="btn btn-primary mt-2"
-        (click)="onChangePassword()"
-      >
-        Change Password
-      </button>
-      <div class="change-password-section" *ngIf="showChangePasswordForm">
-        <form
-          [formGroup]="changePasswordForm"
-          (ngSubmit)="onChangePasswordSubmit()"
-        >
-          <div class="mb-3 pt-3">
-            <div class="col-md-4">
-              <label for="oldPassword" class="form-label">Old Password</label>
-            </div>
-            <div class="col-md-12">
-              <input
-                type="password"
-                id="oldPassword"
-                class="form-control"
-                formControlName="oldPassword"
-              />
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="col-md-4">
-              <label for="newPassword" class="form-label">New Password</label>
-            </div>
-            <div class="col-md-12">
-              <input
-                type="password"
-                id="newPassword"
-                class="form-control"
-                formControlName="newPassword"
-              />
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="col-md-4">
-              <label for="confirmPassword" class="form-label"
-                >Confirm New Password</label
-              >
-            </div>
-            <div class="col-md-12">
-              <input
-                type="password"
-                id="confirmPassword"
-                class="form-control"
-                formControlName="confirmPassword"
-              />
-            </div>
-          </div>
-          <button
-            type="submit"
-            class="btn btn-success"
-            (click)="cancelChangePassword()"
-          >
-            Update Password
-          </button>
-        </form>
-      </div>
+      <change-password *ngIf="isReadOnly"></change-password>
+      <button class="btn btn-primary mt-3" *ngIf="backToUser" [routerLink] = "['/userManagement/users']">Back to Users</button>
     </div>
 
     <!-- Profile Details Column -->
@@ -143,10 +81,10 @@
               <label for="phoneNumber" class="form-label">Phone Number</label>
               <input
                 type="text"
-                id="phoneNumber"
+                id="phone"
                 class="form-control"
-                formControlName="phoneNumber"
-                [value]="userData?.phoneNumber"
+                formControlName="phone"
+                [value]="userData?.phone"
                 placeholder="Enter your phone number"
               />
             </div>
@@ -172,7 +110,7 @@
             ></textarea>
           </div>
 
-          <button type="submit" class="btn btn-success">Update Profile</button>
+          <button type="submit" class="btn btn-success" *ngIf="isReadOnly">Update Profile</button>
         </form>
       </div>
     </div>

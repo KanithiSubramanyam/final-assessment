@@ -5,28 +5,42 @@ import { User } from '../../../../Model/User';
 import { UserService } from '../../../../Services/userService.service';
 import { AuthService } from '../../../../Services/auth.service';
 import { CommonModule } from '@angular/common';
+import { userDetails } from '../../../../Model/userDetails';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [AddUserComponent,RouterLink,CommonModule],
+  imports: [AddUserComponent, RouterLink, CommonModule, RouterLink],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
 export class UsersComponent implements OnInit{
 
-  userService : UserService = inject(UserService);
-  authService:AuthService=inject(AuthService)
+  userService: UserService = inject(UserService);
+  authService: AuthService = inject(AuthService);
   
-  users: User[] = [];
+  users: userDetails[] = [];
   
-
   ngOnInit() {
-    
-    this.userService.getAllUsers().subscribe((users: User[]) => {
-      this.users = users;
-      console.log(users);
+    this.userService.getAllUsers().subscribe({
+      next: (res) => {
+        this.users = Object.values(res); 
+      },
+      error: (err) => {
+        console.log(err);
+      }
     });
-    // this.userService.getAllUsers();
   }
+  deleteAccount(user : userDetails){
+    const token = this.authService.getToken();
+    this.authService.deleteAccount(user.id, token).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
 }

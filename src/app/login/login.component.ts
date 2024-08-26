@@ -74,23 +74,29 @@ export class LoginComponent implements OnInit {
       }
     } else {
       if (this.signupForm.valid) {
+
+          // /**
+          //  * Enables TOTP (Time-based One-Time Password) multi-factor authentication (MFA) for the user.
+          //  *
+          //  * This method subscribes to the `enableTotpMfa()` observable provided by the `authService`. If the operation is successful, it logs a success message to the console. If there is an error, it logs the error message to the console.
+          //  */
+          // this.authService.enableTotpMfa().subscribe(
+          //   (response) => {
+          //     console.log('TOTP MFA enabled successfully');
+          //   },
+          //   (error) => {
+          //     console.error('Error enabling TOTP MFA:', error);
+          //   }
+          // );
+        
         const user = {
-          firstName: this.signupForm.value.firstName,
-          lastName: this.signupForm.value.lastName,
           email: this.signupForm.value.email,
           password: this.signupForm.value.password,
-          address: '',
-          gender: '',
-          phone: '',
-          photoURL: '',
+          firstName: this.signupForm.value.firstName,
+          lastName: this.signupForm.value.lastName,
         };
 
         this.authObs = this.authService.signUp(user);
-        // this.isLoginMode = true;
-        // this.authService.signUp(user).subscribe({
-        //   next:(res)=>{console.log(res)},
-        //   error:(err)=>{console.log(err)}
-        // })
       }
     }
 
@@ -105,7 +111,6 @@ export class LoginComponent implements OnInit {
         }
       },
       error: (errMsg) => {
-
         this.errorMessage = errMsg;
       }
     })
