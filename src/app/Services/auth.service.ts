@@ -262,4 +262,8 @@ export class AuthService {
     });
     return true;
   }
+
+  updateUserProfile(userId : string, userData : userDetails){
+    return this.http.put(`${this.databaseUrl}/users/${userId}.json`, userData);
+  }
 }

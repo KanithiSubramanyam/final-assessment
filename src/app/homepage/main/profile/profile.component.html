@@ -17,7 +17,7 @@
       <change-password *ngIf="isReadOnly"></change-password>
       
       <div>
-        <button class="btn btn-outline-primary mt-3" (click)="enableMfa()">Enable MFA</button>
+        <button class="btn btn-outline-primary mt-3" (click)="!enableOrDisableBtn? enableMfa() : disableMfa()">{{ !enableOrDisableBtn? 'Enable MFA' : 'Disable MFA' }}</button>
         <div *ngIf="mfaCloseBtn">
           <qr-code class="mt-3" [value]="qrdata" size="200" errorCorrectionLevel="M"></qr-code>
           <button class="btn btn-outline-primary mt-3" (click)="closeMFA()">Is MFA Enable? Close</button>

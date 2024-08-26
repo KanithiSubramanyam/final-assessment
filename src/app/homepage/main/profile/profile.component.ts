@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../Services/userService.service';
@@ -7,10 +7,8 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { userDetails } from '../../../Model/userDetails';
 import { QrCodeModule } from 'ng-qrcode';
-
-import * as jsotp from 'jsotp';
-
 import { AuthService } from '../../../Services/auth.service';
+
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -18,26 +16,24 @@ import { AuthService } from '../../../Services/auth.service';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   profile = "assets/images/profile.jpg";
-
   userForm!: FormGroup;
-
   userService: UserService = inject(UserService);
-
   userData: any;
-
   isReadOnly: boolean = true;
-
   isMfaEnabledBtn: boolean = false;
-
   mfaCloseBtn: boolean = false;
-
   backToUser: boolean = false;
-
   qrdata: string = '';
+  enableOrDisableBtn: boolean;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private router: Router, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private authService: AuthService
+  ) {
     this.userForm = this.fb.group({
       username: [{ value: '', disabled: true }],
       firstName: [{ value: '', disabled: true }, Validators.required],
@@ -49,11 +45,13 @@ export class ProfileComponent {
       address: ['', Validators.required]
     });
 
+    // Fetch current user data
     this.userService.getCurrentUser().subscribe(
       {
-        next: (data: User) => {
+        next: (data) => {
           this.userData = data;
           this.userForm.patchValue(this.userData);
+          this.enableOrDisableBtn = this.userData.mfaBtn;
         },
         error: (error) => {
           console.error('Error fetching user data:', error);
@@ -82,7 +80,6 @@ export class ProfileComponent {
                 this.isReadOnly = false;
                 this.userForm.disable();
               }
-
             },
             error: (error) => {
               console.error('Error fetching user data:', error);
@@ -99,28 +96,35 @@ export class ProfileComponent {
     this.mfaCloseBtn = false;
   }
 
-  secertKeyyyy = '';
   enableMfa() {
-    //  = true;
     this.mfaCloseBtn = true;
-
+    this.isMfaEnabledBtn = true;
     const qrCodeSecret = this.generateBase32Secret();
     const userData = localStorage.getItem('localUser');
     const uid = userData ? JSON.parse(userData).id : '';
     const email = userData ? JSON.parse(userData).email : '';
     const issuer = 'final-assessment-1';
-    this.secertKeyyyy = qrCodeSecret;
-    // Enable MFA in the backend
-    console.log(this.secertKeyyyy);
-    this.isMfaEnabledBtn = this.authService.isMfaEnabled(this.isMfaEnabledBtn, uid, qrCodeSecret);
+
+    this.authService.isMfaEnabled(this.isMfaEnabledBtn, uid, qrCodeSecret);
 
     // Generate the QR code data URL
     this.qrdata = this.authService.generateMsAuthenticatoQrCode(qrCodeSecret, email, issuer);
+
+    // Update button state to Disable
+    this.enableOrDisableBtn = true;
   }
 
-  generateMsAuthenticatoQrCode(secret: string, email: string, issuer: string): string {
-    const otpauthUrl = `otpauth://totp/${issuer}:${email}?secret=${secret}&issuer=${issuer}`;
-    return `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(otpauthUrl)}&size=200x200`;
+  disableMfa() {
+    this.isMfaEnabledBtn = false;
+    const userData = localStorage.getItem('localUser');
+    const uid = userData ? JSON.parse(userData).id : '';
+    this.authService.getUserProfile(uid).subscribe(userData => {
+      userData.mfaBtn = false;
+      userData.mfaSecertKey = '';
+      this.authService.updateUserProfile(uid, userData).subscribe();
+    });
+    this.enableOrDisableBtn = false;
+    this.mfaCloseBtn = false;
   }
 
   // Generate a random base32 secret
