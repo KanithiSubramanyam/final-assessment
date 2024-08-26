@@ -40,6 +40,7 @@ export class ScheduleComponent {
 
     if (this.appointment) {
       this.editingAppointment = this.appointment;
+      this.isEditMode = true;
       this.scheduleForm.patchValue(this.editingAppointment);
     }
   }
