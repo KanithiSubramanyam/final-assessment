@@ -2,11 +2,11 @@
 <div class="container mt-4">
   <div class="card shadow-sm border-light rounded">
     <div class="card-body">
-      <h4 class="card-title mb-4">Create New Task</h4>
+      <h4 class="card-title mb-4">{{ isEditMode ? 'Edit Task' : 'Create New Task' }}</h4>
       <form [formGroup]="addTaskForm" (ngSubmit)="onSubmit()">
         <div class="mb-3">
           <label for="clientName" class="form-label">Client Name</label>
-          <input type="text" id="clientName" class="form-control" formControlName="clientName" [value]="taskData?.clientName">
+          <input type="text" id="clientName" class="form-control" formControlName="clientName" >
           <div *ngIf="addTaskForm.get('clientName').touched && addTaskForm.get('clientName').invalid" class="text-danger">
             Please enter the client's name.
           </div>
@@ -14,7 +14,7 @@
 
         <div class="mb-3">
           <label for="taskTitle" class="form-label">Task Title</label>
-          <input type="text" id="taskTitle" class="form-control" formControlName="taskTitle" required [value]="taskData?.taskTitle">
+          <input type="text" id="taskTitle" class="form-control" formControlName="taskTitle" required >
           <div *ngIf="addTaskForm.get('taskTitle').touched && addTaskForm.get('taskTitle').invalid" class="text-danger">
             Task title is required.
           </div>
@@ -27,7 +27,7 @@
 
         <div class="mb-3">
           <label for="dueDate" class="form-label">Due Date and Time</label>
-          <input type="datetime-local" id="dueDate" class="form-control" formControlName="dueDate" required [value]="taskData?.dueDate">
+          <input type="datetime-local" id="dueDate" class="form-control" formControlName="dueDate" required >
           <div *ngIf="addTaskForm.get('dueDate').touched && addTaskForm.get('dueDate').invalid" class="text-danger" >
             Due date and time are required.
           </div>
@@ -35,7 +35,7 @@
 
         <div class="mb-3">
           <label for="priority" class="form-label">Priority</label>
-          <select id="priority" class="form-select" formControlName="priority" required [value]="taskData?.priority">
+          <select id="priority" class="form-select" formControlName="priority" required >
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
@@ -47,7 +47,7 @@
 
         <div class="mb-3">
           <label for="status" class="form-label">Status</label>
-          <select id="status" class="form-select" formControlName="status" required [value]="taskData?.status">
+          <select id="status" class="form-select" formControlName="status" required >
             <option value="Not Started">Not Started</option>
             <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>
@@ -59,7 +59,7 @@
 
         <div class="mb-3">
           <label for="assignedTo" class="form-label">Assigned To</label>
-          <input type="text" id="assignedTo" class="form-control" formControlName="assignedTo" [value]="taskData?.assignedTo">
+          <input type="text" id="assignedTo" class="form-control" formControlName="assignedTo">
         </div>
 
         <button type="submit" class="btn btn-primary" [disabled]="!addTaskForm.valid">Save Task</button>
