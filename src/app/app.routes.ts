@@ -22,7 +22,6 @@ import { ForgetPasswordComponent } from './login/forget-password/forget-password
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path : 'login/forget-password', component: ForgetPasswordComponent },
-  { path : 'login/mfalogin', component: TotpComponent },
   {
     path: '',
     component: HomepageComponent,
