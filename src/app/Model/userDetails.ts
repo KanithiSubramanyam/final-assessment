@@ -13,6 +13,8 @@ export class userDetails {
     public role: string = 'user',
     public passwordLastChangedAt: Date = new Date(),
     public createdAt: Date = new Date(),
-    public lastLoginAt: Date = new Date()
+    public lastLoginAt: Date = new Date(),
+    public mfaBtn : boolean = false,
+    public mfaSecertKey : string = ''
   ) {}
 }

@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { Roles } from '../../../../Model/Roles';
 import { RolesService } from '../../../../Services/Roles.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './roles.component.html',
   styleUrl: './roles.component.css'
 })
