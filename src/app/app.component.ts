@@ -6,14 +6,14 @@ import { TopbarComponent } from './homepage/topbar/topbar.component';
 import { MainComponent } from './homepage/main/main.component';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './Services/auth.service';
-import { ScheduleModule } from '@syncfusion/ej2-angular-schedule';
+
 
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,LoginComponent, SidebarComponent, TopbarComponent, MainComponent ,CommonModule,ScheduleModule],
+  imports: [RouterOutlet,LoginComponent, SidebarComponent, TopbarComponent, MainComponent ,CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -40,5 +40,7 @@ export class ViewComponent implements OnInit{
       console.log(`Task with ID ${id} has been deleted`);
     });
   }
+  editAppointment(appointments){
 
+  }
 }
