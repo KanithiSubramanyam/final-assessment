@@ -17,6 +17,8 @@ export class ScheduleComponent {
   isEditMode: boolean = false;
 
   recurrenceOptions = ['None', 'Daily', 'Weekly', 'Monthly'];
+  
+  appointment: any;
 
   constructor(private fb: FormBuilder, private appointmentService: AppointmentService, private router: Router) {}
 
@@ -31,19 +33,15 @@ export class ScheduleComponent {
       recurrence: ['None'],
       customer: ['', Validators.required]
     });
-
-    console.log(this.recurrenceOptions);
-
-    const navigation = this.router.getCurrentNavigation();
-    this.isEditMode = navigation?.extras?.state?.['isEditMode'] || false;
-    const appointment = navigation?.extras?.state?.['appointment'];
-  
-    if (appointment) {
-      this.editingAppointment = appointment;
-      this.scheduleForm.patchValue(this.editingAppointment);
+    if (history.state.appointment) {
+      this.appointment = history.state.appointment;
+      console.log('Received appointment:', this.appointment);
     }
 
-   
+    if (this.appointment) {
+      this.editingAppointment = this.appointment;
+      this.scheduleForm.patchValue(this.editingAppointment);
+    }
   }
 
   onSubmit(): void {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AppointmentService} from '../../../../Services/appointment.service';
 
 @Component({
@@ -14,7 +14,7 @@ export class ViewComponent implements OnInit{
   appointments: any[] = [];
  
 
-  constructor(private appointmentService: AppointmentService) {}
+  constructor(private appointmentService: AppointmentService, private router : Router) { }
 
    ngOnInit(): void {
 
@@ -40,7 +40,8 @@ export class ViewComponent implements OnInit{
       console.log(`Task with ID ${id} has been deleted`);
     });
   }
-  editAppointment(appointments){
 
+  editAppointment(appointment: any): void {
+    this.router.navigate(['/appointmentManagement/schedule'], { state: { appointment } });
   }
 }
