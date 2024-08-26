@@ -1,44 +1,44 @@
-<!-- schedule-appointment.component.html -->
 <div class="container mt-5">
-    <div class="card shadow-sm border-light rounded">
-      <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">Schedule Appointment</h4>
-      </div>
-      <div class="card-body">
-        <form [formGroup]="scheduleForm" (ngSubmit)="onSubmit()">
-          <div class="mb-3">
-            <label for="customerName" class="form-label">Customer Name</label>
-            <input id="customerName" formControlName="customerName" type="text" class="form-control" />
-          </div>
-  
-          <div class="mb-3">
-            <label for="phoneNumber" class="form-label">Phone Number</label>
-            <input id="phoneNumber" formControlName="phoneNumber" type="text" class="form-control" />
-          </div>
-  
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input id="email" formControlName="email" type="email" class="form-control" />
-          </div>
-  
-          <div class="mb-3">
-            <label for="appointmentDate" class="form-label">Appointment Date</label>
-            <input id="appointmentDate" formControlName="appointmentDate" type="date" class="form-control" />
-          </div>
-  
-          <div class="mb-3">
-            <label for="appointmentTime" class="form-label">Appointment Time</label>
-            <input id="appointmentTime" formControlName="appointmentTime" type="time" min="16:00" max="22:00" class="form-control" />
-          </div>
-  
-          <div class="mb-3">
-            <label for="purpose" class="form-label">Purpose</label>
-            <textarea id="purpose" formControlName="purpose" class="form-control"></textarea>
-          </div>
-  
-          <button type="submit" class="btn btn-primary" [disabled]="scheduleForm.invalid">Submit</button>
-        </form>
-      </div>
+  <div class="card shadow-sm border-light rounded">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">{{ isEditMode ? 'Edit Appointment' : 'Schedule Appointment' }}</h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="scheduleForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="customerName" class="form-label">Customer Name</label>
+          <input id="customerName" formControlName="customerName" type="text" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+          <label for="phoneNumber" class="form-label">Phone Number</label>
+          <input id="phoneNumber" formControlName="phoneNumber" type="text" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input id="email" formControlName="email" type="email" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+          <label for="appointmentDate" class="form-label">Appointment Date</label>
+          <input id="appointmentDate" formControlName="appointmentDate" type="date" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+          <label for="appointmentTime" class="form-label">Appointment Time</label>
+          <input id="appointmentTime" formControlName="appointmentTime" type="time" min="16:00" max="22:00" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+          <label for="purpose" class="form-label">Purpose</label>
+          <textarea id="purpose" formControlName="purpose" class="form-control"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="scheduleForm.invalid">
+          {{ isEditMode ? 'Save Changes' : 'Submit' }}
+        </button>
+      </form>
     </div>
   </div>
-  
+</div>

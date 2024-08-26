@@ -22,4 +22,7 @@ export class AppointmentService {
   deleteAppointment(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}.json`);
   }
+  updateAppointment(id: string, appointmentData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}.json`, appointmentData);
+  }
 }
