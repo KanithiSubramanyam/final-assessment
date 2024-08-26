@@ -11,6 +11,7 @@
             <thead class="table-light">
               <tr>
                 <th>S.no</th>
+                <th>Client Name</th>
                 <th>Task Title</th>
                 <th>Description</th>
                 <th>Due Date</th>
@@ -23,6 +24,7 @@
             <tbody>
               <tr *ngFor="let task of tasks; let i = index">
                 <td>{{ i + 1 }}</td>
+                <td>{{ task.clientName }}</td>
                 <td>{{ task.taskTitle }}</td>
                 <td>{{ task.description }}</td>
                 <td>{{ task.dueDate | date:'yyyy-MM-dd' }}</td>
@@ -30,8 +32,8 @@
                 <td>{{ task.status }}</td>
                 <td>{{ task.assignedTo }}</td>
                 <td>
-                  <button class="btn btn-outline-secondary btn-sm"><i class="fas fa-eye"></i></button>
-                  <button class="btn btn-outline-secondary btn-sm" (click)="OnEditTaskClicked(task.id)"><i class="fas fa-edit"></i></button>
+                  <button class="btn btn-outline-secondary btn-sm"(click)="onViewTaskClicked(task)"><i class="fas fa-eye"></i></button>
+                  <button class="btn btn-outline-secondary btn-sm" (click)="OnEditTaskClicked(task)"><i class="fas fa-edit"></i></button>
                   <button class="btn btn-outline-danger btn-sm" (click)="deleteTask(task.id, i)"><i class="fas fa-trash"></i></button>
                 </td>
               </tr>
@@ -41,4 +43,6 @@
       </div>
     </div>
   </div>
+
+
   

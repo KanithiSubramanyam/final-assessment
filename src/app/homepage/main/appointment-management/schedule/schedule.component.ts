@@ -35,6 +35,7 @@ export class ScheduleComponent {
     });
     if (history.state.appointment) {
       this.appointment = history.state.appointment;
+      
       console.log('Received appointment:', this.appointment);
     }
 
