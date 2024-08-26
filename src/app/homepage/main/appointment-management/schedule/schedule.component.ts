@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule,FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AppointmentService } from '../../../../Services/appointment.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-schedule',
   standalone: true,
-  imports:[ ReactiveFormsModule],
+  imports:[ ReactiveFormsModule,CommonModule ],
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css']
 })
@@ -31,14 +32,18 @@ export class ScheduleComponent {
       customer: ['', Validators.required]
     });
 
-    const navigation = this.router.getCurrentNavigation();
-    const appointment = navigation?.extras?.state?.['appointment'];
+    console.log(this.recurrenceOptions);
 
+    const navigation = this.router.getCurrentNavigation();
+    this.isEditMode = navigation?.extras?.state?.['isEditMode'] || false;
+    const appointment = navigation?.extras?.state?.['appointment'];
+  
     if (appointment) {
-      this.isEditMode = true;
       this.editingAppointment = appointment;
       this.scheduleForm.patchValue(this.editingAppointment);
     }
+
+   
   }
 
   onSubmit(): void {
