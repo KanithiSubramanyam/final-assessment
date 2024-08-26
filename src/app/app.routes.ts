@@ -18,6 +18,7 @@ import { ViewComponent } from './homepage/main/appointment-management/view/view.
 import { ScheduleComponent } from './homepage/main/appointment-management/schedule/schedule.component';
 import { ForgetPasswordComponent } from './login/forget-password/forget-password.component';
 import { VerifyOtpComponent } from './login/verify-otp/verify-otp.component';
+import { TaskDetailsComponent } from './homepage/main/task-management/task-details/task-details.component';
 import { ActivityLogComponent } from './activity-log/activity-log.component';
 
 
@@ -45,6 +46,7 @@ export const routes: Routes = [
       { path: 'userManagement/roles', component: RolesComponent },
       { path: 'user/profile', component: ProfileComponent },
       { path: 'taskManagement', component: TaskManagementComponent },
+      { path: 'taskManagement/taskDetails', component: TaskDetailsComponent },
       // { path: 'taskManagement/edit/:id', component: AddTaskComponent },
       { path: 'dairyManagement', component: DairyManagementComponent },
       { path: 'userManagement/users/adduser', component: AddUserComponent },

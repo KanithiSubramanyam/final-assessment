@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink ,Router} from '@angular/router';
 import { TaskService } from '../../../Services/task.service';
 import { CommonModule } from '@angular/common';
 
@@ -16,9 +16,10 @@ export class TaskManagementComponent {
 
   tasks: any[] = [];
   currentTask: any;
+  
  
 
-  constructor(private taskService:TaskService) {}
+  constructor(private taskService:TaskService, private router: Router) {}
 
    ngOnInit(): void {
 
@@ -45,9 +46,14 @@ export class TaskManagementComponent {
     });
   }
 
-  OnEditTaskClicked(id:string){
-   this.currentTask= this.tasks.find((task)=>{ task.id===id})
+  OnEditTaskClicked(task){
+  
+ 
+    this.router.navigate(['/taskManagement/addtask'], { state: { task } });
+  }
 
+  onViewTaskClicked(task: any): void {
+    this.router.navigate(['/taskManagement/taskDetails'], { state: { task } });
   }
  
 

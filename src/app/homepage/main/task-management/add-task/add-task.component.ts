@@ -156,8 +156,9 @@ import {  CommonModule } from '@angular/common';
 export class AddTaskComponent implements OnInit {
   addTaskForm: FormGroup;
   isEditMode: boolean = false;
-  taskId: string | null = null;
-  currentTask: any = null; // To hold the current task data
+  
+  editingtask:any =null;
+  currentTask: any; // To hold the current task data
 
   constructor(
     private fb: FormBuilder,
@@ -176,18 +177,23 @@ export class AddTaskComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Assume there's a way to get currentTask from the parent or routing params
-    // For example, you could use a shared state or route parameters
+    if (history.state.task) {
+      this.currentTask = history.state.task;
+      
+      console.log('Received appointment:', this.currentTask);
+    }
+
     if (this.currentTask) {
-      this.isEditMode = true;
-      this.addTaskForm.patchValue(this.currentTask);
+      this.editingtask = this.currentTask;
+      this.isEditMode=true;
+      this.addTaskForm.patchValue(this.editingtask);
     }
   }
 
   onSubmit(): void {
     if (this.addTaskForm.valid) {
-      if (this.isEditMode && this.taskId) {
-        this.taskService.updateTask(this.taskId, this.addTaskForm.value).subscribe(response => {
+      if (this.isEditMode && this.editingtask) {
+        this.taskService.updateTask(this.editingtask.id, this.addTaskForm.value).subscribe(response => {
           console.log('Task updated successfully', response);
           this.router.navigate(['/taskManagement']);
         }, error => {

@@ -1,0 +1,94 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-light rounded">
+          <div class="card-body">
+            <h4 class="card-title mb-4">Task Details</h4>
+  
+            <div class="row mb-3">
+              <div class="col-lg-6">
+                <label for="clientName" class="form-label">Client Name</label>
+                <input
+                  type="text"
+                  id="clientName"
+                  class="form-control"
+                  [value]="task?.clientName"
+                  readonly
+                />
+              </div>
+              <div class="col-lg-6">
+                <label for="taskTitle" class="form-label">Task Title</label>
+                <input
+                  type="text"
+                  id="taskTitle"
+                  class="form-control"
+                  [value]="task?.taskTitle"
+                  readonly
+                />
+              </div>
+            </div>
+  
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea
+                id="description"
+                class="form-control"
+                rows="4"
+                [value]="task?.description"
+                readonly
+              ></textarea>
+            </div>
+  
+            <div class="row mb-3">
+              <div class="col-lg-6">
+                <label for="dueDate" class="form-label">Due Date</label>
+                <input
+                  type="text"
+                  id="dueDate"
+                  class="form-control"
+                  [value]="task?.dueDate | date: 'yyyy-MM-dd HH:mm'"
+                  readonly
+                />
+              </div>
+              <div class="col-lg-6">
+                <label for="priority" class="form-label">Priority</label>
+                <input
+                  type="text"
+                  id="priority"
+                  class="form-control"
+                  [value]="task?.priority"
+                  readonly
+                />
+              </div>
+            </div>
+  
+            <div class="row mb-3">
+              <div class="col-lg-6">
+                <label for="status" class="form-label">Status</label>
+                <input
+                  type="text"
+                  id="status"
+                  class="form-control"
+                  [value]="task?.status"
+                  readonly
+                />
+              </div>
+              <div class="col-lg-6">
+                <label for="assignedTo" class="form-label">Assigned To</label>
+                <input
+                  type="text"
+                  id="assignedTo"
+                  class="form-control"
+                  [value]="task?.assignedTo"
+                  readonly
+                />
+              </div>
+            </div>
+            
+            <button class="btn btn-primary mt-3" [routerLink]="['/taskManagement']">Back to Task Management</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
