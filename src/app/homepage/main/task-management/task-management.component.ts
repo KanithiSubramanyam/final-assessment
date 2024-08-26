@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AddTaskComponent } from './add-task/add-task.component';
 import { TaskService } from '../../../Services/task.service';
 import { CommonModule } from '@angular/common';
 
@@ -9,13 +8,14 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-task-management',
   standalone: true,
-  imports: [RouterLink,AddTaskComponent,CommonModule],
+  imports: [RouterLink,CommonModule],
   templateUrl: './task-management.component.html',
   styleUrl: './task-management.component.css'
 })
 export class TaskManagementComponent {
 
   tasks: any[] = [];
+  currentTask: any;
  
 
   constructor(private taskService:TaskService) {}
@@ -46,7 +46,7 @@ export class TaskManagementComponent {
   }
 
   OnEditTaskClicked(id:string){
-    this.tasks.find((task)=>{return task.id===id})
+   this.currentTask= this.tasks.find((task)=>{ task.id===id})
 
   }
  

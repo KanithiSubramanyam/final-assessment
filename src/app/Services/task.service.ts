@@ -22,6 +22,9 @@ export class TaskService {
   deleteTask(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}.json`);
   }
+  updateTask(id: string, taskData: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}.json`, taskData);
+  }
   getAllUsers(): Observable<{ [key: string]: Task }> {
     return this.http.get<{ [key: string]: Task }>(this.apiUrl).pipe(
       map(response => {
