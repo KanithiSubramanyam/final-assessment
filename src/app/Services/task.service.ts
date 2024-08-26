@@ -20,6 +20,8 @@ export class TaskService {
     return this.http.get(`${this.apiUrl}.json`);
   }
   deleteTask(id: string): Observable<void> {
+
+    
     return this.http.delete<void>(`${this.apiUrl}/${id}.json`);
   }
   updateTask(id: string, taskData: any): Observable<any> {

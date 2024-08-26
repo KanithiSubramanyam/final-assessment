@@ -6,6 +6,8 @@ import { Router } from "@angular/router";
 import { AuthResponse } from "../Model/AuthResponse";
 import { error } from "console";
 import { userDetails } from "../Model/userDetails";
+import { ActivityLogService } from "./activityLog.service";
+import { ActivityLog } from "../Model/ActivityLog";
 
 
 @Injectable({
@@ -17,6 +19,7 @@ export class AuthService {
   http: HttpClient = inject(HttpClient);
   user = new BehaviorSubject<User>(null);
   router: Router = inject(Router);
+  activityLogService : ActivityLogService = inject(ActivityLogService);
 
   private tokenExpirationTimer: any;
 
@@ -31,6 +34,8 @@ export class AuthService {
   private updatePasswordUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.webApi}`;
   private deleteAccountUrl = `https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${this.webApi}`;  
   public userDataUrl = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=`;
+
+  public logData : ActivityLog;
 
   signUp(user: { email: string, password: string, firstName: string, lastName: string }) {
     const signupData = {
@@ -73,6 +78,16 @@ export class AuthService {
                 console.error('Error saving user details:', error);
               }
             });
+
+            //logData to activity log
+            this.logData = new ActivityLog(
+              res.localId,
+              res.email,
+              'user',
+              'A new user has been created by default signup method at  ' + new Date().toDateString(),
+              new Date(),
+            );
+            this.activityLogService.addActivityLog(this.logData);
         })
       );
   }
@@ -82,6 +97,7 @@ export class AuthService {
     return this.http.post<AuthResponse>(this.signinUrl + this.webApi, data)
       .pipe(catchError(this.handleError), tap((res) => {
 
+        console.log(res);
         this.handleCreateUser(res, true);
 
         this.getUserProfile(res.localId).subscribe(userData => {
@@ -91,6 +107,15 @@ export class AuthService {
           this.http.put(`${this.databaseUrl}/users/${res.localId}.json`, userData)
             .subscribe();
 
+            //log user login activity
+            const logData = new ActivityLog(
+              res.localId,
+              res.email,
+              userData.role,
+              `${userData.email} has logged in at ${new Date().toDateString()}`,
+              new Date(),
+            );
+            this.activityLogService.addActivityLog(logData);
         });
       })
     );
@@ -120,15 +145,38 @@ export class AuthService {
 
   }
 
-  logOut() {
-    this.user.next(null);
-    this.router.navigate(['/login']);
-    localStorage.removeItem('localUser');
-    if (this.tokenExpirationTimer) {
-      clearTimeout(this.tokenExpirationTimer);
-    }
-    this.tokenExpirationTimer = null;
+  getCurrentUserRole(callback: (role: string) => void): void {
+    const user = JSON.parse(localStorage.getItem('localUser'));
+    this.http.get<userDetails>(`${this.databaseUrl}/users/${user.id}.json`).subscribe(userData => {
+      const role = userData.role;
+      callback(role); // Pass the role to the callback
+    });
   }
+  
+  logOut() {
+    const user = JSON.parse(localStorage.getItem('localUser'));
+  
+    this.getCurrentUserRole((role) => {
+      // Log user logout activity
+      this.logData = new ActivityLog(
+        user.id,
+        user.email,
+        role,
+        `${user.email} has logged out at ${new Date().toDateString()}`,
+        new Date()
+      );
+      this.activityLogService.addActivityLog(this.logData);
+
+      this.user.next(null);
+      this.router.navigate(['/login']);
+      localStorage.removeItem('localUser');
+      if (this.tokenExpirationTimer) {
+        clearTimeout(this.tokenExpirationTimer);
+      }
+      this.tokenExpirationTimer = null;
+    });
+  }
+  
 
   autoLogout(expirationDuration: number) {
     this.tokenExpirationTimer = setTimeout(() => {
@@ -149,10 +197,10 @@ export class AuthService {
 
     this.user.next(localUser);
     this.autoLogout(+res.expiresIn * 1000);
-    // if(login){
-    //   localStorage.setItem('localUser', JSON.stringify(localUser));
-    // }
-    localStorage.setItem('localUser', JSON.stringify(localUser));
+    if(login){
+      localStorage.setItem('localUser', JSON.stringify(localUser));
+    }
+    // localStorage.setItem('localUser', JSON.stringify(localUser));
   }
   
   private handleError(err: any) {
@@ -201,8 +249,21 @@ export class AuthService {
           userData.passwordLastChangedAt = new Date();
           this.http.put(`${this.databaseUrl}/users/${userId}.json`, userData)
             .subscribe();
+
+          // Log user logout activity
+            this.logData = new ActivityLog(
+              userData.id,
+              userData.email,
+              userData.role,
+              `${userData.email} has changed password at ${new Date().toDateString()}`,
+              new Date()
+            );
+            this.activityLogService.addActivityLog(this.logData);
+
         });
         return response;
+
+        
       }),
       catchError((error) => throwError(() => new Error('Error changing password')))
     );
@@ -243,10 +304,6 @@ export class AuthService {
     return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${this.webApi}`, body, { headers });
   }
 
-
-
-
-
   generateMsAuthenticatoQrCode(secert:string, email : string, issuer : string){
     return `otpauth://totp/${issuer}:${email}?secret=${secert}&issuer=${issuer}`;
   }
@@ -264,6 +321,21 @@ export class AuthService {
   }
 
   updateUserProfile(userId : string, userData : userDetails){
+
+    const user = JSON.parse(localStorage.getItem('localUser'));
+  
+    this.getCurrentUserRole((role) => {
+      // Log user logout activity
+      this.logData = new ActivityLog(
+        user.id,
+        user.email,
+        role,
+        `${userData.email} has update user profile at ${new Date().toDateString()}`,
+        new Date()
+      );
+      this.activityLogService.addActivityLog(this.logData);
+  });
+  
     return this.http.put(`${this.databaseUrl}/users/${userId}.json`, userData);
   }
 }

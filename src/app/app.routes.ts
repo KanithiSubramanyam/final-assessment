@@ -18,12 +18,14 @@ import { ViewComponent } from './homepage/main/appointment-management/view/view.
 import { ScheduleComponent } from './homepage/main/appointment-management/schedule/schedule.component';
 import { ForgetPasswordComponent } from './login/forget-password/forget-password.component';
 import { VerifyOtpComponent } from './login/verify-otp/verify-otp.component';
+import { ActivityLogComponent } from './activity-log/activity-log.component';
 
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path : 'login/forget-password', component: ForgetPasswordComponent },
   { path : 'login/verifyOTP', component: VerifyOtpComponent },
+
   {
     path: '',
     component: HomepageComponent,
@@ -56,7 +58,8 @@ export const routes: Routes = [
           { path: 'view', component: ViewComponent },
           { path: 'schedule', component: ScheduleComponent },
         ]
-      }
+      },
+      { path: 'activityLog', component: ActivityLogComponent },
     ]
   },
   { path: '**', component: NotFoundComponent },
