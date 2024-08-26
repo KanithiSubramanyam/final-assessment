@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Roles } from '../../../../Model/Roles';
+import { RolesService } from '../../../../Services/Roles.service';
 
 @Component({
   selector: 'app-roles',
@@ -9,4 +11,15 @@ import { Component } from '@angular/core';
 })
 export class RolesComponent {
 
+  roles : string[] = [];
+
+
+  roleService : RolesService = inject(RolesService);
+
+  ngOnInit(){
+   this.roles = this.roleService.getRoles();
+    console.log(this.roles);
+  }
+
+  
 }
