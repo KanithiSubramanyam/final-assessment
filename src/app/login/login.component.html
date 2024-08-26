@@ -34,8 +34,10 @@
                       </div>
                     </div>
                   </div>
-                  <!-- (click)="verifyLogin(loginForm.get('email')?.value, loginForm.get('password')?.value)" -->
-                  <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="loginForm.invalid" >Sign in</button>
+
+                  <!-- sending secertKey to verifyOtp -->
+
+                  <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="loginForm.invalid">Sign in</button>
 
                   <a  class="d-block mb-3 text-center" [routerLink] ="['/login/forget-password']">Forgot password?</a>
                   <a  class="d-block text-center" (click)="onSwitchMode()">Create account?</a>

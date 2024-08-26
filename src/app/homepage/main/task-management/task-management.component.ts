@@ -44,6 +44,11 @@ export class TaskManagementComponent {
       console.log(`Task with ID ${id} has been deleted`);
     });
   }
+
+  OnEditTaskClicked(id:string){
+    this.tasks.find((task)=>{return task.id===id})
+
+  }
  
 
 }

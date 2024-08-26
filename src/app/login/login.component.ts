@@ -9,11 +9,13 @@ import { emailDomainValidator } from '../Validators/emailValidators';
 import { AuthResponse } from '../Model/AuthResponse';
 import { Observable } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
+import { ProfileComponent } from '../homepage/main/profile/profile.component';
+import { VerifyOtpComponent } from "./verify-otp/verify-otp.component";
 
 @Component({
   selector: 'login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, RouterLink, VerifyOtpComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -34,6 +36,11 @@ export class LoginComponent implements OnInit {
   router: Router = inject(Router);
 
   errorMessage: string | null = null;
+
+  secretKey : string = '';
+
+  mfaEnabledBtn: boolean = false;
+
 
   constructor(private fb: FormBuilder) {
     this.createForms();
@@ -68,7 +75,7 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     if (this.isLoginMode) {
       if (this.loginForm.valid) {
-        // console.log('login component', this.loginForm.value);
+
         this.authObs = this.authService.logIn(this.loginForm.value.email, this.loginForm.value.password);
         
       }
@@ -103,9 +110,20 @@ export class LoginComponent implements OnInit {
     this.authObs.subscribe({
       next: (res) => {
         if(this.isLoginMode){
-          this.router.navigate(['/dashboard']);
-        }
-        else{
+          console.log(res.localId);
+          this.authService.getUserProfile(res.localId).subscribe(userData => {
+            console.log(userData);
+            this.secretKey = userData.mfaSecertKey;
+            this.mfaEnabledBtn = userData.mfaBtn;
+    
+            if(this.mfaEnabledBtn){
+              this.router.navigate(['/login/verifyOTP'], { state: { secretKey: this.secretKey } });
+            } else {
+              this.router.navigate(['/dashboard']);
+            }
+          });
+        } 
+        else {
           this.isLoginMode = true;
           this.router.navigate(['/login']);
         }
@@ -113,7 +131,8 @@ export class LoginComponent implements OnInit {
       error: (errMsg) => {
         this.errorMessage = errMsg;
       }
-    })
+    });
+    
 
     this.loginForm.reset();
 

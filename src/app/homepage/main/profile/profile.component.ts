@@ -6,11 +6,15 @@ import { User } from '../../../Model/User';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { userDetails } from '../../../Model/userDetails';
+import { QrCodeModule } from 'ng-qrcode';
 
+import * as jsotp from 'jsotp';
+
+import { AuthService } from '../../../Services/auth.service';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ChangePasswordComponent, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, ChangePasswordComponent, RouterLink, QrCodeModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -24,10 +28,16 @@ export class ProfileComponent {
   userData: any;
 
   isReadOnly: boolean = true;
+
+  isMfaEnabledBtn: boolean = false;
+
+  mfaCloseBtn: boolean = false;
+
   backToUser: boolean = false;
 
+  qrdata: string = '';
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private router: Router) {
+  constructor(private fb: FormBuilder, private route: ActivatedRoute, private router: Router, private authService: AuthService) {
     this.userForm = this.fb.group({
       username: [{ value: '', disabled: true }],
       firstName: [{ value: '', disabled: true }, Validators.required],
@@ -62,8 +72,8 @@ export class ProfileComponent {
             next: (data: userDetails) => {
               this.userData = data;
               this.userForm.patchValue(this.userData);
-              
-              if (this.router.url.includes('/userManagement/users/editProfile') 
+
+              if (this.router.url.includes('/userManagement/users/editProfile')
                 || this.router.url.includes('/userManagement/users/viewProfile')) {
                 this.backToUser = true;
               }
@@ -85,6 +95,44 @@ export class ProfileComponent {
     }
   }
 
+  closeMFA() {
+    this.mfaCloseBtn = false;
+  }
+
+  secertKeyyyy = '';
+  enableMfa() {
+    //  = true;
+    this.mfaCloseBtn = true;
+
+    const qrCodeSecret = this.generateBase32Secret();
+    const userData = localStorage.getItem('localUser');
+    const uid = userData ? JSON.parse(userData).id : '';
+    const email = userData ? JSON.parse(userData).email : '';
+    const issuer = 'final-assessment-1';
+    this.secertKeyyyy = qrCodeSecret;
+    // Enable MFA in the backend
+    console.log(this.secertKeyyyy);
+    this.isMfaEnabledBtn = this.authService.isMfaEnabled(this.isMfaEnabledBtn, uid, qrCodeSecret);
+
+    // Generate the QR code data URL
+    this.qrdata = this.authService.generateMsAuthenticatoQrCode(qrCodeSecret, email, issuer);
+  }
+
+  generateMsAuthenticatoQrCode(secret: string, email: string, issuer: string): string {
+    const otpauthUrl = `otpauth://totp/${issuer}:${email}?secret=${secret}&issuer=${issuer}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(otpauthUrl)}&size=200x200`;
+  }
+
+  // Generate a random base32 secret
+  generateBase32Secret(length: number = 16): string {
+    const base32Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+    let secret = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * base32Chars.length);
+      secret += base32Chars[randomIndex];
+    }
+    return secret;
+  }
 
   onSubmit() {
     if (this.userForm.valid) {
@@ -96,7 +144,6 @@ export class ProfileComponent {
 
       this.userService.updateUserDetails(updatedData).subscribe(
         response => {
-          // console.log('User details updated successfully:', response);
         },
         error => {
           console.error('Error updating user details:', error);

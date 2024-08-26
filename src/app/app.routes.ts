@@ -17,11 +17,13 @@ import { AppointmentManagementComponent } from './homepage/main/appointment-mana
 import { ViewComponent } from './homepage/main/appointment-management/view/view.component';
 import { ScheduleComponent } from './homepage/main/appointment-management/schedule/schedule.component';
 import { ForgetPasswordComponent } from './login/forget-password/forget-password.component';
+import { VerifyOtpComponent } from './login/verify-otp/verify-otp.component';
 
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path : 'login/forget-password', component: ForgetPasswordComponent },
+  { path : 'login/verifyOTP', component: VerifyOtpComponent },
   {
     path: '',
     component: HomepageComponent,
@@ -41,6 +43,7 @@ export const routes: Routes = [
       { path: 'userManagement/roles', component: RolesComponent },
       { path: 'user/profile', component: ProfileComponent },
       { path: 'taskManagement', component: TaskManagementComponent },
+      // { path: 'taskManagement/edit/:id', component: AddTaskComponent },
       { path: 'dairyManagement', component: DairyManagementComponent },
       { path: 'userManagement/users/adduser', component: AddUserComponent },
       { path: 'userManagement/users/viewProfile/:id', component: ProfileComponent },
