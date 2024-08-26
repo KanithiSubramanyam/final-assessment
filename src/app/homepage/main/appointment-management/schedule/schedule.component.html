@@ -6,33 +6,45 @@
     <div class="card-body">
       <form [formGroup]="scheduleForm" (ngSubmit)="onSubmit()">
         <div class="mb-3">
-          <label for="customerName" class="form-label">Customer Name</label>
-          <input id="customerName" formControlName="customerName" type="text" class="form-control" />
+          <label for="title" class="form-label">Appointment Title</label>
+          <input id="title" formControlName="title" type="text" class="form-control" />
         </div>
 
         <div class="mb-3">
-          <label for="phoneNumber" class="form-label">Phone Number</label>
-          <input id="phoneNumber" formControlName="phoneNumber" type="text" class="form-control" />
+          <label for="description" class="form-label">Description</label>
+          <textarea id="description" formControlName="description" class="form-control"></textarea>
         </div>
 
         <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input id="email" formControlName="email" type="email" class="form-control" />
+          <label for="startDateTime" class="form-label">Start Date and Time</label>
+          <input id="startDateTime" formControlName="startDateTime" type="datetime-local" class="form-control" />
         </div>
 
         <div class="mb-3">
-          <label for="appointmentDate" class="form-label">Appointment Date</label>
-          <input id="appointmentDate" formControlName="appointmentDate" type="date" class="form-control" />
+          <label for="endDateTime" class="form-label">End Date and Time</label>
+          <input id="endDateTime" formControlName="endDateTime" type="datetime-local" class="form-control" />
         </div>
 
         <div class="mb-3">
-          <label for="appointmentTime" class="form-label">Appointment Time</label>
-          <input id="appointmentTime" formControlName="appointmentTime" type="time" min="16:00" max="22:00" class="form-control" />
+          <label for="location" class="form-label">Location</label>
+          <input id="location" formControlName="location" type="text" class="form-control" />
         </div>
 
         <div class="mb-3">
-          <label for="purpose" class="form-label">Purpose</label>
-          <textarea id="purpose" formControlName="purpose" class="form-control"></textarea>
+          <label for="attendees" class="form-label">Attendees</label>
+          <input id="attendees" formControlName="attendees" type="text" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+          <label for="recurrence" class="form-label">Recurrence</label>
+          <select id="recurrence" formControlName="recurrence" class="form-select">
+            <option *ngFor="let option of recurrenceOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="customer" class="form-label">Customer</label>
+          <input id="customer" formControlName="customer" type="text" class="form-control" />
         </div>
 
         <button type="submit" class="btn btn-primary" [disabled]="scheduleForm.invalid">
