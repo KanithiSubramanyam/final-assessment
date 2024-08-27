@@ -63,13 +63,14 @@
         </div> -->
         <div class="mb-3">
           <label for="assignedTo" class="form-label">Assigned To</label>
-          <select id="assignedTo" class="form-select" formControlName="assignedTo" required>
+          <select id="assignedTo" class="form-select" formControlName="assignedTo" (change)="onUserSelect($event)" required>
             <option *ngFor="let user of users" [value]="user.email">{{ user.firstName }} {{ user.lastName }} ({{ user.email }})</option>
           </select>
           <div *ngIf="addTaskForm.get('assignedTo').touched && addTaskForm.get('assignedTo').invalid" class="text-danger">
             Please select a user to assign.
           </div>
         </div>
+        
 
         <button type="submit" class="btn btn-primary" [disabled]="!addTaskForm.valid">Save Task</button>
       </form>

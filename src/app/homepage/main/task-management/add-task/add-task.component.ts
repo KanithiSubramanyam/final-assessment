@@ -146,6 +146,8 @@ import { TaskService } from '../../../../Services/task.service';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../../Services/auth.service';
 import {  CommonModule } from '@angular/common';
+import { UserService } from '../../../../Services/userService.service';
+import { userDetails } from '../../../../Model/userDetails';
 
 @Component({
   selector: 'app-add-task',
@@ -159,13 +161,14 @@ export class AddTaskComponent implements OnInit {
   isEditMode: boolean = false;
   editingtask:any =null;
   currentTask: any; // To hold the current task data
-  users: any[] = [];
+  users: userDetails[] = [];
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private taskService: TaskService,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) {
     this.addTaskForm = this.fb.group({
       clientName: ['', Validators.required],
@@ -174,8 +177,10 @@ export class AddTaskComponent implements OnInit {
       dueDate: ['', Validators.required],
       priority: ['', Validators.required],
       status: ['', Validators.required],
-      assignedTo: ['']
+      assignedTo: [''],
+      assignedToEmail: ['']
     });
+    console.log('Current Task:', this.addTaskForm);
   }
 
   ngOnInit(): void {
@@ -190,8 +195,33 @@ export class AddTaskComponent implements OnInit {
       this.isEditMode=true;
       this.addTaskForm.patchValue(this.editingtask);
     }
+    this.fetchUsers();
     
     
+  }
+  fetchUsers(): void {
+    this.userService.getAllUsers().subscribe(
+      (users) => {
+        this.users = Object.values(users).filter(user => user.role === 'user');
+      },
+      (error) => {
+        console.error('Error fetching users:', error);
+      }
+    );
+  }
+  onUserSelect(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedEmail = selectElement.value;
+
+    // Find the selected user by email
+    const selectedUser = this.users.find(user => user.email === selectedEmail);
+
+    if (selectedUser) {
+      // Set the assignedTo and assignedToEmail fields
+      // this.addTaskForm.get('assignedTo').setValue(`${selectedUser.firstName} ${selectedUser.lastName}`);
+      this.addTaskForm.get('assignedTo').setValue(`${selectedUser.email}`);
+      this.addTaskForm.get('assignedToEmail').setValue(selectedUser.email);
+    }
   }
 
   
