@@ -81,19 +81,19 @@ export class TaskManagementComponent {
 
 // Set the default sorting field and direction
 sortField: string = 'dueDate'; // Default sorting field
-sortDirection: string = 'asc'; // Default sorting direction
+sortDirection:  'asc' | 'desc' = 'asc';// Default sorting direction
 
 
  
 
-sortTasksBy(field: string): void {
+sortTasksBy(field: string, direction: 'asc' | 'desc' = 'asc'): void {
   if (this.sortField === field) {
     // Toggle sort direction if the same field is clicked
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
   } else {
-    // Set the new sorting field and default to ascending order
+    // Set the new sorting field and sort direction
     this.sortField = field;
-    this.sortDirection = 'asc';
+    this.sortDirection = direction;
   }
 
   this.sortedTasks = [...this.tasks];
