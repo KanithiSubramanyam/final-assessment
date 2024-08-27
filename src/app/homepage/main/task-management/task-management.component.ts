@@ -25,6 +25,9 @@ export class TaskManagementComponent {
    ngOnInit(): void {
 
     this.fetchTasks();
+    
+ // Perform the default sort when the component initializes
+    this.sortTasksBy(this.sortField);
   
    }
 
@@ -75,31 +78,43 @@ export class TaskManagementComponent {
     this.router.navigate(['/taskManagement/taskDetails'], { state: { task } });
   }
  
-  sortTasksBy(field: string, event: Event): void  {
-    const value = (event.target as HTMLSelectElement).value;
-    if (value) {
-      this.sortedTasks = [...this.tasks];
-      this.tasks.sort((a, b) => {
-        if (field === 'dueDate') {
-          return value === 'asc'
-            ? new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-            : new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
-        } else if (field === 'priority') {
-          const priorities = ['Low', 'Medium', 'High'];
-          return value === 'asc'
-            ? priorities.indexOf(a.priority) - priorities.indexOf(b.priority)
-            : priorities.indexOf(b.priority) - priorities.indexOf(a.priority);
-        } else if (field === 'status') {
-          return value === 'asc'
-            ? a.status.localeCompare(b.status)
-            : b.status.localeCompare(a.status);
-        }
-        return 0;
-      });
-  }
-  else {
-    this.sortedTasks = [...this.tasks]; // Reset to the original order if no sorting is selected
+
+// Set the default sorting field and direction
+sortField: string = 'dueDate'; // Default sorting field
+sortDirection: string = 'asc'; // Default sorting direction
+
+
+ 
+
+sortTasksBy(field: string): void {
+  if (this.sortField === field) {
+    // Toggle sort direction if the same field is clicked
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+  } else {
+    // Set the new sorting field and default to ascending order
+    this.sortField = field;
+    this.sortDirection = 'asc';
   }
 
+  this.sortedTasks = [...this.tasks];
+  this.sortedTasks.sort((a, b) => {
+    let comparison = 0;
+
+    if (field === 'dueDate') {
+      comparison = new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+    } else if (field === 'priority') {
+      const priorities = ['Low', 'Medium', 'High'];
+      comparison = priorities.indexOf(a.priority) - priorities.indexOf(b.priority);
+    } else if (field === 'status') {
+      const statusesAsc = ['Not Started', 'In Progress', 'Completed'];
+      const aIndex = statusesAsc.indexOf(a.status);
+      const bIndex = statusesAsc.indexOf(b.status);
+      comparison = aIndex - bIndex;
+    }
+
+    return this.sortDirection === 'asc' ? comparison : -comparison;
+  });
 }
+
+
 }
