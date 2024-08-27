@@ -7,5 +7,6 @@ export interface Task {
     priority: 'Low' | 'Medium' | 'High';
     status: 'Not Started' | 'In Progress' | 'Completed';
     assignedTo?: string;
+    assignedToEmail?: string;
   }
   
