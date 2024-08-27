@@ -144,6 +144,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TaskService } from '../../../../Services/task.service';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../../../Services/auth.service';
 import {  CommonModule } from '@angular/common';
 
 @Component({
@@ -163,7 +164,8 @@ export class AddTaskComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private authService: AuthService
   ) {
     this.addTaskForm = this.fb.group({
       clientName: ['', Validators.required],
@@ -188,6 +190,7 @@ export class AddTaskComponent implements OnInit {
       this.isEditMode=true;
       this.addTaskForm.patchValue(this.editingtask);
     }
+    
     
   }
 
