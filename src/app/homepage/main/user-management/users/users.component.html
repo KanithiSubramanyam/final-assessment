@@ -37,11 +37,11 @@
           <thead class="table-light">
             <tr>
               <th>S.no</th>
-              <th>Name <i class="fas fa-sort"></i></th>
-              <th>Email <i class="fas fa-sort"></i></th>
-              <th>Mobile <i class="fas fa-sort"></i></th>
-              <th>Address <i class="fas fa-sort"></i></th>
-              <th>Role</th>
+              <th (click)="sortBy('firstName')">Name <i class="fas fa-sort"  [class.asc]="sortField === 'firstName' && sortAscending" [class.desc]="sortField === 'firstName' && !sortAscending"></i></th>
+              <th (click)="sortBy('email')">Email <i class="fas fa-sort"  [class.asc]="sortField === 'email' && sortAscending" [class.desc]="sortField === 'email' && !sortAscending"></i></th>
+              <th>Mobile</th>
+              <th >Address</th>
+              <th (click)="sortBy('role')" >Role <i class="fas fa-sort"   [class.asc]="sortField === 'role' && sortAscending" [class.desc]="sortField === 'role' && !sortAscending" ></i></th>
               <th>Actions</th>
             </tr>
           </thead>
