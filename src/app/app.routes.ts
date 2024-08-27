@@ -20,6 +20,7 @@ import { ForgetPasswordComponent } from './login/forget-password/forget-password
 import { VerifyOtpComponent } from './login/verify-otp/verify-otp.component';
 import { ActivityLogComponent } from './activity-log/activity-log.component';
 import { TaskDetailsComponent } from './homepage/main/task-management/task-details/task-details.component';
+import { RolesService } from './Services/Roles.service';
 
 
 export const routes: Routes = [
@@ -37,13 +38,14 @@ export const routes: Routes = [
       { 
         path: 'userManagement', 
         component: UserManagementComponent, 
+        data: { roles: [RolesService.ADMIN] }, // Only Admin can access this
         children: [
-          { path: 'users', component: UsersComponent },
-          { path: 'users/adduser', component: AddUserComponent }
+          { path: 'users', component: UsersComponent,  data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER] } },
+          { path: 'users/adduser', component: AddUserComponent,  data: { roles: [RolesService.ADMIN] } }
         ]
       },
-      { path: 'userManagement/permissions', component: PermissionsComponent },
-      { path: 'userManagement/roles', component: RolesComponent },
+      { path: 'userManagement/permissions', component: PermissionsComponent, data: { roles: [RolesService.ADMIN] }  },
+      { path: 'userManagement/roles', component: RolesComponent, data: { roles: [RolesService.ADMIN] } },
       { path: 'user/profile', component: ProfileComponent },
       { path: 'taskManagement', component: TaskManagementComponent },
       { path: 'taskManagement/taskDetails', component: TaskDetailsComponent },
@@ -61,7 +63,7 @@ export const routes: Routes = [
           { path: 'schedule', component: ScheduleComponent },
         ]
       },
-      { path: 'activityLog', component: ActivityLogComponent },
+      { path: 'activityLog', component: ActivityLogComponent, data: { roles: [RolesService.ADMIN] } },
     ]
   },
   { path: '**', component: NotFoundComponent },

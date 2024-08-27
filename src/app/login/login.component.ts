@@ -112,7 +112,7 @@ export class LoginComponent implements OnInit {
         if(this.isLoginMode){
           console.log(res.localId);
           this.authService.getUserProfile(res.localId).subscribe(userData => {
-            console.log(userData);
+            // console.log(userData);
             this.secretKey = userData.mfaSecertKey;
             this.mfaEnabledBtn = userData.mfaBtn;
     

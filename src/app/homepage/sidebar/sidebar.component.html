@@ -11,7 +11,7 @@
           Dashboard
         </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="hasAnyRole([ADMIN, ACCOUNTMANAGER])">
         <!-- [routerLink]="['/userManagement']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact : true}" -->
         <a class="nav-link link-dark" data-bs-toggle="collapse" aria-current="page" data-bs-target="#User-Management-collapse" aria-expanded="false" [routerLinkActive]="'active'">
           <i class="fas fa-user me-2"></i>
@@ -53,7 +53,7 @@
           </ul>
         </div>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="hasRole(ADMIN)">
         <a class="nav-link link-dark"
         [routerLink]="['/activityLog']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{ exact: true }">
           <i class="fa-solid fa-clock-rotate-left"></i>
