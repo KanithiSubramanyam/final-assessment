@@ -3,7 +3,7 @@ import { RouterLink, Router } from '@angular/router';
 import { TaskService } from '../../../Services/task.service';
 import { CommonModule } from '@angular/common';
 import { userDetails } from '../../../Model/userDetails';
-import { CommonDataService } from '../../../utilites/CommonData.service';
+import { CommonDataService } from '../../../utilities/CommonData.service';
 
 
 

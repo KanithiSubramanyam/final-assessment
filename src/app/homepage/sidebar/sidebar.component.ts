@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { Router } from 'express';
 import { AuthService } from '../../Services/auth.service';
-import { CommonDataService } from '../../utilites/CommonData.service';
+import { CommonDataService } from '../../utilities/CommonData.service';
 import { userDetails } from '../../Model/userDetails';
 import { RolesService } from '../../Services/Roles.service';
 
