@@ -3,6 +3,7 @@ import { Roles } from '../../../../Model/Roles';
 import { RolesService } from '../../../../Services/Roles.service';
 import { CommonModule } from '@angular/common';
 
+
 @Component({
   selector: 'app-roles',
   standalone: true,
@@ -13,14 +14,18 @@ import { CommonModule } from '@angular/common';
 export class RolesComponent {
 
   roles : string[] = [];
+  sortField: string = '';
+  sortAscending: boolean = true;
 
 
   roleService : RolesService = inject(RolesService);
+  
 
   ngOnInit(){
    this.roles = this.roleService.getRoles();
     console.log(this.roles);
   }
+  
 
   
 }

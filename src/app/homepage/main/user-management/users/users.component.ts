@@ -6,6 +6,7 @@ import { UserService } from '../../../../Services/userService.service';
 import { AuthService } from '../../../../Services/auth.service';
 import { CommonModule } from '@angular/common';
 import { userDetails } from '../../../../Model/userDetails';
+import { SortingService } from '../../../../utilities/sorting.service';
 
 @Component({
   selector: 'app-users',
@@ -18,8 +19,11 @@ export class UsersComponent implements OnInit{
 
   userService: UserService = inject(UserService);
   authService: AuthService = inject(AuthService);
+  sortingService: SortingService = inject(SortingService);
   
   users: userDetails[] = [];
+  sortField: string = '';
+  sortAscending: boolean = true; // Ensure this property is declared
   
   ngOnInit() {
     this.userService.getAllUsers().subscribe({
@@ -42,5 +46,12 @@ export class UsersComponent implements OnInit{
       }
     });
   }
+  sortBy(field: string) {
+    this.sortAscending = this.sortField === field ? !this.sortAscending : true;
+    this.sortField = field;
+    const direction: 'asc' | 'desc' = this.sortAscending ? 'asc' : 'desc';
+    this.users = this.sortingService.sortByField(this.users, field, direction);
+  }
+  
 
 }
