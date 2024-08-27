@@ -19,14 +19,13 @@ export class TaskManagementComponent {
   tasks: any[] = [];
   sortedTasks: any[] = [];
   currentTask: any;
-  // Set the default sorting field and direction
   sortField: string = 'dueDate'; // Default sorting field
-  sortDirection: string = 'asc'; // Default sorting direction
+  sortDirection: 'asc' | 'desc' = 'asc';// Default sorting direction
 
-  currentUser : userDetails;
+  currentUser: userDetails;
 
 
-  constructor(private taskService: TaskService, private router: Router, private commonDataService: CommonDataService) { 
+  constructor(private taskService: TaskService, private router: Router, private commonDataService: CommonDataService) {
     this.commonDataService.getCurrentUser().subscribe(userDetails => {
       if (userDetails) {
         this.currentUser = userDetails;
@@ -36,11 +35,11 @@ export class TaskManagementComponent {
         console.log('User details could not be fetched.');
       }
     });
-  
+
     // Perform the default sort when the component initializes
     this.sortTasksBy(this.sortField);
   }
-  
+
 
   fetchTasks(): void {
     this.taskService.getTask().subscribe(data => {
@@ -48,7 +47,7 @@ export class TaskManagementComponent {
         id: key,
         ...data[key]
       }));
-      
+
       if (this.currentUser && (this.currentUser.role !== 'admin' && this.currentUser.role !== 'accountmanager)')) {
         // Filter tasks where assignedToEmail matches the current user's email
         this.tasks = allTasks.filter(task => task.assignedToEmail === this.currentUser.email);
@@ -60,7 +59,7 @@ export class TaskManagementComponent {
       this.sortedTasks = [...this.tasks];
     });
   }
-  
+
 
   deleteTask(id: string, index: number): void {
     // Optimistically remove the task from the UI
@@ -86,17 +85,18 @@ export class TaskManagementComponent {
     this.router.navigate(['/taskManagement/taskDetails'], { state: { task } });
   }
 
-  sortTasksBy(field: string): void {
+  sortTasksBy(field: string, direction: 'asc' | 'desc' = 'asc'): void {
     if (this.sortField === field) {
       // Toggle sort direction if the same field is clicked
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
-      // Set the new sorting field and default to ascending order
+      // Set the new sorting field and sort direction
       this.sortField = field;
-      this.sortDirection = 'asc';
+      this.sortDirection = direction;
     }
 
     this.sortedTasks = [...this.tasks];
+
     this.sortedTasks.sort((a, b) => {
       let comparison = 0;
 
@@ -113,6 +113,6 @@ export class TaskManagementComponent {
       }
       return this.sortDirection === 'asc' ? comparison : -comparison;
     });
-  }
 
+  }
 }

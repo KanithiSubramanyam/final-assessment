@@ -14,27 +14,34 @@
               <th>Client Name</th>
               <th>Task Title</th>
               <th>Description</th>
-              <th (click)="sortTasksBy('dueDate')">
+              <th>
                 Due Date
-                <i [ngClass]="{
-                  'fas fa-arrow-up': sortField === 'dueDate' && sortDirection === 'asc',
-                  'fas fa-arrow-down': sortField === 'dueDate' && sortDirection === 'desc'
+                <i (click)="sortTasksBy('dueDate', 'asc')" class="fas fa-arrow-up" [ngClass]="{
+                  'text-primary': sortField === 'dueDate' && sortDirection === 'asc'
+                }"></i>
+                <i (click)="sortTasksBy('dueDate', 'desc')" class="fas fa-arrow-down" [ngClass]="{
+                  'text-primary': sortField === 'dueDate' && sortDirection === 'desc'
                 }"></i>
               </th>
-              <th (click)="sortTasksBy('priority')">
+              <th>
                 Priority
-                <i [ngClass]="{
-                  'fas fa-arrow-up': sortField === 'priority' && sortDirection === 'asc',
-                  'fas fa-arrow-down': sortField === 'priority' && sortDirection === 'desc'
+                <i (click)="sortTasksBy('priority', 'asc')" class="fas fa-arrow-up" [ngClass]="{
+                  'text-primary': sortField === 'priority' && sortDirection === 'asc'
+                }"></i>
+                <i (click)="sortTasksBy('priority', 'desc')" class="fas fa-arrow-down" [ngClass]="{
+                  'text-primary': sortField === 'priority' && sortDirection === 'desc'
                 }"></i>
               </th>
-              <th (click)="sortTasksBy('status')">
+              <th>
                 Status
-                <i [ngClass]="{
-                  'fas fa-arrow-up': sortField === 'status' && sortDirection === 'asc',
-                  'fas fa-arrow-down': sortField === 'status' && sortDirection === 'desc'
+                <i (click)="sortTasksBy('status', 'asc')" class="fas fa-arrow-up" [ngClass]="{
+                  'text-primary': sortField === 'status' && sortDirection === 'asc'
+                }"></i>
+                <i (click)="sortTasksBy('status', 'desc')" class="fas fa-arrow-down" [ngClass]="{
+                  'text-primary': sortField === 'status' && sortDirection === 'desc'
                 }"></i>
               </th>
+              
               <th>Assigned To</th>
               <th>Actions</th>
             </tr>
