@@ -156,9 +156,9 @@ import {  CommonModule } from '@angular/common';
 export class AddTaskComponent implements OnInit {
   addTaskForm: FormGroup;
   isEditMode: boolean = false;
-  
   editingtask:any =null;
   currentTask: any; // To hold the current task data
+  users: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -188,7 +188,10 @@ export class AddTaskComponent implements OnInit {
       this.isEditMode=true;
       this.addTaskForm.patchValue(this.editingtask);
     }
+    
   }
+
+  
 
   onSubmit(): void {
     if (this.addTaskForm.valid) {
