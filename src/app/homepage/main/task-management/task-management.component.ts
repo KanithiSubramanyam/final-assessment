@@ -1,16 +1,18 @@
-import { Component } from '@angular/core';
+import { Component,ChangeDetectorRef } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { TaskService } from '../../../Services/task.service';
 import { CommonModule } from '@angular/common';
 import { userDetails } from '../../../Model/userDetails';
 import { CommonDataService } from '../../../utilities/CommonData.service';
+import { FormsModule } from '@angular/forms';
+
 
 
 
 @Component({
   selector: 'app-task-management',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule,FormsModule ],
   templateUrl: './task-management.component.html',
   styleUrl: './task-management.component.css'
 })
@@ -21,11 +23,21 @@ export class TaskManagementComponent {
   currentTask: any;
   sortField: string = 'dueDate'; // Default sorting field
   sortDirection: 'asc' | 'desc' = 'asc';// Default sorting direction
+  sortAscending :boolean = true;
 
   currentUser: userDetails;
 
 
-  constructor(private taskService: TaskService, private router: Router, private commonDataService: CommonDataService) {
+  // Filter values
+  statusFilter: string = '';
+  priorityFilter: string = '';
+  dueDateFilter: string = '';
+  filteredTasks: any[] = [];
+  showFilterOptions = false;
+
+
+  constructor(private taskService: TaskService,
+    private router: Router,private commonDataService: CommonDataService, private cd: ChangeDetectorRef) {
     this.commonDataService.getCurrentUser().subscribe(userDetails => {
       if (userDetails) {
         this.currentUser = userDetails;
@@ -55,8 +67,9 @@ export class TaskManagementComponent {
         // If the user is an admin, show all tasks
         this.tasks = allTasks;
       }
-      console.log(this.tasks);
       this.sortedTasks = [...this.tasks];
+      this.filteredTasks = [...this.tasks];
+      this.applyFilters(); // Apply filters on initial load
     });
   }
 
@@ -115,4 +128,27 @@ export class TaskManagementComponent {
     });
 
   }
+
+  toggleFilter(): void {
+    this.showFilterOptions = !this.showFilterOptions;
+  }
+
+  applyFilters(): void {
+    this.sortedTasks = this.tasks.filter(task => {
+      return (
+        (!this.statusFilter || task.status === this.statusFilter) &&
+        (!this.priorityFilter || task.priority === this.priorityFilter) &&
+        (!this.dueDateFilter || new Date(task.dueDate).toISOString().split('T')[0] === this.dueDateFilter)
+      );
+    });
+  }
+
+  onSearchClick(): void {
+    this.applyFilters();
+  }
+
+
+
+
+  
 }
