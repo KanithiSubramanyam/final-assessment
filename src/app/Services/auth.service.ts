@@ -200,7 +200,6 @@ export class AuthService {
     if(login){
       localStorage.setItem('localUser', JSON.stringify(localUser));
     }
-    // localStorage.setItem('localUser', JSON.stringify(localUser));
   }
   
   private handleError(err: any) {

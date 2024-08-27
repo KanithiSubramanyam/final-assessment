@@ -20,11 +20,8 @@ export class SidebarComponent {
     onClickSideBarToggle(): void {
       this.isCollapsed = !this.isCollapsed;
   }
-
   logout(){
     this.authService.logOut();
   }
-
-
 
 }
