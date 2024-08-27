@@ -145,7 +145,7 @@ export class AuthService {
 
   }
 
-  getCurrentUserRole(callback: (role: string) => void): void {
+  getCurrentUser(callback: (role: string) => void): void {
     const user = JSON.parse(localStorage.getItem('localUser'));
     this.http.get<userDetails>(`${this.databaseUrl}/users/${user.id}.json`).subscribe(userData => {
       const role = userData.role;
@@ -156,7 +156,7 @@ export class AuthService {
   logOut() {
     const user = JSON.parse(localStorage.getItem('localUser'));
   
-    this.getCurrentUserRole((role) => {
+    this.getCurrentUser((role) => {
       // Log user logout activity
       this.logData = new ActivityLog(
         user.id,
@@ -323,7 +323,7 @@ export class AuthService {
 
     const user = JSON.parse(localStorage.getItem('localUser'));
   
-    this.getCurrentUserRole((role) => {
+    this.getCurrentUser((role) => {
       // Log user logout activity
       this.logData = new ActivityLog(
         user.id,

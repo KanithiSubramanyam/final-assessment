@@ -28,7 +28,7 @@ export const canActivate = (
             const requiredRoles = router.data['roles'] as Array<string>;
 
             if (requiredRoles) {
-                return commonDataService.getCurrentUserRole().pipe(
+                return commonDataService.getCurrentUser().pipe(
                     map(userData => {
                         const userRole = userData.role;
 

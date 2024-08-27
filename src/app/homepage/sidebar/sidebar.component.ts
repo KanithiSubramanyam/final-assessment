@@ -27,7 +27,7 @@ export class SidebarComponent {
     private authService: AuthService,
     private rolesService: RolesService
 ) {
-    this.commonDataService.getCurrentUserRole().subscribe(userDetails => {
+    this.commonDataService.getCurrentUser().subscribe(userDetails => {
         if (userDetails) {
             this.userRole = userDetails.role.toUpperCase();
             console.log('current login user role', this.userRole);

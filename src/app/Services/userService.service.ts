@@ -76,7 +76,7 @@ export class UserService {
 
         const user = JSON.parse(localStorage.getItem('localUser'));
 
-        this.authService.getCurrentUserRole((role) => {
+        this.authService.getCurrentUser((role) => {
           // Log user logout activity
           const logData = new ActivityLog(
             user.id,
