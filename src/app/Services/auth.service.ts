@@ -137,7 +137,16 @@ export class AuthService {
   }
   
   logOut() {
-    this.activityLogService.addActivityLog('logged out of application').subscribe(() => {
+    const res = JSON.parse(localStorage.getItem('localUser'));
+    this.logData = new ActivityLog(
+      res.localId,
+      res.email,
+      'user',
+      'A new user has been created by default signup method at  ' + new Date().toDateString(),
+      new Date(),
+    );
+    this.activityLogService.addActivityLog(this.logData);
+
       if (this.tokenExpirationTimer) {
         clearTimeout(this.tokenExpirationTimer);
       }
@@ -145,7 +154,7 @@ export class AuthService {
       this.router.navigate(['/login']);
       localStorage.removeItem('localUser');
       this.tokenExpirationTimer = null;
-    });
+    
   }
   
   autoLogout(expirationDuration: number) {
@@ -166,14 +175,12 @@ export class AuthService {
       res.email,
       res.localId,
       res.idToken,
-      expiresIn
+      expiresIn 
     );
-
+    localStorage.setItem('localUser', JSON.stringify(localUser));
     this.user.next(localUser);
     this.autoLogout(+res.expiresIn * 1000);
-    if(login){
-      localStorage.setItem('localUser', JSON.stringify(localUser));
-    }
+
   }
   
   private handleError(err: any) {

@@ -38,10 +38,13 @@ export class TaskManagementComponent {
 
   constructor(private taskService: TaskService,
     private router: Router,private commonDataService: CommonDataService, private cd: ChangeDetectorRef) {
+  }
+
+
+  ngOnInit(){
     this.commonDataService.getCurrentUser().subscribe(userDetails => {
       if (userDetails) {
         this.currentUser = userDetails;
-        // Fetch tasks after the user role is known
         this.fetchTasks();
       } else {
         console.log('User details could not be fetched.');
@@ -50,8 +53,8 @@ export class TaskManagementComponent {
 
     // Perform the default sort when the component initializes
     this.sortTasksBy(this.sortField);
+    this.cd.detectChanges(); // Force change detection if needed
   }
-
 
   fetchTasks(): void {
     this.taskService.getTask().subscribe(data => {

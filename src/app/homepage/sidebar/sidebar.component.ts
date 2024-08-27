@@ -6,6 +6,7 @@ import { AuthService } from '../../Services/auth.service';
 import { CommonDataService } from '../../utilities/CommonData.service';
 import { userDetails } from '../../Model/userDetails';
 import { RolesService } from '../../Services/Roles.service';
+import { ActivityLogService } from '../../Services/activityLog.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -25,16 +26,20 @@ export class SidebarComponent {
   constructor(
     private commonDataService: CommonDataService,
     private authService: AuthService,
-    private rolesService: RolesService
+    private rolesService: RolesService,
+    private activityLogService: ActivityLogService
 ) {
-    this.commonDataService.getCurrentUser().subscribe(userDetails => {
-        if (userDetails) {
-            this.userRole = userDetails.role.toUpperCase();
-            console.log('current login user role', this.userRole);
-        } else {
-            console.log('User role could not be fetched.');
-        }
-    });
+    
+}
+ngOnInit() {
+  this.commonDataService.getCurrentUser().subscribe(userDetails => {
+    if (userDetails) {
+        this.userRole = userDetails.role.toUpperCase();
+        console.log('current login user role', this.userRole);
+    } else {
+        console.log('User role could not be fetched.');
+    }
+});
 }
 
 
@@ -49,8 +54,7 @@ export class SidebarComponent {
   onClickSideBarToggle(): void {
     this.isCollapsed = !this.isCollapsed;
   }
-
-  logout() {
+  logout(){
     this.authService.logOut();
-  }
+  } 
 }
