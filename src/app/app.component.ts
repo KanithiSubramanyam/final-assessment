@@ -7,13 +7,14 @@ import { MainComponent } from './homepage/main/main.component';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './Services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,LoginComponent, SidebarComponent, TopbarComponent, MainComponent ,CommonModule,ReactiveFormsModule],
+  imports: [RouterOutlet,LoginComponent, SidebarComponent, TopbarComponent, MainComponent ,CommonModule,ReactiveFormsModule,FormsModule, ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

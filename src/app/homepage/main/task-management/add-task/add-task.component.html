@@ -61,15 +61,62 @@
           <label for="assignedTo" class="form-label">Assigned To</label>
           <input type="text" id="assignedTo" class="form-control" formControlName="assignedTo">
         </div> -->
-        <div class="mb-3">
+        <!-- <div class="mb-3">
           <label for="assignedTo" class="form-label">Assigned To</label>
-          <select id="assignedTo" class="form-select" formControlName="assignedTo" (change)="onUserSelect($event)" required>
+          <select id="assignedTo" class="form-select select2" formControlName="assignedTo" (change)="onUserSelect($event)" required>
             <option *ngFor="let user of users" [value]="user.email">{{ user.firstName }} {{ user.lastName }} ({{ user.email }})</option>
           </select>
           <div *ngIf="addTaskForm.get('assignedTo').touched && addTaskForm.get('assignedTo').invalid" class="text-danger">
             Please select a user to assign.
           </div>
+        </div> -->
+        <div class="mb-3">
+          <label for="assignedTo" class="form-label">Assigned To</label>
+          <div class="position-relative">
+            <button
+              class="btn btn-light w-100 d-flex justify-content-between align-items-center dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              {{ selectedUser ? selectedUser.firstName + ' ' + selectedUser.lastName : 'Select User' }}
+              <span class="dropdown-toggle-icon ms-2"></span>
+            </button>
+            <ul class="dropdown-menu w-100 mt-0" aria-labelledby="dropdownMenuButton">
+              <div class="px-3 py-2">
+                <input
+                  type="text"
+                  class="form-control mb-2"
+                  placeholder="Search user..."
+                  [value]="searchTerm"
+                  (input)="onSearchTermChange($event)"
+                />
+              </div>
+              <li *ngFor="let user of filteredUsers">
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  (click)="selectUser(user); $event.preventDefault();"
+                >
+                  {{ user.firstName }} {{ user.lastName }} ({{ user.email }})
+                </a>
+              </li>
+              <li *ngIf="filteredUsers.length === 0">
+                <span class="dropdown-item text-danger">No users found.</span>
+              </li>
+            </ul>
+          </div>
+          <!-- Hidden input to store selected user's email -->
+          <input type="hidden" formControlName="assignedTo">
+          <div *ngIf="addTaskForm.get('assignedTo').touched && addTaskForm.get('assignedTo').invalid" class="text-danger">
+            Please select a user to assign.
+          </div>
         </div>
+
+          
+        
+        
         
 
         <button type="submit" class="btn btn-primary" [disabled]="!addTaskForm.valid">Save Task</button>
