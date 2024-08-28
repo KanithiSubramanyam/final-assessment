@@ -1,0 +1,68 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow-lg rounded-3">
+          <div class="card-header bg-primary text-white text-center">
+            <h4>{{ isEditMode ? 'Edit Customer' : 'Add new Customer' }}</h4>
+          </div>
+          <div class="card-body p-4">
+            <form [formGroup]="customerForm" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="firstName" class="form-label">First Name</label>
+                  <input type="text" id="firstName" formControlName="firstName" class="form-control" placeholder="Enter First Name">
+                  <div *ngIf="customerForm.get('firstName').touched && customerForm.get('firstName').invalid" class="text-danger">
+                    First Name is required.
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="lastName" class="form-label">Last Name</label>
+                  <input type="text" id="lastName" formControlName="lastName" class="form-control" placeholder="Enter Last Name">
+                  <div *ngIf="customerForm.get('lastName').touched && customerForm.get('lastName').invalid" class="text-danger">
+                    Last Name is required.
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" formControlName="email" class="form-control" placeholder="Enter Email">
+                <div *ngIf="customerForm.get('email').touched && customerForm.get('email').invalid" class="text-danger">
+                  Enter a valid email.
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="tel" id="phone" formControlName="phone" class="form-control" placeholder="Enter Phone Number">
+                <div *ngIf="customerForm.get('phone').touched && customerForm.get('phone').invalid" class="text-danger">
+                  Enter a valid phone number.
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <textarea id="address" formControlName="address" class="form-control" placeholder="Enter Address"></textarea>
+                <div *ngIf="customerForm.get('address').touched && customerForm.get('address').invalid" class="text-danger">
+                  Address is required.
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="createdDate" class="form-label">Created Date</label>
+                <input type="date" id="createdDate" formControlName="createdDate" class="form-control">
+                <div *ngIf="customerForm.get('createdDate').touched && customerForm.get('createdDate').invalid" class="text-danger">
+                  Created Date is required.
+                </div>
+              </div>
+              
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-block" [disabled]="customerForm.invalid">Save Customer</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
