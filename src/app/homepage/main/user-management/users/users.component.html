@@ -1,86 +1,88 @@
 <div class="container ">
-    <div class="d-flex justify-content-between align-items-center mb-3 py-4">
-      <h4>Users</h4>
-      <button class="btn btn-primary" [routerLink]="['/userManagement/users/adduser']">Add New</button>
-    </div>
-  
-    <div class="card">
-      <div class="card-body">
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <input type="text" class="form-control" placeholder="Search">
-          </div>
-          <div class="col-md-3">
+  <div class="d-flex justify-content-between align-items-center mb-3 py-4">
+    <h4>Users</h4>
+    <button class="btn btn-primary" [routerLink]="['/userManagement/users/adduser']">Add New</button>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <input type="text" class="form-control" placeholder="Search" [(ngModel)]="searchTerm" (input)="filterUsers()">
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Filters
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Filter 1</a></li>
+            <li><a class="dropdown-item" href="#">Filter 2</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 text-end">
+          <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Filters
+              Columns
             </button>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Filter 1</a></li>
-              <li><a class="dropdown-item" href="#">Filter 2</a></li>
+              <li><a class="dropdown-item" href="#">5</a></li>
+              <li><a class="dropdown-item" href="#">10</a></li>
+              <li><a class="dropdown-item" href="#">20</a></li>
             </ul>
           </div>
-          <div class="col-md-3 text-end">
-            <div class="dropdown">
-              <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Columns
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">5</a></li>
-                <li><a class="dropdown-item" href="#">10</a></li>
-                <li><a class="dropdown-item" href="#">20</a></li>
-              </ul>
-            </div>
-          </div>
         </div>
-  
-        <table class="table table-bordered table-hover">
-          <thead class="table-light">
-            <tr>
-              <th>S.no</th>
-              <th (click)="sortBy('firstName')">Name <i class="fas fa-sort"  [class.asc]="sortField === 'firstName' && sortAscending" [class.desc]="sortField === 'firstName' && !sortAscending"></i></th>
-              <th (click)="sortBy('email')">Email <i class="fas fa-sort"  [class.asc]="sortField === 'email' && sortAscending" [class.desc]="sortField === 'email' && !sortAscending"></i></th>
-              <th>Mobile</th>
-              <th >Address</th>
-              <th (click)="sortBy('role')" >Role <i class="fas fa-sort"   [class.asc]="sortField === 'role' && sortAscending" [class.desc]="sortField === 'role' && !sortAscending" ></i></th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let user of users; let i = index">
-              <td>{{ i + 1 }}</td>
-              <td>{{ user.firstName }} {{ user.lastName }}</td>
-              <td>{{ user.email }}</td>
-              <td>{{ user.phone }}</td>
-              <td>{{ user.address }}</td>
-              <td>{{ user.role }}</td>
-              <td>
-                <button class="btn btn-outline-secondary btn-sm" [routerLink]="['/userManagement/users/viewProfile', i]"><i class="fas fa-eye"></i></button>
-                <button class="btn btn-outline-secondary btn-sm" [routerLink]="['/userManagement/users/editProfile', i]" ><i class="fas fa-edit"></i></button>
-                <button class="btn btn-outline-danger btn-sm" (click)="deleteAccount(user)"><i class="fas fa-trash"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-  
-        <div class="d-flex justify-content-between align-items-center">
-          <div>Showing {{ users.length }} of {{ users.length }} results</div>
-          <nav>
-            <ul class="pagination mb-0">
-              <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1">Previous</a>
-              </li>
-              <li class="page-item active"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item"><a class="page-link" href="#">4</a></li>
-              <li class="page-item"><a class="page-link" href="#">5</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
+      </div>
+
+      <table class="table table-bordered table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>S.no</th>
+            <th (click)="sortBy('firstName')">Name <i class="fas fa-sort"  [class.asc]="sortField === 'firstName' && sortAscending" [class.desc]="sortField === 'firstName' && !sortAscending"></i></th>
+            <th (click)="sortBy('email')">Email <i class="fas fa-sort"  [class.asc]="sortField === 'email' && sortAscending" [class.desc]="sortField === 'email' && !sortAscending"></i></th>
+            <th>Mobile</th>
+            <th >Address</th>
+            <th (click)="sortBy('role')" >Role <i class="fas fa-sort"   [class.asc]="sortField === 'role' && sortAscending" [class.desc]="sortField === 'role' && !sortAscending" ></i></th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUsers; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td [innerHTML]="highlightText(user.firstName + ' ' + user.lastName)"></td>
+            <td [innerHTML]="highlightText(user.email)"></td>
+            <td>{{ user.phone }}</td>
+            <td>{{ user.address }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+              <button class="btn btn-outline-secondary btn-sm" [routerLink]="['/userManagement/users/viewProfile', i]"><i class="fas fa-eye"></i></button>
+              <button class="btn btn-outline-secondary btn-sm" [routerLink]="['/userManagement/users/editProfile', i]" ><i class="fas fa-edit"></i></button>
+              <button class="btn btn-outline-danger btn-sm" (click)="deleteAccount(user)"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+          <tr *ngIf="filteredUsers.length === 0">
+            <td colspan="7" class="text-center">No users found</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <div>Showing {{ filteredUsers.length }} of {{ users.length }} results</div>
+        <nav>
+          <ul class="pagination mb-0">
+            <li class="page-item disabled">
+              <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">5</a></li>
+            <li class="page-item">
+              <a class="page-link" href="#">Next</a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
-  
+</div>

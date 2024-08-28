@@ -3,9 +3,10 @@ import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { Router } from 'express';
 import { AuthService } from '../../Services/auth.service';
-import { CommonDataService } from '../../utilites/CommonData.service';
 import { userDetails } from '../../Model/userDetails';
 import { RolesService } from '../../Services/Roles.service';
+import { ActivityLogService } from '../../Services/activityLog.service';
+import { UserService } from '../../Services/userService.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -23,18 +24,20 @@ export class SidebarComponent {
   public readonly USER = RolesService.USER;
   
   constructor(
-    private commonDataService: CommonDataService,
+    private userService: UserService,
     private authService: AuthService,
-    private rolesService: RolesService
 ) {
-    this.commonDataService.getCurrentUser().subscribe(userDetails => {
-        if (userDetails) {
-            this.userRole = userDetails.role.toUpperCase();
-            console.log('current login user role', this.userRole);
-        } else {
-            console.log('User role could not be fetched.');
-        }
-    });
+}
+
+ngOnInit() {
+  this.userService.getCurrentUser().subscribe(userDetails => {
+    if (userDetails) {
+        this.userRole = userDetails.role.toUpperCase();
+        console.log('current login user role', this.userRole);
+    } else {
+        console.log('User role could not be fetched.');
+    }
+});
 }
 
 
@@ -49,8 +52,7 @@ export class SidebarComponent {
   onClickSideBarToggle(): void {
     this.isCollapsed = !this.isCollapsed;
   }
-
-  logout() {
-    this.authService.logOut();
-  }
+  logout(){
+    this.authService.logOut(null);
+  } 
 }

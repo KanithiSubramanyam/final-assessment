@@ -38,7 +38,7 @@ export class ChangePasswordComponent {
         return;
       }
 
-      const userString = localStorage.getItem('localUser');
+      const userString = sessionStorage.getItem('localUser');
       if (userString) {
         const user = JSON.parse(userString);
         const idToken = user._token;

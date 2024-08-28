@@ -15,6 +15,7 @@ export class userDetails {
     public createdAt: Date = new Date(),
     public lastLoginAt: Date = new Date(),
     public mfaBtn : boolean = false,
-    public mfaSecertKey : string = ''
+    public mfaSecertKey : string = '',
+    public name?: string
   ) {}
 }

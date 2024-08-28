@@ -33,14 +33,14 @@ export class UserService {
 
   //get current user data
   getCurrentUser() {
-    const loggedInUser = JSON.parse(localStorage.getItem('localUser') || '{}');
+    const loggedInUser = JSON.parse(sessionStorage.getItem('localUser') || '{}');
 
     if (!loggedInUser || !loggedInUser.email) {
       return throwError(() => new Error('No user is logged in.'));
     }
     const userUrl = `${this.dataBaseUrl}`;
 
-    return this.http.get<{ [key: string]: User }>(userUrl).pipe(
+    return this.http.get<{ [key: string]: userDetails }>(userUrl).pipe(
       map(response => {
         const usersArray = Object.values(response);
         const matchedUser = usersArray.find(userData => userData.email === loggedInUser.email);
@@ -56,38 +56,22 @@ export class UserService {
 
 
   updateUserDetails(updatedData: Partial<userDetails>): Observable<any> {
-    const loggedInUser = JSON.parse(localStorage.getItem('localUser') || '{}');
+    const loggedInUser = JSON.parse(sessionStorage.getItem('localUser') || '{}');
 
     if (!loggedInUser || !loggedInUser.email) {
       return throwError(() => new Error('No user is logged in.'));
     }
-
-    // Fetch all users and find the key for the current user
     return this.getAllUsers().pipe(
       take(1),
       exhaustMap(users => {
         const userKey = Object.keys(users).find(key => users[key].email === loggedInUser.email);
-
         if (!userKey) {
           throw new Error('User not found');
         }
-
         const userUrl = `${this.dataBaseUrl.replace('.json', '')}/${userKey}.json`;
 
-        const user = JSON.parse(localStorage.getItem('localUser'));
-
-        this.authService.getCurrentUser((role) => {
-          // Log user logout activity
-          const logData = new ActivityLog(
-            user.id,
-            user.email,
-            role,
-            `${user.email} has update user details at ${new Date().toDateString()}`,
-            new Date()
-          );
-          this.activityLogService.addActivityLog(logData);
-        });
-
+        //activity log 
+        this.activityLogService.addActivityLog('User Details has been updated');
 
         return this.http.patch(userUrl, updatedData);
       }),
@@ -102,7 +86,6 @@ export class UserService {
         map(users => Object.values(users))
       ).subscribe(
         users => {
-          console.log('userdata', users);
           if (position >= 0 && position < users.length) {
             const user = users[position];
             observer.next(user);
@@ -114,6 +97,12 @@ export class UserService {
         error => observer.error(error)
       );
     });
+  }
+
+
+  getCurrentUserData(id){
+      return this.http.get<userDetails>(`${this.dataBaseUrl.replace('.json', '')}/${id}.json`);
+
   }
 
 }
