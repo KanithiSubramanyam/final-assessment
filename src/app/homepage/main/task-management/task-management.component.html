@@ -29,16 +29,22 @@
                 <option value="High">High</option>
               </select>
             </div>
-
-              <div class="col-md-4 d-flex align-items-center">
-                <div class="me-2 flex-grow-1">
-                  <label for="dueDateFilter">Due Date:</label>
-                  <input type="date" id="dueDateFilter" class="form-control" [(ngModel)]="dueDateFilter">
-                </div>
-                <button class="btn btn-primary search-btn" (click)="onSearchClick()">Search</button>
+            <div class="col-md-4 d-flex align-items-center">
+              <div class="me-2 flex-grow-1">
+                <label for="dueDateFilter">Due Date:</label>
+                <input type="date" id="dueDateFilter" class="form-control" [(ngModel)]="dueDateFilter">
               </div>
+              <button class="btn btn-primary search-btn" (click)="onSearchClick()">Search</button>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <input type="text" class="form-control" placeholder="Search" [(ngModel)]="searchTerm" (input)="onSearchClick()">
+        </div>
       </div>
 
       <!-- Task Table Section -->
@@ -84,13 +90,13 @@
           <tbody>
             <tr *ngFor="let task of sortedTasks; let i = index">
               <td>{{ i + 1 }}</td>
-              <td>{{ task.clientName }}</td>
-              <td>{{ task.taskTitle }}</td>
-              <td>{{ task.description }}</td>
+              <td [innerHTML]="highlightText(task.clientName)"></td>
+              <td [innerHTML]="highlightText(task.taskTitle)"></td>
+              <td [innerHTML]="highlightText(task.description)"></td>
               <td>{{ task.dueDate | date:'yyyy-MM-dd' }}</td>
-              <td>{{ task.priority }}</td>
-              <td>{{ task.status }}</td>
-              <td>{{ task.assignedTo }}</td>
+              <td [innerHTML]="highlightText(task.priority)"></td>
+              <td [innerHTML]="highlightText(task.status)"></td>
+              <td [innerHTML]="highlightText(task.assignedTo)"></td>
               <td>
                 <button class="btn btn-outline-secondary btn-sm" (click)="onViewTaskClicked(task)">
                   <i class="fas fa-eye"></i>

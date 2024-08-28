@@ -1,4 +1,4 @@
-import { Component,ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { TaskService } from '../../../Services/task.service';
 import { CommonModule } from '@angular/common';
@@ -7,15 +7,12 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../Services/auth.service';
 import { UserService } from '../../../Services/userService.service';
 
-
-
-
 @Component({
   selector: 'app-task-management',
   standalone: true,
-  imports: [RouterLink, CommonModule,FormsModule ],
+  imports: [RouterLink, CommonModule, FormsModule],
   templateUrl: './task-management.component.html',
-  styleUrl: './task-management.component.css'
+  styleUrls: ['./task-management.component.css']  // Corrected from styleUrl to styleUrls
 })
 export class TaskManagementComponent {
 
@@ -23,24 +20,25 @@ export class TaskManagementComponent {
   sortedTasks: any[] = [];
   currentTask: any;
   sortField: string = 'dueDate'; // Default sorting field
-  sortDirection: 'asc' | 'desc' = 'asc';// Default sorting direction
-  sortAscending :boolean = true;
+  sortDirection: 'asc' | 'desc' = 'asc'; // Default sorting direction
 
   currentUser: userDetails;
-
 
   // Filter values
   statusFilter: string = '';
   priorityFilter: string = '';
   dueDateFilter: string = '';
-  filteredTasks: any[] = [];
+  searchTerm: string = '';  // Search term
   showFilterOptions = false;
 
+  constructor(
+    private taskService: TaskService,
+    private router: Router,
+    private cd: ChangeDetectorRef,
+    private userService: UserService
+  ) {}
 
-  constructor(private taskService: TaskService,
-    private router: Router, private cd: ChangeDetectorRef, private userService: UserService) {
-  }
-  ngOnInit(){
+  ngOnInit() {
     this.userService.getCurrentUser().subscribe(userDetails => {
       if (userDetails) {
         this.currentUser = userDetails;
@@ -50,39 +48,28 @@ export class TaskManagementComponent {
       }
     });
 
-    // Perform the default sort when the component initializes
     this.sortTasksBy(this.sortField);
-    this.cd.detectChanges(); // Force change detection if needed
+    this.cd.detectChanges();
   }
-
-
 
   fetchTasks(): void {
     this.taskService.getTask().subscribe(data => {
-      let allTasks
-      if(data){
-         allTasks = Object.keys(data).map(key => ({
-          id: key,
-          ...data[key]
-        }));
-      }
-      else{
-        allTasks = [];
-     }
+      let allTasks = data
+        ? Object.keys(data).map(key => ({
+            id: key,
+            ...data[key]
+          }))
+        : [];
 
-      if (this.currentUser && (this.currentUser.role !== 'admin' && this.currentUser.role !== 'accountmanager)')) {
-        // Filter tasks where assignedToEmail matches the current user's email
+      if (this.currentUser && this.currentUser.role !== 'admin' && this.currentUser.role !== 'accountmanager') {
         this.tasks = allTasks.filter(task => task.assignedToEmail === this.currentUser.email);
       } else {
-        // If the user is an admin, show all tasks
         this.tasks = allTasks;
       }
-      this.sortedTasks = [...this.tasks];
-      this.filteredTasks = [...this.tasks];
-      this.applyFilters(); // Apply filters on initial load
+
+      this.applyFilters();
     });
   }
-
 
   deleteTask(id: string, index: number): void {
     const removedTask = this.tasks.splice(index, 1)[0];
@@ -92,9 +79,8 @@ export class TaskManagementComponent {
         console.log(`Task with ID ${id} has been deleted`);
         this.fetchTasks(); // Re-fetch the tasks
       },
-      error: (error) => {
+      error: error => {
         console.error('Error deleting task:', error);
-        // If there was an error, add the task back to the list
         this.tasks.splice(index, 0, removedTask);
       }
     });
@@ -110,33 +96,13 @@ export class TaskManagementComponent {
 
   sortTasksBy(field: string, direction: 'asc' | 'desc' = 'asc'): void {
     if (this.sortField === field) {
-      // Toggle sort direction if the same field is clicked
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
-      // Set the new sorting field and sort direction
       this.sortField = field;
       this.sortDirection = direction;
     }
 
-    this.sortedTasks = [...this.tasks];
-
-    this.sortedTasks.sort((a, b) => {
-      let comparison = 0;
-
-      if (field === 'dueDate') {
-        comparison = new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-      } else if (field === 'priority') {
-        const priorities = ['Low', 'Medium', 'High'];
-        comparison = priorities.indexOf(a.priority) - priorities.indexOf(b.priority);
-      } else if (field === 'status') {
-        const statusesAsc = ['Not Started', 'In Progress', 'Completed'];
-        const aIndex = statusesAsc.indexOf(a.status);
-        const bIndex = statusesAsc.indexOf(b.status);
-        comparison = aIndex - bIndex;
-      }
-      return this.sortDirection === 'asc' ? comparison : -comparison;
-    });
-
+    this.applySorting();
   }
 
   toggleFilter(): void {
@@ -148,17 +114,51 @@ export class TaskManagementComponent {
       return (
         (!this.statusFilter || task.status === this.statusFilter) &&
         (!this.priorityFilter || task.priority === this.priorityFilter) &&
-        (!this.dueDateFilter || new Date(task.dueDate).toISOString().split('T')[0] === this.dueDateFilter)
+        (!this.dueDateFilter || new Date(task.dueDate).toISOString().split('T')[0] === this.dueDateFilter) &&
+        (!this.searchTerm || this.isSearchMatch(task))
       );
     });
+
+    this.applySorting();
+  }
+
+  applySorting(): void {
+    this.sortedTasks.sort((a, b) => {
+      let comparison = 0;
+
+      if (this.sortField === 'dueDate') {
+        comparison = new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      } else if (this.sortField === 'priority') {
+        const priorities = ['Low', 'Medium', 'High'];
+        comparison = priorities.indexOf(a.priority) - priorities.indexOf(b.priority);
+      } else if (this.sortField === 'status') {
+        const statuses = ['Not Started', 'In Progress', 'Completed'];
+        comparison = statuses.indexOf(a.status) - statuses.indexOf(b.status);
+      }
+
+      return this.sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }
+
+  isSearchMatch(task: any): boolean {
+    const term = this.searchTerm.toLowerCase();
+    return (
+      task.clientName.toLowerCase().includes(term) ||
+      task.taskTitle.toLowerCase().includes(term) ||
+      task.description.toLowerCase().includes(term) ||
+      task.assignedTo.toLowerCase().includes(term)
+    );
+  }
+
+  highlightText(text: string): string {
+    if (!this.searchTerm) {
+      return text;
+    }
+    const regex = new RegExp(`(${this.searchTerm})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
   }
 
   onSearchClick(): void {
     this.applyFilters();
   }
-
-
-
-
-  
 }
