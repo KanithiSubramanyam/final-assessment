@@ -3,8 +3,9 @@ import { RouterLink, Router } from '@angular/router';
 import { TaskService } from '../../../Services/task.service';
 import { CommonModule } from '@angular/common';
 import { userDetails } from '../../../Model/userDetails';
-import { CommonDataService } from '../../../utilities/CommonData.service';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../Services/auth.service';
+import { UserService } from '../../../Services/userService.service';
 
 
 
@@ -37,12 +38,10 @@ export class TaskManagementComponent {
 
 
   constructor(private taskService: TaskService,
-    private router: Router,private commonDataService: CommonDataService, private cd: ChangeDetectorRef) {
+    private router: Router, private cd: ChangeDetectorRef, private userService: UserService) {
   }
-
-
   ngOnInit(){
-    this.commonDataService.getCurrentUser().subscribe(userDetails => {
+    this.userService.getCurrentUser().subscribe(userDetails => {
       if (userDetails) {
         this.currentUser = userDetails;
         this.fetchTasks();

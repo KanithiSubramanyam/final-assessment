@@ -7,7 +7,6 @@ import { AuthResponse } from '../Model/AuthResponse';
 import { userDetails } from '../Model/userDetails';
 import { ActivityLogService } from './activityLog.service';
 import { ActivityLog } from '../Model/ActivityLog';
-import { CommonDataService } from '../utilities/CommonData.service';
 import { AppService } from './app.service';
 
 @Injectable({
@@ -33,7 +32,6 @@ export class AuthService {
     private http: HttpClient,
     public router: Router,
     private activityLogService: ActivityLogService,
-    private commonDataService: CommonDataService,
     private appService: AppService
   ) {}
 

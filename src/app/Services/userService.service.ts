@@ -40,7 +40,7 @@ export class UserService {
     }
     const userUrl = `${this.dataBaseUrl}`;
 
-    return this.http.get<{ [key: string]: User }>(userUrl).pipe(
+    return this.http.get<{ [key: string]: userDetails }>(userUrl).pipe(
       map(response => {
         const usersArray = Object.values(response);
         const matchedUser = usersArray.find(userData => userData.email === loggedInUser.email);
