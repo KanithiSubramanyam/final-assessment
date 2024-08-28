@@ -100,7 +100,7 @@ export class ProfileComponent implements OnInit {
     this.mfaCloseBtn = true;
     this.isMfaEnabledBtn = true;
     const qrCodeSecret = this.generateBase32Secret();
-    const userData = localStorage.getItem('localUser');
+    const userData = sessionStorage.getItem('localUser');
     const uid = userData ? JSON.parse(userData).id : '';
     const email = userData ? JSON.parse(userData).email : '';
     const issuer = 'final-assessment-1';
@@ -116,7 +116,7 @@ export class ProfileComponent implements OnInit {
 
   disableMfa() {
     this.isMfaEnabledBtn = false;
-    const userData = localStorage.getItem('localUser');
+    const userData = sessionStorage.getItem('localUser');
     const uid = userData ? JSON.parse(userData).id : '';
     this.authService.getUserProfile(uid).subscribe(userData => {
       userData.mfaBtn = false;

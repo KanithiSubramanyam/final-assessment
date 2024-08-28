@@ -55,6 +55,6 @@ ngOnInit() {
     this.isCollapsed = !this.isCollapsed;
   }
   logout(){
-    this.authService.logOut();
+    this.authService.logOut(null);
   } 
 }

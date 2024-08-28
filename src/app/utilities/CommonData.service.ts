@@ -12,15 +12,15 @@ export class CommonDataService {
   private user: userDetails | null = null;
 
   constructor(private http: HttpClient) {
-    this.loadUserFromLocalStorage();
+    this.loadUserFromsessionStorage();
   }
 
-  private loadUserFromLocalStorage(): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const storedUser = localStorage.getItem('localUser');
+  private loadUserFromsessionStorage(): void {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      const storedUser = sessionStorage.getItem('localUser');
       this.user = storedUser ? JSON.parse(storedUser) : null;
     } else {
-      console.warn('localStorage is not available.');
+      console.warn('sessionStorage is not available.');
       this.user = null;
     }
   }
