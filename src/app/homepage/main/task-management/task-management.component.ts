@@ -55,12 +55,20 @@ export class TaskManagementComponent {
     this.cd.detectChanges(); // Force change detection if needed
   }
 
+
+
   fetchTasks(): void {
     this.taskService.getTask().subscribe(data => {
-      const allTasks = Object.keys(data).map(key => ({
-        id: key,
-        ...data[key]
-      }));
+      let allTasks
+      if(data){
+         allTasks = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        }));
+      }
+      else{
+        allTasks = [];
+     }
 
       if (this.currentUser && (this.currentUser.role !== 'admin' && this.currentUser.role !== 'accountmanager)')) {
         // Filter tasks where assignedToEmail matches the current user's email
@@ -77,12 +85,12 @@ export class TaskManagementComponent {
 
 
   deleteTask(id: string, index: number): void {
-    // Optimistically remove the task from the UI
     const removedTask = this.tasks.splice(index, 1)[0];
 
     this.taskService.deleteTask(id).subscribe({
       next: () => {
         console.log(`Task with ID ${id} has been deleted`);
+        this.fetchTasks(); // Re-fetch the tasks
       },
       error: (error) => {
         console.error('Error deleting task:', error);
