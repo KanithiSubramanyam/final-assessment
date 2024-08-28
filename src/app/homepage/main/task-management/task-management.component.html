@@ -6,6 +6,42 @@
 
   <div class="card">
     <div class="card-body">
+      <!-- Filter Section -->
+      <div class="mb-4">
+        <button class="btn btn-info" (click)="toggleFilter()">Filter By</button>
+        <div *ngIf="showFilterOptions" class="mt-3">
+          <div class="row">
+            <div class="col-md-4">
+              <label for="statusFilter">Status:</label>
+              <select id="statusFilter" class="form-select" [(ngModel)]="statusFilter">
+                <option value="">Status</option>
+                <option value="Not Started">Not Started</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="priorityFilter">Priority:</label>
+              <select id="priorityFilter" class="form-select" [(ngModel)]="priorityFilter">
+                <option value="">Priority</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+
+              <div class="col-md-4 d-flex align-items-center">
+                <div class="me-2 flex-grow-1">
+                  <label for="dueDateFilter">Due Date:</label>
+                  <input type="date" id="dueDateFilter" class="form-control" [(ngModel)]="dueDateFilter">
+                </div>
+                <button class="btn btn-primary search-btn" (click)="onSearchClick()">Search</button>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <!-- Task Table Section -->
       <div class="table-responsive">
         <table class="table table-bordered table-hover">
           <thead class="table-light">
@@ -41,7 +77,6 @@
                   'text-primary': sortField === 'status' && sortDirection === 'desc'
                 }"></i>
               </th>
-              
               <th>Assigned To</th>
               <th>Actions</th>
             </tr>

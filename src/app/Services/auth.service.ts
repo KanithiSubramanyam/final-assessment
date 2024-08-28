@@ -8,6 +8,7 @@ import { error } from "console";
 import { userDetails } from "../Model/userDetails";
 import { ActivityLogService } from "./activityLog.service";
 import { ActivityLog } from "../Model/ActivityLog";
+import { CommonDataService } from "../utilities/CommonData.service";
 
 
 @Injectable({
@@ -20,7 +21,7 @@ export class AuthService {
   user = new BehaviorSubject<User>(null);
   router: Router = inject(Router);
   activityLogService : ActivityLogService = inject(ActivityLogService);
-
+  commonDataService : CommonDataService = inject(CommonDataService);
   private tokenExpirationTimer: any;
 
   public token = null;
@@ -92,6 +93,7 @@ export class AuthService {
       );
   }
   
+  //login to the application
   logIn(email: string, password: string) {
     const data = { email: email, password: password, returnSecureToken: true };
     return this.http.post<AuthResponse>(this.signinUrl + this.webApi, data)
@@ -107,15 +109,7 @@ export class AuthService {
           this.http.put(`${this.databaseUrl}/users/${res.localId}.json`, userData)
             .subscribe();
 
-            //log user login activity
-            const logData = new ActivityLog(
-              res.localId,
-              res.email,
-              userData.role,
-              `${userData.email} has logged in at ${new Date().toDateString()}`,
-              new Date(),
-            );
-            this.activityLogService.addActivityLog(logData);
+          this.activityLogService.addActivityLog('Logged in to the application ');
         });
       })
     );
@@ -128,7 +122,6 @@ export class AuthService {
   
   autoLogin() {
     const user = JSON.parse(localStorage.getItem('localUser'));
-    // console.log('auto login user', user);
     if (!user) {
       return;
     }
@@ -137,69 +130,57 @@ export class AuthService {
 
     if (loggedUser._token) {
       loggedUser._expiresIn = new Date(loggedUser._expiresIn);
-      // console.log('log in user', loggedUser._expiresIn);
       this.user.next(loggedUser);
       const timerValue = loggedUser._expiresIn.getTime() - new Date().getTime();
       this.autoLogout(timerValue);
     }
-
-  }
-
-  getCurrentUser(callback: (role: string) => void): void {
-    const user = JSON.parse(localStorage.getItem('localUser'));
-    this.http.get<userDetails>(`${this.databaseUrl}/users/${user.id}.json`).subscribe(userData => {
-      const role = userData.role;
-      callback(role); // Pass the role to the callback
-    });
   }
   
   logOut() {
-    const user = JSON.parse(localStorage.getItem('localUser'));
-  
-    this.getCurrentUser((role) => {
-      // Log user logout activity
-      this.logData = new ActivityLog(
-        user.id,
-        user.email,
-        role,
-        `${user.email} has logged out at ${new Date().toDateString()}`,
-        new Date()
-      );
-      this.activityLogService.addActivityLog(this.logData);
+    const res = JSON.parse(localStorage.getItem('localUser'));
+    this.logData = new ActivityLog(
+      res.localId,
+      res.email,
+      'user',
+      'A new user has been created by default signup method at  ' + new Date().toDateString(),
+      new Date(),
+    );
+    this.activityLogService.addActivityLog(this.logData);
 
-      this.user.next(null);
-      this.router.navigate(['/login']);
-      localStorage.removeItem('localUser');
       if (this.tokenExpirationTimer) {
         clearTimeout(this.tokenExpirationTimer);
       }
+      this.user.next(null);
+      this.router.navigate(['/login']);
+      localStorage.removeItem('localUser');
       this.tokenExpirationTimer = null;
-    });
+    
   }
   
-
   autoLogout(expirationDuration: number) {
+    console.log(`Auto logout will happen in: ${expirationDuration} ms`);
     this.tokenExpirationTimer = setTimeout(() => {
-      this.logOut();
+        this.activityLogService.addActivityLog('Auto Logged Off from the application').subscribe(() => {
+            this.logOut();
+        });
     }, expirationDuration);
-  }
+}
+
 
   private handleCreateUser(res: AuthResponse, login: boolean) {
-    const expiresInTs = new Date().getTime() + +res.expiresIn * 1000;
+    const expiresInTs = new Date().getTime() + +res.expiresIn * 100;
     const expiresIn = new Date(expiresInTs);
 
     const localUser = new User(
       res.email,
       res.localId,
       res.idToken,
-      expiresIn
+      expiresIn 
     );
-
+    localStorage.setItem('localUser', JSON.stringify(localUser));
     this.user.next(localUser);
     this.autoLogout(+res.expiresIn * 1000);
-    if(login){
-      localStorage.setItem('localUser', JSON.stringify(localUser));
-    }
+
   }
   
   private handleError(err: any) {
@@ -239,55 +220,19 @@ export class AuthService {
       password: newPassword,
       returnSecureToken: true,
     };
-
     return this.http.post(this.updatePasswordUrl, body).pipe(
       map((response) => {
-
-        this.getUserProfile(userId).subscribe(userData => {
-          // Update last password change date
-          userData.passwordLastChangedAt = new Date();
-          this.http.put(`${this.databaseUrl}/users/${userId}.json`, userData)
-            .subscribe();
-
-          // Log user logout activity
-            this.logData = new ActivityLog(
-              userData.id,
-              userData.email,
-              userData.role,
-              `${userData.email} has changed password at ${new Date().toDateString()}`,
-              new Date()
-            );
-            this.activityLogService.addActivityLog(this.logData);
-
-        });
+        this.activityLogService.addActivityLog('Password has been changed');
         return response;
-
-        
       }),
       catchError((error) => throwError(() => new Error('Error changing password')))
     );
   }
 
-  // deleteAccount(idToken: string): Observable<any> {
-  //   return this.http.post(this.deleteAccountUrl, {idToken}).pipe(
-  //     map((response) => {
-  //       console.log(response);
-  //       this.getUserProfile(idToken).subscribe(userData => {
-  //         console.log(userData);
-  //         this.http.delete(`${this.databaseUrl}/users/${idToken}.json`)
-  //       });
-  //       return response;
-  //     }),
-  //     catchError((error) => throwError(() => new Error('Error changing password')))
-  //   );
-  // }
-
-
   getToken(){
     const user = JSON.parse(localStorage.getItem('localUser'));
     return user ? user._token : null;
   }
-
 
   //not working
   deleteAccount(uid: string, idToken: string): Observable<any> {
@@ -295,11 +240,9 @@ export class AuthService {
       'Authorization': `Bearer ${idToken}`,
       'Content-Type': 'application/json'
     });
-
     const body = {
       localId: uid
     };
-
     return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${this.webApi}`, body, { headers });
   }
 
@@ -321,20 +264,9 @@ export class AuthService {
 
   updateUserProfile(userId : string, userData : userDetails){
 
-    const user = JSON.parse(localStorage.getItem('localUser'));
-  
-    this.getCurrentUser((role) => {
-      // Log user logout activity
-      this.logData = new ActivityLog(
-        user.id,
-        user.email,
-        role,
-        `${userData.email} has update user profile at ${new Date().toDateString()}`,
-        new Date()
-      );
-      this.activityLogService.addActivityLog(this.logData);
-  });
-  
+    this.activityLogService.addActivityLog('Profile has been updated');
+
     return this.http.put(`${this.databaseUrl}/users/${userId}.json`, userData);
   }
+
 }
