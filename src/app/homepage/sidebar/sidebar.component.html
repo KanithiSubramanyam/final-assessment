@@ -53,6 +53,16 @@
           </ul>
         </div>
       </li>
+
+      <li class="nav-item">
+        <a class="nav-link link-dark"
+           [routerLink]="['/customerManagement']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{ exact: true }">
+          <i class="fa-solid fa-address-book me-2"></i>
+          Customer Records
+        </a>
+      </li>
+      
+
       <li class="nav-item" *ngIf="hasRole(ADMIN)">
         <a class="nav-link link-dark"
         [routerLink]="['/activityLog']" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{ exact: true }">

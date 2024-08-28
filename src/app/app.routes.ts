@@ -21,6 +21,9 @@ import { VerifyOtpComponent } from './login/verify-otp/verify-otp.component';
 import { ActivityLogComponent } from './activity-log/activity-log.component';
 import { TaskDetailsComponent } from './homepage/main/task-management/task-details/task-details.component';
 import { RolesService } from './Services/Roles.service';
+import { CustomerManagementComponent } from './homepage/main/customer-management/customer-management.component';
+import { AddCustomerComponent } from './homepage/main/customer-management/add-customer/add-customer.component';
+import { CustomerDetailsComponent } from './homepage/main/customer-management/customer-details/customer-details.component';
 
 
 export const routes: Routes = [
@@ -63,6 +66,9 @@ export const routes: Routes = [
           { path: 'schedule', component: ScheduleComponent },
         ]
       },
+      { path:'customerManagement', component: CustomerManagementComponent},
+      { path:'customerManagement/addCustomer', component: AddCustomerComponent},
+      { path:'customerManagement/customerDetails', component: CustomerDetailsComponent},
       { path: 'activityLog', component: ActivityLogComponent, data: { roles: [RolesService.ADMIN] } },
     ]
   },
