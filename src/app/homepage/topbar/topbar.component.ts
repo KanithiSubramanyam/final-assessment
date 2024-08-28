@@ -23,7 +23,7 @@ export class TopbarComponent {
       this.isProfileMenuOpen = false;
   }
   logout(){
-    this.authService.logOut();
+    this.authService.logOut(null);
   }
 
 }

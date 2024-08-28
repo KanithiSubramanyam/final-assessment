@@ -1,42 +1,39 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
-import { BehaviorSubject, catchError, map, Observable, tap, throwError } from "rxjs";
-import { User } from "../Model/User";
-import { Router } from "@angular/router";
-import { AuthResponse } from "../Model/AuthResponse";
-import { error } from "console";
-import { userDetails } from "../Model/userDetails";
-import { ActivityLogService } from "./activityLog.service";
-import { ActivityLog } from "../Model/ActivityLog";
-import { CommonDataService } from "../utilities/CommonData.service";
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
+import { User } from '../Model/User';
+import { Router } from '@angular/router';
+import { AuthResponse } from '../Model/AuthResponse';
+import { userDetails } from '../Model/userDetails';
+import { ActivityLogService } from './activityLog.service';
+import { ActivityLog } from '../Model/ActivityLog';
+import { AppService } from './app.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  isAuthenticated: boolean = false;
-  http: HttpClient = inject(HttpClient);
-  user = new BehaviorSubject<User>(null);
-  router: Router = inject(Router);
-  activityLogService : ActivityLogService = inject(ActivityLogService);
-  commonDataService : CommonDataService = inject(CommonDataService);
-  private tokenExpirationTimer: any;
+  public isAuthenticated = false;
+  public user = new BehaviorSubject<User | null>(null);
+  public userDetailsData = new BehaviorSubject<userDetails | null>(null);
 
-  public token = null;
+  public tokenExpirationTimer: any;
 
-  public signupUrl: string = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=';
-  public signinUrl: string = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
-  public webApi = "AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM";
-  public databaseUrl = "https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app";
-  public accountInfo = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=";
+  private signupUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=';
+  private signinUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=';
+  private webApi = 'AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM';
+  private databaseUrl = 'https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app';
   private updateProfileUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.webApi}`;
   private updatePasswordUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.webApi}`;
-  private deleteAccountUrl = `https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${this.webApi}`;  
-  public userDataUrl = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=`;
+  private deleteAccountUrl = `https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${this.webApi}`;
 
-  public logData : ActivityLog;
+  constructor(
+    private http: HttpClient,
+    public router: Router,
+    private activityLogService: ActivityLogService,
+    private appService: AppService
+  ) {}
 
   signUp(user: { email: string, password: string, firstName: string, lastName: string }) {
     const signupData = {
@@ -44,13 +41,12 @@ export class AuthService {
       password: user.password,
       returnSecureToken: true,
     };
-  
+
     return this.http.post<AuthResponse>(`${this.signupUrl}${this.webApi}`, signupData)
       .pipe(
         catchError(this.handleError),
         tap(res => {
-          // Create the userDetails object with default values for non-provided fields
-          const newUser : userDetails = new userDetails(
+          const newUser: userDetails = new userDetails(
             res.localId,
             user.firstName,
             user.lastName,
@@ -72,117 +68,111 @@ export class AuthService {
 
           this.http.put(`${this.databaseUrl}/users/${res.localId}.json`, newUser)
             .subscribe({
-              next: () => {
-                console.log('User details saved successfully under users folder');
-              },
-              error: error => {
-                console.error('Error saving user details:', error);
-              }
+              next: () => console.log('User details saved successfully under users folder'),
+              error: err => console.error('Error saving user details:', err)
             });
 
-            //logData to activity log
-            this.logData = new ActivityLog(
-              res.localId,
-              res.email,
-              'user',
-              'A new user has been created by default signup method at  ' + new Date().toDateString(),
-              new Date(),
-            );
-            this.activityLogService.addActivityLog(this.logData);
+          // Log data to activity log
+          const logData = new ActivityLog(
+            res.localId,
+            res.email,
+            'user',
+            `A new user has been created by default signup method at ${new Date().toDateString()}`,
+            new Date()
+          );
+          this.activityLogService.addActivityLog(logData);
         })
       );
   }
-  
-  //login to the application
+
   logIn(email: string, password: string) {
-    const data = { email: email, password: password, returnSecureToken: true };
-    return this.http.post<AuthResponse>(this.signinUrl + this.webApi, data)
-      .pipe(catchError(this.handleError), tap((res) => {
+    const data = { email, password, returnSecureToken: true };
+    return this.http.post<AuthResponse>(`${this.signinUrl}${this.webApi}`, data)
+      .pipe(
+        catchError(this.handleError),
+        tap(res => {
+          console.log(res);
+          this.handleCreateUser(res, true);
 
-        console.log(res);
-        this.handleCreateUser(res, true);
+          this.getUserProfile(res.localId).subscribe(userData => {
+            userData.lastLoginAt = new Date();
+            this.userDetailsData.next(userData);
+            this.http.put(`${this.databaseUrl}/users/${res.localId}.json`, userData)
+              .subscribe();
 
-        this.getUserProfile(res.localId).subscribe(userData => {
-          // Update last login date
-          userData.lastLoginAt = new Date();
-
-          this.http.put(`${this.databaseUrl}/users/${res.localId}.json`, userData)
-            .subscribe();
-
-          this.activityLogService.addActivityLog('Logged in to the application ');
-        });
-      })
-    );
+            this.activityLogService.addActivityLog('Logged in to the application');
+          });
+        })
+      );
   }
 
-  getUserProfile(uid: string) {
+  getUserProfile(uid: string): Observable<userDetails> {
     return this.http.get<userDetails>(`${this.databaseUrl}/users/${uid}.json`);
   }
 
-  
   autoLogin() {
-    const user = JSON.parse(localStorage.getItem('localUser'));
-    if (!user) {
+    const user = JSON.parse(sessionStorage.getItem('localUser') || '{}');
+    if (!user || !user._token) {
       return;
     }
-    const loggedUser = new User(user.id, user.email,
-      user._token, user._expiresIn);
-
-    if (loggedUser._token) {
-      loggedUser._expiresIn = new Date(loggedUser._expiresIn);
-      this.user.next(loggedUser);
-      const timerValue = loggedUser._expiresIn.getTime() - new Date().getTime();
-      this.autoLogout(timerValue);
-    }
+    const loggedUser = new User(user.id, user.email, user._token, new Date(user._expiresIn));
+    this.user.next(loggedUser);
+    const timerValue = loggedUser._expiresIn.getTime() - new Date().getTime();
+    this.autoLogout(timerValue);
   }
-  
-  logOut() {
-    const res = JSON.parse(localStorage.getItem('localUser'));
-    this.logData = new ActivityLog(
+
+  logOut(data: string | null) {
+    const res = JSON.parse(sessionStorage.getItem('localUser') || '{}');
+    const logData = new ActivityLog(
       res.localId,
       res.email,
       'user',
-      'A new user has been created by default signup method at  ' + new Date().toDateString(),
-      new Date(),
+      `${data || 'User'} logout of application at ${new Date().toDateString()}`,
+      new Date()
     );
-    this.activityLogService.addActivityLog(this.logData);
+    this.activityLogService.addActivityLog(logData);
 
-      if (this.tokenExpirationTimer) {
-        clearTimeout(this.tokenExpirationTimer);
-      }
-      this.user.next(null);
-      this.router.navigate(['/login']);
-      localStorage.removeItem('localUser');
-      this.tokenExpirationTimer = null;
-    
+    if (this.tokenExpirationTimer) {
+      clearTimeout(this.tokenExpirationTimer);
+    }
+    this.user.next(null);
+    this.router.navigate(['/login']);
+    sessionStorage.removeItem('localUser');
+    this.tokenExpirationTimer = null;
   }
-  
+
   autoLogout(expirationDuration: number) {
     console.log(`Auto logout will happen in: ${expirationDuration} ms`);
-    this.tokenExpirationTimer = setTimeout(() => {
-        this.activityLogService.addActivityLog('Auto Logged Off from the application').subscribe(() => {
-            this.logOut();
-        });
-    }, expirationDuration);
-}
+    this.appService.startWarningTimer(expirationDuration);
 
+    if (this.tokenExpirationTimer) {
+      clearTimeout(this.tokenExpirationTimer);
+    }
+
+    this.tokenExpirationTimer = setTimeout(() => {
+      this.logOut('auto');
+    }, expirationDuration);
+  }
+
+  extendSession(newExpirationDuration: number) {
+    this.autoLogout(newExpirationDuration);
+  }
 
   private handleCreateUser(res: AuthResponse, login: boolean) {
-    const expiresInTs = new Date().getTime() + +res.expiresIn * 100;
+    const expiresInTs = new Date().getTime() + +res.expiresIn * 1000;
     const expiresIn = new Date(expiresInTs);
 
     const localUser = new User(
       res.email,
       res.localId,
       res.idToken,
-      expiresIn 
+      expiresIn
     );
-    localStorage.setItem('localUser', JSON.stringify(localUser));
+    sessionStorage.setItem('localUser', JSON.stringify(localUser));
     this.user.next(localUser);
     this.autoLogout(+res.expiresIn * 1000);
-
   }
-  
+
   private handleError(err: any) {
     let errorMessage = 'An unknown error has occurred.';
     if (err.error && err.error.error) {
@@ -205,36 +195,42 @@ export class AuthService {
         case 'INVALID_ID_TOKEN':
           errorMessage = 'The provided ID token is invalid.';
           break;
-        // Add more cases as needed based on Firebase error messages
         default:
           errorMessage = `Error: ${err.error.error.message}`;
           break;
       }
     }
-    return throwError(() => errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
-  
-  changePassword(idToken: string, newPassword: string, userId : string): Observable<any> {
+
+  changePassword(idToken: string, newPassword: string, userId: string): Observable<any> {
     const body = {
-      idToken: idToken,
+      idToken,
       password: newPassword,
       returnSecureToken: true,
     };
+    
+    this.userDetailsData.value.passwordLastChangedAt = new Date();
+    const data = {
+      ...this.userDetailsData.value,
+      passwordLastChangedAt: new Date()
+    };
+
+    this.userDetailsData.next(data);
+
     return this.http.post(this.updatePasswordUrl, body).pipe(
-      map((response) => {
+      map(() => {
         this.activityLogService.addActivityLog('Password has been changed');
-        return response;
       }),
-      catchError((error) => throwError(() => new Error('Error changing password')))
+      catchError(error => throwError(() => new Error('Error changing password')))
     );
   }
 
-  getToken(){
-    const user = JSON.parse(localStorage.getItem('localUser'));
+  getToken(): string | null {
+    const user = JSON.parse(sessionStorage.getItem('localUser') || '{}');
     return user ? user._token : null;
   }
 
-  //not working
   deleteAccount(uid: string, idToken: string): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${idToken}`,
@@ -243,30 +239,47 @@ export class AuthService {
     const body = {
       localId: uid
     };
-    return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${this.webApi}`, body, { headers });
+    return this.http.post(this.deleteAccountUrl, body, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  generateMsAuthenticatoQrCode(secert:string, email : string, issuer : string){
-    return `otpauth://totp/${issuer}:${email}?secret=${secert}&issuer=${issuer}`;
+  generateMsAuthenticatoQrCode(secret: string, email: string, issuer: string) {
+    return `otpauth://totp/${issuer}:${email}?secret=${secret}&issuer=${issuer}`;
   }
 
-
-  //update mfabtn and mfasecertkey
-  isMfaEnabled(mfaBtn : boolean, uid:string, secertKey : string){
-    this.getUserProfile(uid).subscribe(userData => {
-      userData.mfaBtn = true;
-      userData.mfaSecertKey = secertKey
-      this.http.put(`${this.databaseUrl}/users/${uid}.json`, userData)
-        .subscribe();
-    });
-    return true;
+  isMfaEnabled(mfaBtn: boolean, uid: string, secretKey: string) {
+    return this.getUserProfile(uid).pipe(
+      map(userData => {
+        userData.mfaBtn = mfaBtn;
+        userData.mfaSecertKey = secretKey;
+        return this.http.put(`${this.databaseUrl}/users/${uid}.json`, userData);
+      }),
+      catchError(this.handleError)
+    );
   }
 
-  updateUserProfile(userId : string, userData : userDetails){
-
+  updateUserProfile(userId: string, userData: userDetails): Observable<any> {
     this.activityLogService.addActivityLog('Profile has been updated');
-
-    return this.http.put(`${this.databaseUrl}/users/${userId}.json`, userData);
+    return this.http.put(`${this.databaseUrl}/users/${userId}.json`, userData)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
+
+
+checkPasswordExpiration(): boolean {
+  const expirationPeriod = 90;
+  const currentDate = new Date();
+  const daysSinceChange = Math.floor((currentDate.getTime() - this.userDetailsData.value?.passwordLastChangedAt?.getTime()) / (1000 * 60 * 60 * 24));
+  return daysSinceChange >= expirationPeriod;
+}
+
+notifyPasswordExpiration() {
+  if (this.checkPasswordExpiration()) {
+    alert('Your password has expired. Please change it immediately.');
+  }
+}
 
 }

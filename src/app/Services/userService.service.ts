@@ -33,14 +33,14 @@ export class UserService {
 
   //get current user data
   getCurrentUser() {
-    const loggedInUser = JSON.parse(localStorage.getItem('localUser') || '{}');
+    const loggedInUser = JSON.parse(sessionStorage.getItem('localUser') || '{}');
 
     if (!loggedInUser || !loggedInUser.email) {
       return throwError(() => new Error('No user is logged in.'));
     }
     const userUrl = `${this.dataBaseUrl}`;
 
-    return this.http.get<{ [key: string]: User }>(userUrl).pipe(
+    return this.http.get<{ [key: string]: userDetails }>(userUrl).pipe(
       map(response => {
         const usersArray = Object.values(response);
         const matchedUser = usersArray.find(userData => userData.email === loggedInUser.email);
@@ -56,7 +56,7 @@ export class UserService {
 
 
   updateUserDetails(updatedData: Partial<userDetails>): Observable<any> {
-    const loggedInUser = JSON.parse(localStorage.getItem('localUser') || '{}');
+    const loggedInUser = JSON.parse(sessionStorage.getItem('localUser') || '{}');
 
     if (!loggedInUser || !loggedInUser.email) {
       return throwError(() => new Error('No user is logged in.'));

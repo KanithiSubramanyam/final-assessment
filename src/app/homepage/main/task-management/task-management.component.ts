@@ -3,8 +3,9 @@ import { RouterLink, Router } from '@angular/router';
 import { TaskService } from '../../../Services/task.service';
 import { CommonModule } from '@angular/common';
 import { userDetails } from '../../../Model/userDetails';
-import { CommonDataService } from '../../../utilities/CommonData.service';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../Services/auth.service';
+import { UserService } from '../../../Services/userService.service';
 
 
 
@@ -37,12 +38,10 @@ export class TaskManagementComponent {
 
 
   constructor(private taskService: TaskService,
-    private router: Router,private commonDataService: CommonDataService, private cd: ChangeDetectorRef) {
+    private router: Router, private cd: ChangeDetectorRef, private userService: UserService) {
   }
-
-
   ngOnInit(){
-    this.commonDataService.getCurrentUser().subscribe(userDetails => {
+    this.userService.getCurrentUser().subscribe(userDetails => {
       if (userDetails) {
         this.currentUser = userDetails;
         this.fetchTasks();
@@ -56,12 +55,20 @@ export class TaskManagementComponent {
     this.cd.detectChanges(); // Force change detection if needed
   }
 
+
+
   fetchTasks(): void {
     this.taskService.getTask().subscribe(data => {
-      const allTasks = Object.keys(data).map(key => ({
-        id: key,
-        ...data[key]
-      }));
+      let allTasks
+      if(data){
+         allTasks = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        }));
+      }
+      else{
+        allTasks = [];
+     }
 
       if (this.currentUser && (this.currentUser.role !== 'admin' && this.currentUser.role !== 'accountmanager)')) {
         // Filter tasks where assignedToEmail matches the current user's email
@@ -78,12 +85,12 @@ export class TaskManagementComponent {
 
 
   deleteTask(id: string, index: number): void {
-    // Optimistically remove the task from the UI
     const removedTask = this.tasks.splice(index, 1)[0];
 
     this.taskService.deleteTask(id).subscribe({
       next: () => {
         console.log(`Task with ID ${id} has been deleted`);
+        this.fetchTasks(); // Re-fetch the tasks
       },
       error: (error) => {
         console.error('Error deleting task:', error);
