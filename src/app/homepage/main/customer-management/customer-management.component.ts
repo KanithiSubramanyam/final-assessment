@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { CustomerService } from '../../../Services/customer.service';
-import { Customer } from '../../../Model/Customer';
+import { Customer } from '../../../Model/customer';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -26,13 +26,13 @@ export class CustomerManagementComponent implements OnInit {
   fetchCustomers(): void {
     this.customerService.getAllCustomers().subscribe(data => {
       this.customers = Object.keys(data).map(key => ({
-        id: key,
+        id: key,  // Preserve the key as the customer ID
         ...data[key]
       }));
       this.filteredCustomers = [...this.customers];  // Initialize filteredCustomers
     });
   }
-
+  
   applyFilter() {
     if (this.searchTerm) {
       const lowerSearchTerm = this.searchTerm.toLowerCase();
@@ -41,7 +41,7 @@ export class CustomerManagementComponent implements OnInit {
         (customer.lastName?.toLowerCase().includes(lowerSearchTerm) || '') ||
         (customer.email?.toLowerCase().includes(lowerSearchTerm) || '') ||
         (customer.phone?.toLowerCase().includes(lowerSearchTerm) || '') ||
-        (customer.address?.toLowerCase().includes(lowerSearchTerm) || '')
+        (customer.address?.toLowerCase().includes(lowerSearchTerm) || '') 
       );
     } else {
       this.filteredCustomers = [...this.customers];
@@ -65,16 +65,26 @@ export class CustomerManagementComponent implements OnInit {
   }
 
   OnDeleteCustomerClicked(id: string, index: number): void {
+    console.log('Attempting to delete customer with ID:', id);  // Debugging line
+  
     const removedCustomer = this.customers.splice(index, 1)[0];
-
+  
     this.customerService.deleteCustomer(id).subscribe({
       next: () => {
         console.log(`Customer with ID ${id} has been deleted`);
+        this.fetchCustomers();
+  
       },
       error: (error) => {
         console.error('Error deleting customer:', error);
-        this.customers.splice(index, 0, removedCustomer);
+        this.customers.splice(index, 0, removedCustomer);  // Revert removal in case of error
       }
     });
   }
+
+  
+  
+  
+  
+  
 }

@@ -6,7 +6,7 @@ import { AuthService } from '../../../../Services/auth.service';
 import { UserService } from '../../../../Services/userService.service';
 import { CustomerService } from '../../../../Services/customer.service';
 import { userDetails } from '../../../../Model/userDetails';
-import { Customer } from '../../../../Model/Customer';
+import { Customer } from '../../../../Model/customer';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';

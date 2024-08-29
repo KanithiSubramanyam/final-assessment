@@ -1,42 +1,48 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { Customer } from '../Model/Customer';
+import { Customer } from '../Model/customer';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
-  private apiUrl = 'https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/customerrecords.json'; // Updated API URL
+  private apiUrl = 'https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app/customerrecords'; // Base API URL
 
   constructor(private http: HttpClient) {}
 
   // Fetch all customers
   getAllCustomers(): Observable<Customer[]> {
-    return this.http.get<{ [key: string]: Customer }>(this.apiUrl).pipe(
+    return this.http.get<{ [key: string]: Customer }>(`${this.apiUrl}.json`).pipe(
       map(response => {
-        return Object.values(response); // Convert object to array
+        // Convert object to array with Firebase keys as `id`
+        return Object.keys(response || {}).map(key => ({
+          id: key, 
+          ...response[key]
+        }));
       })
     );
   }
 
   // Save a new customer
   saveCustomer(customerData: Customer): Observable<any> {
-    return this.http.post(this.apiUrl, customerData);
+    return this.http.post(`${this.apiUrl}.json`, customerData);
   }
 
-  // Fetch a single customer by ID
-  getCustomers(id: string): Observable<Customer> {
+  // Fetch a single customer by ID (if needed)
+  getCustomerById(id: string): Observable<Customer> {
     return this.http.get<Customer>(`${this.apiUrl}/${id}.json`);
   }
 
   // Delete a customer by ID
   deleteCustomer(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}.json`);
+    const url = `${this.apiUrl}/${id}.json`;
+    return this.http.delete<void>(url);
   }
 
   // Update a customer by ID
   updateCustomer(id: string, customerData: Customer): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}.json`, customerData);
+    const url = `${this.apiUrl}/${id}.json`;
+    return this.http.put(url, customerData);
   }
 }
