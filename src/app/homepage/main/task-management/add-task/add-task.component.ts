@@ -15,7 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   selector: 'app-add-task',
   templateUrl: './add-task.component.html',
   standalone: true,
-  imports:[CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   styleUrls: ['./add-task.component.css']
 })
 export class AddTaskComponent implements OnInit {
@@ -66,7 +66,7 @@ export class AddTaskComponent implements OnInit {
     }
 
     this.fetchUsers();
-    this.fetchCustomers();  // Fetch customers on initialization
+    this.fetchCustomers();
   }
 
   fetchUsers(): void {
@@ -83,16 +83,16 @@ export class AddTaskComponent implements OnInit {
   }
 
   fetchCustomers(): void {
-  this.customerService.getAllCustomers().subscribe(
-    (customersObject) => {
-      this.customers = Object.values(customersObject);
-      this.filteredClients = this.customers;
-    },
-    (error) => {
-      console.error('Error fetching customers:', error);
-    }
-  );
-}
+    this.customerService.getAllCustomers().subscribe(
+      (customersObject) => {
+        this.customers = Object.values(customersObject);
+        this.filteredClients = this.customers;
+      },
+      (error) => {
+        console.error('Error fetching customers:', error);
+      }
+    );
+  }
 
 
   onClientSearchTermChange(event: Event): void {

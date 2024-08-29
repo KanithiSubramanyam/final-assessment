@@ -50,7 +50,9 @@ export class ScheduleComponent implements OnInit {
       attendees: [''],
       recurrence: ['None'],
       customer: ['', Validators.required],
-      customerEmail: ['']
+      customerEmail: [''],
+      userName : [''],
+      userEmail : [''],
     });
 
     if (history.state.appointment) {
@@ -58,6 +60,7 @@ export class ScheduleComponent implements OnInit {
       this.isEditMode = true;
       this.scheduleForm.patchValue(this.editingAppointment);
     }
+
 
     this.userService.getCurrentUser().subscribe(userDetails => {
       if (userDetails) {
@@ -105,11 +108,11 @@ export class ScheduleComponent implements OnInit {
     this.selectedCustomer = customer;
     this.scheduleForm.get('customer')?.setValue(customer.firstName + ' ' + customer.lastName);
     this.scheduleForm.get('customerEmail')?.setValue(customer.email);
-    
+    this.scheduleForm.get('userName')?.setValue(this.currentUser.firstName + ' ' + this.currentUser.lastName);
+    this.scheduleForm.get('userEmail')?.setValue(this.currentUser.email);
     // Find the task related to this customer
     this.selectedTask = this.assignedTasks.find(task => task.clientToEmail === customer.email) || null;
 
-    // Set up date pickers constraints based on selected task
     if (this.selectedTask) {
       this.setupDateConstraints();
     }
