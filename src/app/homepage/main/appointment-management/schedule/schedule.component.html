@@ -5,6 +5,14 @@
     </div>
     <div class="card-body">
       <form [formGroup]="scheduleForm" (ngSubmit)="onSubmit()">
+
+<div class="mb-3">
+          <label for="customer" class="form-label">Customer</label>
+          <select id="customer" formControlName="customer" class="form-select" (change)="onTaskChange($event)">
+            <option *ngFor="let task of assignedTasks" [value]="task.clientName">{{ task.clientName }}</option>
+          </select>
+        </div>
+
         <div class="mb-3">
           <label for="title" class="form-label">Appointment Title</label>
           <input id="title" formControlName="title" type="text" class="form-control" />
@@ -40,11 +48,6 @@
           <select id="recurrence" formControlName="recurrence" class="form-select">
             <option *ngFor="let option of recurrenceOptions" [value]="option">{{ option }}</option>
           </select>
-        </div>
-
-        <div class="mb-3">
-          <label for="customer" class="form-label">Customer</label>
-          <input id="customer" formControlName="customer" type="text" class="form-control" />
         </div>
 
         <button type="submit" class="btn btn-primary" [disabled]="scheduleForm.invalid">
