@@ -42,6 +42,7 @@ export class AddTaskComponent implements OnInit {
   ) {
     this.addTaskForm = this.fb.group({
       clientName: ['', Validators.required],
+      clientToEmail: [''],
       taskTitle: ['', Validators.required],
       description: [''],
       dueDate: ['', Validators.required],
@@ -84,9 +85,8 @@ export class AddTaskComponent implements OnInit {
   fetchCustomers(): void {
   this.customerService.getAllCustomers().subscribe(
     (customersObject) => {
-      console.log('Fetched customers:', customersObject); // Add this line
-      this.customers = Object.values(customersObject);  // Convert object to array
-      this.filteredClients = this.customers;  // Initialize with all customers
+      this.customers = Object.values(customersObject);
+      this.filteredClients = this.customers;
     },
     (error) => {
       console.error('Error fetching customers:', error);
@@ -103,7 +103,6 @@ export class AddTaskComponent implements OnInit {
 
   filterClients(): void {
     this.filteredClients = this.customers.filter(client =>
-      // client.name.toLowerCase().includes(this.clientSearchTerm.toLowerCase())
       `${client.firstName} ${client.lastName}`.toLowerCase().includes(this.clientSearchTerm.toLowerCase()) ||
       client.email.toLowerCase().includes(this.clientSearchTerm.toLowerCase())
     );
@@ -111,7 +110,7 @@ export class AddTaskComponent implements OnInit {
 
   selectClient(client: Customer): void {
     this.selectedClient = client;
-    this.addTaskForm.get('clientName')?.setValue(client.email);
+    this.addTaskForm.get('clientName')?.setValue(client.firstName + ' ' + client.lastName);
     this.addTaskForm.get('clientToEmail')?.setValue(client.email);
     this.clientSearchTerm = '';
     this.filteredClients = this.customers;
@@ -132,7 +131,7 @@ export class AddTaskComponent implements OnInit {
 
   selectUser(user: userDetails): void {
     this.selectedUser = user;
-    this.addTaskForm.get('assignedTo')?.setValue(user.email);
+    this.addTaskForm.get('assignedTo')?.setValue(user.firstName + ' ' + user.lastName);
     this.addTaskForm.get('assignedToEmail')?.setValue(user.email);
     this.searchTerm = '';
     this.filteredUsers = this.users;

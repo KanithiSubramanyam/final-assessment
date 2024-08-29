@@ -1,9 +1,9 @@
 export interface Task {
-    id?: string; // Optional for new tasks, required for existing tasks
+    id?: string;
     clientName: string;
     taskTitle: string;
     description?: string;
-    dueDate: string; // Typically a datetime string or Date object
+    dueDate: string;
     priority: 'Low' | 'Medium' | 'High';
     status: 'Not Started' | 'In Progress' | 'Completed';
     assignedTo?: string;
