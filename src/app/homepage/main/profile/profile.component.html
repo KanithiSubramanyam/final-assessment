@@ -69,7 +69,7 @@
             />
           </div>
 
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="role" class="form-label">Role</label>
             <select id="role" class="form-select" formControlName="role" 
             [value]="userData?.role"
@@ -87,7 +87,22 @@
                 User
               </option>
             </select>
+          </div> -->
+          <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select
+              id="role"
+              class="form-select"
+              formControlName="role"
+              [ngModel]="userForm.get('role')?.value"
+              [disabled]="!isEditingOtherUser && isReadOnly"
+            >
+              <option *ngFor="let option of roleOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
           </div>
+          
 
           <div class="row mb-3">
             <div class="col-lg-6">
