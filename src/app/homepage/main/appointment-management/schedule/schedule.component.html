@@ -5,6 +5,79 @@
     </div>
     <div class="card-body">
       <form [formGroup]="scheduleForm" (ngSubmit)="onSubmit()">
+
+
+
+<!-- <div class="mb-3">
+          <label for="customer" class="form-label">Customer</label>
+          <select id="customer" formControlName="customer" class="form-select" (change)="onTaskChange($event)">
+            <option *ngFor="let task of assignedTasks" [value]="task.clientName">{{ task.clientName }}</option>
+          </select>
+        </div> -->
+
+
+
+
+        <div class="mb-3">
+          <label for="assignedTo" class="form-label">Appointment Customer</label>
+          <div class="position-relative">
+            <button
+              class="btn btn-light w-100 d-flex justify-content-between align-items-center dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              {{ selectedCustomer ? selectedCustomer.firstName + ' ' + selectedCustomer.lastName : 'Select Customer' }}
+              <span class="dropdown-toggle-icon ms-2"></span>
+            </button>
+            <ul class="dropdown-menu w-100 mt-0" aria-labelledby="dropdownMenuButton">
+              <div class="px-3 py-2">
+                <input
+                  type="text"
+                  class="form-control mb-2"
+                  placeholder="Search Customer..."
+                  [value]="searchTerm"
+                  (input)="onSearchTermChange($event)"
+                />
+              </div>
+              <li *ngFor="let customer of filteredCustomers">
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  (click)="selectCustomer(customer); $event.preventDefault();"
+                >
+                  {{ customer.firstName }} {{ customer.lastName }} ({{ customer.email }})
+                </a>
+              </li>
+              <li *ngIf="filteredCustomers.length === 0">
+                <span class="dropdown-item text-danger">No users found.</span>
+              </li>
+            </ul>
+          </div>
+          <!-- Hidden input to store selected user's email -->
+          <input type="hidden" formControlName="customerEmail" />
+          <div
+            *ngIf="scheduleForm.get('customer')?.touched && scheduleForm.get('customer')?.invalid"
+            class="text-danger"
+          >
+            Please select a user to assign.
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div class="mb-3">
           <label for="title" class="form-label">Appointment Title</label>
           <input id="title" formControlName="title" type="text" class="form-control" />
@@ -40,11 +113,6 @@
           <select id="recurrence" formControlName="recurrence" class="form-select">
             <option *ngFor="let option of recurrenceOptions" [value]="option">{{ option }}</option>
           </select>
-        </div>
-
-        <div class="mb-3">
-          <label for="customer" class="form-label">Customer</label>
-          <input id="customer" formControlName="customer" type="text" class="form-control" />
         </div>
 
         <button type="submit" class="btn btn-primary" [disabled]="scheduleForm.invalid">

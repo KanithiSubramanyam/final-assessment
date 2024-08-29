@@ -27,6 +27,10 @@ export class ProfileComponent implements OnInit {
   backToUser: boolean = false;
   qrdata: string = '';
   enableOrDisableBtn: boolean;
+  isAdmin: boolean = false; // Track if the logged-in user is an admin
+  isEditingOtherUser: boolean = false; // Track if the admin is editing another user
+  roleOptions: { value: string, label: string }[] = [];
+
 
   constructor(
     private fb: FormBuilder, 
@@ -51,7 +55,11 @@ export class ProfileComponent implements OnInit {
         next: (data) => {
           this.userData = data;
           this.userForm.patchValue(this.userData);
+          this.isAdmin = this.userData.role === 'admin';
           this.enableOrDisableBtn = this.userData.mfaBtn;
+           // Set role options based on user role and edit mode
+           this.setRoleOptions();
+
         },
         error: (error) => {
           console.error('Error fetching user data:', error);
@@ -70,10 +78,19 @@ export class ProfileComponent implements OnInit {
             next: (data: userDetails) => {
               this.userData = data;
               this.userForm.patchValue(this.userData);
+               // Ensure the role is set correctly in the form
+            this.userForm.get('role')?.setValue(this.userData.role);
 
               if (this.router.url.includes('/userManagement/users/editProfile')
                 || this.router.url.includes('/userManagement/users/viewProfile')) {
                 this.backToUser = true;
+                if (this.isAdmin && userId !== this.userData.id.toString()) {
+                  // If admin is editing another user's profile, enable the role field
+                  this.isEditingOtherUser = true;
+                  this.userForm.get('role')?.enable();
+                  this.setRoleOptions();
+                }
+                
               }
 
               if (this.router.url.includes('/userManagement/users/viewProfile')) {
@@ -89,6 +106,21 @@ export class ProfileComponent implements OnInit {
       }
     } else {
       console.error('ActivatedRoute is not available');
+    }
+  }
+
+  private setRoleOptions() {
+    if (this.isEditingOtherUser) {
+      this.roleOptions = [
+        { value: 'user', label: 'User' },
+        { value: 'accountManager', label: 'Account Manager' }
+      ];
+    } else {
+      this.roleOptions = [
+        { value: 'admin', label: 'Admin' },
+      { value: 'accountManager', label: 'Account Manager' },
+      { value: 'user', label: 'User' }
+      ];
     }
   }
 
