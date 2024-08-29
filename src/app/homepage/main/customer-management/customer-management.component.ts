@@ -8,9 +8,9 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'customer-management',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink,FormsModule],
   templateUrl: './customer-management.component.html',
-  styleUrls: ['./customer-management.component.css']
+  styleUrls: ['./customer-management.component.css']  // Corrected from `styleUrl` to `styleUrls`
 })
 export class CustomerManagementComponent implements OnInit {
   customers: Customer[] = [];
@@ -24,7 +24,7 @@ export class CustomerManagementComponent implements OnInit {
   }
 
   fetchCustomers(): void {
-    this.customerService.getCustomers().subscribe(data => {
+    this.customerService.getAllCustomers().subscribe(data => {
       this.customers = Object.keys(data).map(key => ({
         id: key,
         ...data[key]
@@ -49,7 +49,9 @@ export class CustomerManagementComponent implements OnInit {
   }
 
   highlightText(text: string): string {
-    if (!this.searchTerm) return text;
+    if (!this.searchTerm) {
+      return text;
+    }
     const regex = new RegExp(`(${this.searchTerm})`, 'gi');
     return text.replace(regex, `<mark>$1</mark>`);
   }

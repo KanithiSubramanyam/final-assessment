@@ -1,36 +1,44 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TaskService } from '../../../../Services/task.service';
 import { AuthService } from '../../../../Services/auth.service';
 import { UserService } from '../../../../Services/userService.service';
+import { CustomerService } from '../../../../Services/customer.service';
 import { userDetails } from '../../../../Model/userDetails';
-import { ReactiveFormsModule } from '@angular/forms';
+import { Customer } from '../../../../Model/Customer';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-add-task',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
-  standalone: true,
   templateUrl: './add-task.component.html',
+  standalone: true,
+  imports:[CommonModule, FormsModule, ReactiveFormsModule],
   styleUrls: ['./add-task.component.css']
 })
 export class AddTaskComponent implements OnInit {
   addTaskForm: FormGroup;
   isEditMode: boolean = false;
   editingtask: any = null;
-  currentTask: any; // To hold the current task data
+  currentTask: any;
   users: userDetails[] = [];
   filteredUsers: userDetails[] = [];
-  searchTerm: string = '';
+  customers: Customer[] = [];
+  filteredClients: Customer[] = [];
   selectedUser: userDetails | null = null;
+  selectedClient: Customer | null = null;
+  searchTerm: string = '';
+  clientSearchTerm: string = '';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private taskService: TaskService,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private customerService: CustomerService
   ) {
     this.addTaskForm = this.fb.group({
       clientName: ['', Validators.required],
@@ -47,7 +55,7 @@ export class AddTaskComponent implements OnInit {
   ngOnInit(): void {
     if (history.state.task) {
       this.currentTask = history.state.task;
-      console.log('Received appointment:', this.currentTask);
+      console.log('Received task:', this.currentTask);
     }
 
     if (this.currentTask) {
@@ -55,19 +63,64 @@ export class AddTaskComponent implements OnInit {
       this.isEditMode = true;
       this.addTaskForm.patchValue(this.editingtask);
     }
+
     this.fetchUsers();
+    this.fetchCustomers();  // Fetch customers on initialization
   }
 
   fetchUsers(): void {
     this.userService.getAllUsers().subscribe(
       (users) => {
+        console.log('Fetched users:', users);
         this.users = Object.values(users).filter(user => user.role === 'user');
-        this.filteredUsers = this.users; // Initially, all users are displayed
+        this.filteredUsers = this.users;
       },
       (error) => {
         console.error('Error fetching users:', error);
       }
     );
+  }
+
+  fetchCustomers(): void {
+  this.customerService.getAllCustomers().subscribe(
+    (customersObject) => {
+      console.log('Fetched customers:', customersObject); // Add this line
+      this.customers = Object.values(customersObject);  // Convert object to array
+      this.filteredClients = this.customers;  // Initialize with all customers
+    },
+    (error) => {
+      console.error('Error fetching customers:', error);
+    }
+  );
+}
+
+
+  onClientSearchTermChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.clientSearchTerm = input.value;
+    this.filterClients();
+  }
+
+  filterClients(): void {
+    this.filteredClients = this.customers.filter(client =>
+      // client.name.toLowerCase().includes(this.clientSearchTerm.toLowerCase())
+      `${client.firstName} ${client.lastName}`.toLowerCase().includes(this.clientSearchTerm.toLowerCase()) ||
+      client.email.toLowerCase().includes(this.clientSearchTerm.toLowerCase())
+    );
+  }
+
+  selectClient(client: Customer): void {
+    this.selectedClient = client;
+    this.addTaskForm.get('clientName')?.setValue(client.email);
+    this.addTaskForm.get('clientToEmail')?.setValue(client.email);
+    this.clientSearchTerm = '';
+    this.filteredClients = this.customers;
+  }
+
+  onSearchTermChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchTerm = input.value;
+    this.filterUsers();
   }
 
   filterUsers(): void {
@@ -77,18 +130,12 @@ export class AddTaskComponent implements OnInit {
     );
   }
 
-  onSearchTermChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.searchTerm = input.value;
-    this.filterUsers();
-  }
-
   selectUser(user: userDetails): void {
     this.selectedUser = user;
     this.addTaskForm.get('assignedTo')?.setValue(user.email);
     this.addTaskForm.get('assignedToEmail')?.setValue(user.email);
-    this.searchTerm = ''; // Clear the search term after selecting a user
-    this.filteredUsers = this.users; // Reset the user list
+    this.searchTerm = '';
+    this.filteredUsers = this.users;
   }
 
   onSubmit(): void {

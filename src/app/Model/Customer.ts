@@ -1,14 +1,19 @@
-export interface Customer {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    address: string;
-    city: string;
-    state: string;
-    zip: string;
-    country: string;
-    createdAt: string;
-    updatedAt: string;
+export class Customer {
+    constructor(
+    public id: string='',
+    public firstName: string='',
+    public lastName: string='',
+    public email: string='',
+    public phone: string='',
+    public address: string='',
+    public city: string='',
+    public state: string='',
+    public zip: string='',
+    public country: string='',
+    public createdAt: string='',
+    public updatedAt: string=''
+    ){
+
+    }
+    
 }

@@ -1,75 +1,166 @@
-<!-- add-task.component.html -->
 <div class="container mt-4">
   <div class="card shadow-sm border-light rounded">
     <div class="card-body">
       <h4 class="card-title mb-4">{{ isEditMode ? 'Edit Task' : 'Create New Task' }}</h4>
+      
       <form [formGroup]="addTaskForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-          <label for="clientName" class="form-label">Client Name</label>
-          <input type="text" id="clientName" class="form-control" formControlName="clientName" >
-          <div *ngIf="addTaskForm.get('clientName').touched && addTaskForm.get('clientName').invalid" class="text-danger">
-            Please enter the client's name.
+        <!-- Client Name -->
+<div class="mb-3">
+  <label for="clientName" class="form-label">Client Name</label>
+  <div class="position-relative">
+    <button
+      class="btn btn-light w-100 d-flex justify-content-between align-items-center dropdown-toggle"
+      type="button"
+      id="dropdownClientButton"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      {{ selectedClient ? selectedClient.firstName + ' ' + selectedClient.lastName : 'Select Client' }}
+      <span class="dropdown-toggle-icon ms-2"></span>
+    </button>
+    <ul class="dropdown-menu w-100 mt-0" aria-labelledby="dropdownClientButton">
+      <div class="px-3 py-2">
+        <input
+          type="text"
+          class="form-control mb-2"
+          placeholder="Search client..."
+          [value]="clientSearchTerm"
+          (input)="onClientSearchTermChange($event)"
+        />
+      </div>
+      <li *ngFor="let client of filteredClients">
+        <a
+          class="dropdown-item"
+          href="#"
+          (click)="selectClient(client); $event.preventDefault();"
+        >
+          {{ client.firstName }} {{ client.lastName }} ({{client.email}})
+        </a>
+      </li>
+      <li *ngIf="filteredClients.length === 0">
+        <span class="dropdown-item text-danger">No clients found.</span>
+      </li>
+    </ul>
+  </div>
+  <!-- Hidden input to store selected client's email -->
+  <input type="hidden" formControlName="clientName" />
+  <div
+    *ngIf="addTaskForm.get('clientName')?.touched && addTaskForm.get('clientName')?.invalid"
+    class="text-danger"
+  >
+    Please select a client.
+  </div>
+
+
+          <!-- Hidden input to store selected client's name -->
+          <input type="hidden" formControlName="clientName" />
+          <div
+            *ngIf="addTaskForm.get('clientName')?.touched && addTaskForm.get('clientName')?.invalid"
+            class="text-danger"
+          >
+            Please select a client.
+          </div>
+        
+          <!-- Hidden input to store selected client's name -->
+          <input type="hidden" formControlName="clientName" />
+          <div
+            *ngIf="addTaskForm.get('clientName')?.touched && addTaskForm.get('clientName')?.invalid"
+            class="text-danger"
+          >
+            Please select a client.
           </div>
         </div>
 
+        <!-- Task Title -->
         <div class="mb-3">
           <label for="taskTitle" class="form-label">Task Title</label>
-          <input type="text" id="taskTitle" class="form-control" formControlName="taskTitle" required >
-          <div *ngIf="addTaskForm.get('taskTitle').touched && addTaskForm.get('taskTitle').invalid" class="text-danger">
+          <input
+            type="text"
+            id="taskTitle"
+            class="form-control"
+            formControlName="taskTitle"
+            required
+          />
+          <div
+            *ngIf="addTaskForm.get('taskTitle')?.touched && addTaskForm.get('taskTitle')?.invalid"
+            class="text-danger"
+          >
             Task title is required.
           </div>
         </div>
 
+        <!-- Description -->
         <div class="mb-3">
           <label for="description" class="form-label">Description</label>
-          <textarea id="description" class="form-control" formControlName="description" rows="3"></textarea>
+          <textarea
+            id="description"
+            class="form-control"
+            formControlName="description"
+            rows="3"
+          ></textarea>
         </div>
 
+        <!-- Due Date and Time -->
         <div class="mb-3">
           <label for="dueDate" class="form-label">Due Date and Time</label>
-          <input type="datetime-local" id="dueDate" class="form-control" formControlName="dueDate" required >
-          <div *ngIf="addTaskForm.get('dueDate').touched && addTaskForm.get('dueDate').invalid" class="text-danger" >
+          <input
+            type="datetime-local"
+            id="dueDate"
+            class="form-control"
+            formControlName="dueDate"
+            required
+          />
+          <div
+            *ngIf="addTaskForm.get('dueDate')?.touched && addTaskForm.get('dueDate')?.invalid"
+            class="text-danger"
+          >
             Due date and time are required.
           </div>
         </div>
 
+        <!-- Priority -->
         <div class="mb-3">
           <label for="priority" class="form-label">Priority</label>
-          <select id="priority" class="form-select" formControlName="priority" required >
+          <select
+            id="priority"
+            class="form-select"
+            formControlName="priority"
+            required
+          >
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
           </select>
-          <div *ngIf="addTaskForm.get('priority').touched && addTaskForm.get('priority').invalid" class="text-danger">
+          <div
+            *ngIf="addTaskForm.get('priority')?.touched && addTaskForm.get('priority')?.invalid"
+            class="text-danger"
+          >
             Please select a priority level.
           </div>
         </div>
 
+        <!-- Status -->
         <div class="mb-3">
           <label for="status" class="form-label">Status</label>
-          <select id="status" class="form-select" formControlName="status" required >
+          <select
+            id="status"
+            class="form-select"
+            formControlName="status"
+            required
+          >
             <option value="Not Started">Not Started</option>
             <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>
           </select>
-          <div *ngIf="addTaskForm.get('status').touched && addTaskForm.get('status').invalid" class="text-danger">
+          <div
+            *ngIf="addTaskForm.get('status')?.touched && addTaskForm.get('status')?.invalid"
+            class="text-danger"
+          >
             Please select a status.
           </div>
         </div>
 
-        <!-- <div class="mb-3">
-          <label for="assignedTo" class="form-label">Assigned To</label>
-          <input type="text" id="assignedTo" class="form-control" formControlName="assignedTo">
-        </div> -->
-        <!-- <div class="mb-3">
-          <label for="assignedTo" class="form-label">Assigned To</label>
-          <select id="assignedTo" class="form-select select2" formControlName="assignedTo" (change)="onUserSelect($event)" required>
-            <option *ngFor="let user of users" [value]="user.email">{{ user.firstName }} {{ user.lastName }} ({{ user.email }})</option>
-          </select>
-          <div *ngIf="addTaskForm.get('assignedTo').touched && addTaskForm.get('assignedTo').invalid" class="text-danger">
-            Please select a user to assign.
-          </div>
-        </div> -->
+        <!-- Assigned To -->
         <div class="mb-3">
           <label for="assignedTo" class="form-label">Assigned To</label>
           <div class="position-relative">
@@ -108,18 +199,23 @@
             </ul>
           </div>
           <!-- Hidden input to store selected user's email -->
-          <input type="hidden" formControlName="assignedTo">
-          <div *ngIf="addTaskForm.get('assignedTo').touched && addTaskForm.get('assignedTo').invalid" class="text-danger">
+          <input type="hidden" formControlName="assignedTo" />
+          <div
+            *ngIf="addTaskForm.get('assignedTo')?.touched && addTaskForm.get('assignedTo')?.invalid"
+            class="text-danger"
+          >
             Please select a user to assign.
           </div>
         </div>
 
-          
-        
-        
-        
-
-        <button type="submit" class="btn btn-primary" [disabled]="!addTaskForm.valid">{{ isEditMode ? 'Save Changes' : 'Save Task' }}</button>
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="addTaskForm.invalid"
+        >
+          {{ isEditMode ? 'Save Changes' : 'Save Task' }}
+        </button>
       </form>
     </div>
   </div>

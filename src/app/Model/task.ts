@@ -8,5 +8,6 @@ export interface Task {
     status: 'Not Started' | 'In Progress' | 'Completed';
     assignedTo?: string;
     assignedToEmail?: string;
+    clientToEmail?: string;
   }
   
