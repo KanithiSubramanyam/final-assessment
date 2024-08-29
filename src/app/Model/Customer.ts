@@ -10,7 +10,7 @@ export class Customer {
     public state: string='',
     public zip: string='',
     public country: string='',
-    public createdAt: string='',
+    public createdDate: Date = new Date(),
     public updatedAt: string=''
     ){
 

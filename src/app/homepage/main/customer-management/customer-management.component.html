@@ -39,7 +39,7 @@
               <td [innerHTML]="highlightText(customer.email)"></td>
               <td [innerHTML]="highlightText(customer.phone)"></td>
               <td [innerHTML]="highlightText(customer.address)"></td>
-              <td>{{ customer.createdAt }}</td>
+              <td>{{ customer.createdDate | date:'yyyy-MM-dd'}}</td>
               <td>
                 <button class="btn btn-outline-secondary btn-sm" (click)="onViewCustomerClicked(customer)">
                   <i class="fas fa-eye"></i>
