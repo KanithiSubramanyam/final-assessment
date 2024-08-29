@@ -7,6 +7,7 @@ import { Task } from '../../../../Model/task';
 import { TaskService } from '../../../../Services/task.service';
 import { userDetails } from '../../../../Model/userDetails';
 import { UserService } from '../../../../Services/userService.service';
+import { Customer } from '../../../../Model/Customer';
 
 @Component({
   selector: 'app-schedule',
@@ -22,7 +23,12 @@ export class ScheduleComponent implements OnInit {
 
   assignedTasks: Task[] = [];
   currentUser: userDetails;
-  selectedTask: Task;
+  selectedTask: Task | null = null;
+
+  selectedCustomer: Customer | null = null;
+  customers: any[] = [];
+  filteredCustomers: Customer[] = [];
+  searchTerm = '';
 
   recurrenceOptions = ['None', 'Daily', 'Weekly', 'Monthly'];
 
@@ -43,7 +49,8 @@ export class ScheduleComponent implements OnInit {
       location: [''],
       attendees: [''],
       recurrence: ['None'],
-      customer: ['', Validators.required]
+      customer: ['', Validators.required],
+      customerEmail: ['']
     });
 
     if (history.state.appointment) {
@@ -62,24 +69,6 @@ export class ScheduleComponent implements OnInit {
     });
   }
 
-
-
-
-  
-  // if (this.assignedTasks.length > 0) {
-  //   // Select the first task as default, or add logic to select specific task
-  //   this.selectedTask = this.assignedTasks[0];
-
-  //   // Prepopulate the customer field with the customer's name from the selected task
-  //   this.scheduleForm.patchValue({
-  //     customer: this.selectedTask.clientName
-  //   });
-
-  //   // Set up date pickers constraints
-  //   this.setupDateConstraints();
-  // }
-
-
   fetchAssignedTasks(): void {
     this.taskService.getTask().subscribe(tasks => {
       if (tasks) {
@@ -87,30 +76,48 @@ export class ScheduleComponent implements OnInit {
           id: key,
           ...tasks[key]
         }));
-        // Filter tasks assigned to the current user
         this.assignedTasks = allTasks.filter(task => task.assignedToEmail === this.currentUser?.email);
+        
+        // Extract unique customers from assigned tasks
+        const uniqueCustomers = this.assignedTasks.map(task => ({
+          firstName: task.clientName.split(' ')[0],
+          lastName: task.clientName.split(' ').slice(1).join(' '),
+          email: task.clientToEmail
+        }));
+
+        this.customers = uniqueCustomers;
+        this.filteredCustomers = this.customers;
       }
     });
   }
 
-  onTaskChange(event: any): void {
-    const selectedCustomer = event.target.value;
-    this.selectedTask = this.assignedTasks.find(task => task.clientName === selectedCustomer) || null;
+  onSearchTermChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchTerm = input.value.toLowerCase();
+    this.filteredCustomers = this.customers.filter(customer => 
+      customer.firstName.toLowerCase().includes(this.searchTerm) || 
+      customer.lastName.toLowerCase().includes(this.searchTerm) ||
+      customer.email.toLowerCase().includes(this.searchTerm)
+    );
+  }
 
+  selectCustomer(customer: Customer): void {
+    this.selectedCustomer = customer;
+    this.scheduleForm.get('customer')?.setValue(customer.firstName + ' ' + customer.lastName);
+    this.scheduleForm.get('customerEmail')?.setValue(customer.email);
+    
+    // Find the task related to this customer
+    this.selectedTask = this.assignedTasks.find(task => task.clientToEmail === customer.email) || null;
+
+    // Set up date pickers constraints based on selected task
     if (this.selectedTask) {
-      // Prepopulate the customer field with the customer's name from the selected task
-      this.scheduleForm.patchValue({
-        customer: this.selectedTask.clientName
-      });
-
-      // Set up date pickers constraints
       this.setupDateConstraints();
     }
   }
 
   setupDateConstraints(): void {
     const currentDate = new Date().toISOString().split('T')[0];
-    const dueDate = new Date(this.selectedTask.dueDate).toISOString().split('T')[0];
+    const dueDate = this.selectedTask ? new Date(this.selectedTask.dueDate).toISOString().split('T')[0] : currentDate;
 
     const startDateInput = document.getElementById('startDateTime') as HTMLInputElement;
     const endDateInput = document.getElementById('endDateTime') as HTMLInputElement;
@@ -124,13 +131,13 @@ export class ScheduleComponent implements OnInit {
 
   onSubmit(): void {
     if (this.isEditMode && this.editingAppointment) {
-      this.appointmentService.updateAppointment(this.editingAppointment.id, this.scheduleForm.value).subscribe(response => {
-        this.sendEmailNotification(); // Call this function to send email
+      this.appointmentService.updateAppointment(this.editingAppointment.id, this.scheduleForm.value).subscribe(() => {
+        this.sendEmailNotification();
         this.router.navigate(['/appointmentManagement/view']);
       });
     } else {
-      this.appointmentService.saveAppointment(this.scheduleForm.value).subscribe(response => {
-        this.sendEmailNotification(); // Call this function to send email
+      this.appointmentService.saveAppointment(this.scheduleForm.value).subscribe(() => {
+        this.sendEmailNotification();
         this.scheduleForm.reset();
         this.router.navigate(['/appointmentManagement/view']);
       });
@@ -138,16 +145,6 @@ export class ScheduleComponent implements OnInit {
   }
 
   sendEmailNotification(): void {
-    // const emailData = {
-    //   to: this.selectedTask.clientEmail, // Assuming you have client email in the selectedTask
-    //   subject: 'Appointment Scheduled',
-    //   body: `Dear ${this.selectedTask.clientName}, you have an appointment scheduled on ${this.scheduleForm.value.startDateTime}. Details: ${this.scheduleForm.value.description}`
-    // };
-  
-    // // Make an HTTP request to your backend API to send the email
-    // this.appointmentService.sendEmail(emailData).subscribe(response => {
-    //   console.log('Email sent successfully');
-    // });
+    // Implement your email notification logic here
   }
-
 }
