@@ -31,13 +31,10 @@ export class ProfileComponent implements OnInit {
   isAdmin: boolean = false; // Track if the logged-in user is an admin
   isEditingOtherUser: boolean = false; // Track if the admin is editing another user
   roleOptions: { value: string, label: string }[] = [];
-<<<<<<< HEAD
   profileImageUrl: string | ArrayBuffer | null = null;
 
-=======
   message: string = '';
   snackbarClass: string = '';
->>>>>>> 93fd32b7ea1e16eebcd20e756c3f002e70e34cd0
 
   constructor(
     private fb: FormBuilder, 
