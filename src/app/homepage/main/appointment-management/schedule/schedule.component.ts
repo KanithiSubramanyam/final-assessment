@@ -8,7 +8,10 @@ import { TaskService } from '../../../../Services/task.service';
 import { userDetails } from '../../../../Model/userDetails';
 import { UserService } from '../../../../Services/userService.service';
 import { Customer } from '../../../../Model/customer';
+<<<<<<< HEAD
+=======
 import { SnackbarComponent } from '../../../../snackbar/snackbar.component';
+>>>>>>> 93fd32b7ea1e16eebcd20e756c3f002e70e34cd0
 
 @Component({
   selector: 'app-schedule',
