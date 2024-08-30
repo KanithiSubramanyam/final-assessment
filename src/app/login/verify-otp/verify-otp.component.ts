@@ -3,11 +3,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
 import * as jsotp from 'jsotp';
+import { SnackbarComponent } from '../../snackbar/snackbar.component';
 
 @Component({
   selector: 'app-verify-otp',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SnackbarComponent],
   templateUrl: './verify-otp.component.html',
   styleUrl: './verify-otp.component.css'
 })
@@ -17,8 +18,10 @@ export class VerifyOtpComponent {
 
   isMfaValid: boolean = false;
   errorMessage: string
-
   secretKey: string | undefined;
+
+  message: string
+  snackbarClass: string
 
 
   constructor(private fb: FormBuilder, private router: Router,
@@ -38,10 +41,16 @@ export class VerifyOtpComponent {
     this.isMfaValid = this.validateCode(otp, this.secretKey);
     
     if (this.isMfaValid) {
+
       this.router.navigate(['/dashboard']);
     }
     else {
-      this.errorMessage = 'Otp is not valid/ expired';
+      this.message = 'Otp is not valid/ expired !!';
+      this.snackbarClass = 'alert-danger';
+      setTimeout(() => {
+        this.message = '';
+        this.snackbarClass = '';
+      }, 3000);
     }
 
   }
@@ -54,7 +63,12 @@ export class VerifyOtpComponent {
       console.log('Code is valid!');
       return true;
     } else {
-      console.error('Invalid code!');
+      this.message = 'Otp is not correct !!';
+      this.snackbarClass = 'alert-danger';
+      setTimeout(() => {
+        this.message = '';
+        this.snackbarClass = '';
+      }, 3000);
       return false;
     }
   }

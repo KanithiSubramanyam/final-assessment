@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, switchMap, tap, throwError } from 'rxjs';
 import { User } from '../Model/User';
 import { Router } from '@angular/router';
 import { AuthResponse } from '../Model/AuthResponse';
@@ -33,7 +33,8 @@ export class AuthService {
     public router: Router,
     private activityLogService: ActivityLogService,
     private appService: AppService
-  ) {}
+  ) {
+  }
 
   signUp(user: { email: string, password: string, firstName: string, lastName: string }) {
     const signupData = {
@@ -209,22 +210,42 @@ export class AuthService {
       password: newPassword,
       returnSecureToken: true,
     };
-    
-    this.userDetailsData.value.passwordLastChangedAt = new Date();
-    const data = {
-      ...this.userDetailsData.value,
-      passwordLastChangedAt: new Date()
-    };
 
-    this.userDetailsData.next(data);
+    // Fetch user data and update BehaviorSubject
+    return this.http.get<userDetails>(`${this.databaseUrl}/users/${userId}.json`).pipe(
+      switchMap(userData => {
+        if (userData) {
+          const updatedData = {
+            ...userData,
+            passwordLastChangedAt: new Date()
+          };
+          
+          // Update BehaviorSubject
+          this.userDetailsData.next(updatedData);
 
-    return this.http.post(this.updatePasswordUrl, body).pipe(
-      map(() => {
-        this.activityLogService.addActivityLog('Password has been changed');
+          // Post password change
+          return this.http.post(this.updatePasswordUrl, body).pipe(
+            map(() => {
+              this.activityLogService.addActivityLog('Password has been changed');
+              return updatedData;
+            }),
+            catchError(error => throwError(() => new Error('Error changing password')))
+          );
+        } else {
+          return throwError(() => new Error('User data is not available'));
+        }
       }),
-      catchError(error => throwError(() => new Error('Error changing password')))
+      catchError(error => throwError(() => new Error('Error fetching user data')))
     );
   }
+
+
+
+
+
+
+
+
 
   getToken(): string | null {
     const user = JSON.parse(sessionStorage.getItem('localUser') || '{}');

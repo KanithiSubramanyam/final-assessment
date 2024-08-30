@@ -8,11 +8,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { userDetails } from '../../../Model/userDetails';
 import { QrCodeModule } from 'ng-qrcode';
 import { AuthService } from '../../../Services/auth.service';
+import { SnackbarComponent } from '../../../snackbar/snackbar.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ChangePasswordComponent, RouterLink, QrCodeModule],
+  imports: [CommonModule, ReactiveFormsModule, SnackbarComponent, ChangePasswordComponent, RouterLink, QrCodeModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -30,7 +31,8 @@ export class ProfileComponent implements OnInit {
   isAdmin: boolean = false; // Track if the logged-in user is an admin
   isEditingOtherUser: boolean = false; // Track if the admin is editing another user
   roleOptions: { value: string, label: string }[] = [];
-
+  message: string = '';
+  snackbarClass: string = '';
 
   constructor(
     private fb: FormBuilder, 
@@ -62,7 +64,7 @@ export class ProfileComponent implements OnInit {
 
         },
         error: (error) => {
-          console.error('Error fetching user data:', error);
+          // console.error('Error fetching user data:', error);
         }
       }
     );
@@ -90,9 +92,7 @@ export class ProfileComponent implements OnInit {
                   this.userForm.get('role')?.enable();
                   this.setRoleOptions();
                 }
-                
               }
-
               if (this.router.url.includes('/userManagement/users/viewProfile')) {
                 this.isReadOnly = false;
                 this.userForm.disable();
@@ -137,6 +137,13 @@ export class ProfileComponent implements OnInit {
     const email = userData ? JSON.parse(userData).email : '';
     const issuer = 'final-assessment-1';
 
+    this.message = 'MFA Enabled !!';
+    this.snackbarClass = 'alert-success';
+    setTimeout(() => {
+      this.message = '';
+      this.snackbarClass = '';
+    }, 3000);
+
     this.authService.isMfaEnabled(this.isMfaEnabledBtn, uid, qrCodeSecret);
 
     // Generate the QR code data URL
@@ -157,6 +164,12 @@ export class ProfileComponent implements OnInit {
     });
     this.enableOrDisableBtn = false;
     this.mfaCloseBtn = false;
+    this.message = 'MFA Disabled!!';
+    this.snackbarClass = 'alert-Warning';
+    setTimeout(() => {
+      this.message = '';
+      this.snackbarClass = '';
+    }, 3000);
   }
 
   // Generate a random base32 secret
@@ -180,8 +193,20 @@ export class ProfileComponent implements OnInit {
 
       this.userService.updateUserDetails(updatedData).subscribe(
         response => {
+          this.message = 'User Profile data is updated!!';
+          this.snackbarClass = 'alert-success';
+          setTimeout(() => {
+            this.message = '';
+            this.snackbarClass = '';
+          }, 3000);
         },
         error => {
+          this.message = 'Error updating user details:', error;
+          this.snackbarClass = 'alert-success';
+          setTimeout(() => {
+            this.message = '';
+            this.snackbarClass = '';
+          }, 3000);
           console.error('Error updating user details:', error);
         }
       );

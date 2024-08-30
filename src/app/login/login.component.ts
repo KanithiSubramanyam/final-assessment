@@ -11,11 +11,12 @@ import { Observable } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 import { ProfileComponent } from '../homepage/main/profile/profile.component';
 import { VerifyOtpComponent } from "./verify-otp/verify-otp.component";
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 @Component({
   selector: 'login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, RouterLink, VerifyOtpComponent],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, RouterLink, VerifyOtpComponent, SnackbarComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -37,10 +38,12 @@ export class LoginComponent implements OnInit {
 
   errorMessage: string | null = null;
 
-  secretKey : string = '';
+  secretKey: string = '';
 
   mfaEnabledBtn: boolean = false;
 
+  message: string = '';
+  snackbarClass: string = '';
 
   constructor(private fb: FormBuilder) {
     this.createForms();
@@ -75,27 +78,10 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     if (this.isLoginMode) {
       if (this.loginForm.valid) {
-
         this.authObs = this.authService.logIn(this.loginForm.value.email, this.loginForm.value.password);
-        
       }
     } else {
       if (this.signupForm.valid) {
-
-          // /**
-          //  * Enables TOTP (Time-based One-Time Password) multi-factor authentication (MFA) for the user.
-          //  *
-          //  * This method subscribes to the `enableTotpMfa()` observable provided by the `authService`. If the operation is successful, it logs a success message to the console. If there is an error, it logs the error message to the console.
-          //  */
-          // this.authService.enableTotpMfa().subscribe(
-          //   (response) => {
-          //     console.log('TOTP MFA enabled successfully');
-          //   },
-          //   (error) => {
-          //     console.error('Error enabling TOTP MFA:', error);
-          //   }
-          // );
-        
         const user = {
           email: this.signupForm.value.email,
           password: this.signupForm.value.password,
@@ -109,30 +95,40 @@ export class LoginComponent implements OnInit {
 
     this.authObs.subscribe({
       next: (res) => {
-        if(this.isLoginMode){
-          console.log(res.localId);
+        if (this.isLoginMode) {
           this.authService.getUserProfile(res.localId).subscribe(userData => {
-            // console.log(userData);
             this.secretKey = userData.mfaSecertKey;
             this.mfaEnabledBtn = userData.mfaBtn;
-    
-            if(this.mfaEnabledBtn){
+            if (this.mfaEnabledBtn) {
               this.router.navigate(['/login/verifyOTP'], { state: { secretKey: this.secretKey } });
             } else {
+              this.message = 'Login Successful !!';
+              this.snackbarClass = 'alert-success';
+              setTimeout(() => {
+                this.message = '';
+                this.snackbarClass = '';
+              }, 3000);
               this.router.navigate(['/dashboard']);
             }
           });
-        } 
+        }
         else {
+          this.message = 'Signup Successful, Account Created !!';
+          this.snackbarClass = 'alert-success';
+          setTimeout(() => {
+            this.message = '';
+            this.snackbarClass = '';
+          }, 3000);
           this.isLoginMode = true;
           this.router.navigate(['/login']);
         }
       },
       error: (errMsg) => {
         this.errorMessage = errMsg;
+        this.message = this.errorMessage;
+        this.snackbarClass = 'alert-danger';
       }
     });
-    
 
     this.loginForm.reset();
 

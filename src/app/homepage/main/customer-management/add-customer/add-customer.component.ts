@@ -3,11 +3,12 @@ import { ReactiveFormsModule,FormBuilder, FormGroup, Validators } from '@angular
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CustomerService } from '../../../../Services/customer.service';
+import { SnackbarComponent } from '../../../../snackbar/snackbar.component';
 
 @Component({
   selector: 'app-add-customer',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule,CommonModule, SnackbarComponent],
   templateUrl: './add-customer.component.html',
   styleUrl: './add-customer.component.css'
 })
@@ -16,7 +17,9 @@ export class AddCustomerComponent {
   customerForm!: FormGroup;
   isEditMode: boolean = false;
   editingcustomer:any =null;
-  currentCustomer: any; // To hold the current task data
+  currentCustomer: any; 
+  message : string
+  snackbarClass: string;
 
   constructor(private fb: FormBuilder,private router:Router,private customerService:CustomerService) {
     this.customerForm = this.fb.group({
@@ -51,22 +54,41 @@ export class AddCustomerComponent {
     if (this.customerForm.valid) {
       if (this.isEditMode && this.editingcustomer) {
         this.customerService.updateCustomer(this.editingcustomer.id, this.customerForm.value).subscribe(response => {
-          console.log('Customer updated successfully', response);
+          this.message = 'Customer updated sucessfully !!';
+          this.snackbarClass = 'alert-success';
+          setTimeout(() => {
+            this.message = '';
+            this.snackbarClass = '';
+          }, 3000);
           this.router.navigate(['/customerManagement']);
         }, error => {
-          console.error('Error updating customer:', error);
+          this.message = error.message;
+          this.snackbarClass = 'alert-danger';
+          setTimeout(() => {
+            this.message = '';
+            this.snackbarClass = '';
+          }, 3000);
         });
       } else {
         this.customerService.saveCustomer(this.customerForm.value).subscribe(response => {
-          console.log('Customer created successfully', response);
+          this.message = 'Customer created sucessfully !!';
+          this.snackbarClass = 'alert-success';
+          setTimeout(() => {
+            this.message = '';
+            this.snackbarClass = '';
+          }, 3000);
           this.customerForm.reset();
           this.router.navigate(['/customerManagement']);
         }, error => {
+          this.message = error.message;
+          this.snackbarClass = 'alert-danger';
+          setTimeout(() => {
+            this.message = '';
+            this.snackbarClass = '';
+          }, 3000);
           console.error('Error creating customer:', error);
         });
       }
     }
 }
-
-
 }

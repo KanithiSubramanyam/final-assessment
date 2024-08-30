@@ -8,11 +8,12 @@ import { TaskService } from '../../../../Services/task.service';
 import { userDetails } from '../../../../Model/userDetails';
 import { UserService } from '../../../../Services/userService.service';
 import { Customer } from '../../../../Model/customer';
+import { SnackbarComponent } from '../../../../snackbar/snackbar.component';
 
 @Component({
   selector: 'app-schedule',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, SnackbarComponent],
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css']
 })
@@ -29,6 +30,9 @@ export class ScheduleComponent implements OnInit {
   customers: any[] = [];
   filteredCustomers: Customer[] = [];
   searchTerm = '';
+
+  message: string
+  snackbarClass: string
 
   recurrenceOptions = ['None', 'Daily', 'Weekly', 'Monthly'];
 
@@ -136,14 +140,43 @@ export class ScheduleComponent implements OnInit {
     if (this.isEditMode && this.editingAppointment) {
       this.appointmentService.updateAppointment(this.editingAppointment.id, this.scheduleForm.value).subscribe(() => {
         this.sendEmailNotification();
+        this.message = 'Appointment updated Successful !!';
+        this.snackbarClass = 'alert-success';
+        setTimeout(() => {
+          this.message = '';
+          this.snackbarClass = '';
+        }, 3000);
         this.router.navigate(['/appointmentManagement/view']);
-      });
+      },
+      (error) => {
+        this.message = error;
+        this.snackbarClass = 'alert-danger';
+        setTimeout(() => {
+          this.message = '';
+          this.snackbarClass = '';
+        }, 3000);      
+      }); 
+    
     } else {
       this.appointmentService.saveAppointment(this.scheduleForm.value).subscribe(() => {
         this.sendEmailNotification();
+        this.message = 'Appointment created Successful !!';
+        this.snackbarClass = 'alert-success';
+        setTimeout(() => {
+          this.message = '';
+          this.snackbarClass = '';
+        }, 3000);
         this.scheduleForm.reset();
         this.router.navigate(['/appointmentManagement/view']);
-      });
+      },
+    (error) => {
+      this.message = error;
+      this.snackbarClass = 'alert-danger';
+      setTimeout(() => {
+        this.message = '';
+        this.snackbarClass = '';
+      }, 3000);      
+    });
     }
   }
 
