@@ -5,15 +5,19 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../Services/auth.service';
+import { AppComponent } from '../../app.component';
 
 @Component({
   selector: 'app-forget-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, AppComponent],
   templateUrl: './forget-password.component.html',
   styleUrls: ['./forget-password.component.css']  // Note: styleUrls instead of styleUrl
 })
 export class ForgetPasswordComponent implements OnInit {
+
+  message : string
+  snackbarClass : string
 
   forgetPasswordForm: FormGroup;
   http : HttpClient = inject(HttpClient);
@@ -23,7 +27,7 @@ export class ForgetPasswordComponent implements OnInit {
   resetPasswordUrl = "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key="
 
   webApi = "AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM";
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private appComponent : AppComponent) { }
 
   ngOnInit(): void {
     this.forgetPasswordForm = this.fb.group({
@@ -39,10 +43,10 @@ export class ForgetPasswordComponent implements OnInit {
         email: this.forgetPasswordForm.value.email
       }).subscribe((response) => {
         next : (response) => {
-          console.log('Password reset email sent successfully', response);
+          this.appComponent.showAlert('Password reset email sent successfully !!', 'alert-success')
         }
         error: (error) => {
-          console.log('Error sending password reset email', error);
+          this.appComponent.showAlert(`Error sending password reset email ${error.message}`, 'alert-danger')
         }
       });
 

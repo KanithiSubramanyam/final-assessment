@@ -1,0 +1,7 @@
+<!-- app.component.html -->
+<div class="snackbar-container">
+  <div class="alert alert-dark alert-dismissible fade show" role="alert" [ngClass]="{'show': showSnackbar}" *ngIf="message">
+    <button type="button" class="btn-close" aria-label="Close" (click)="closeSnackbar()"></button>
+    {{ message }}
+  </div>
+</div>

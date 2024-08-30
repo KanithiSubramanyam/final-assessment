@@ -10,12 +10,13 @@ import { Customer } from '../../../../Model/customer';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SnackbarComponent } from '../../../../snackbar/snackbar.component';
 
 @Component({
   selector: 'app-add-task',
   templateUrl: './add-task.component.html',
   standalone: true,
-  imports:[CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, SnackbarComponent],
   styleUrls: ['./add-task.component.css']
 })
 export class AddTaskComponent implements OnInit {
@@ -31,6 +32,8 @@ export class AddTaskComponent implements OnInit {
   selectedClient: Customer | null = null;
   searchTerm: string = '';
   clientSearchTerm: string = '';
+  message : string
+  snackbarClass : string = ''
 
   constructor(
     private fb: FormBuilder,
@@ -66,7 +69,7 @@ export class AddTaskComponent implements OnInit {
     }
 
     this.fetchUsers();
-    this.fetchCustomers();  // Fetch customers on initialization
+    this.fetchCustomers();
   }
 
   fetchUsers(): void {
@@ -83,16 +86,16 @@ export class AddTaskComponent implements OnInit {
   }
 
   fetchCustomers(): void {
-  this.customerService.getAllCustomers().subscribe(
-    (customersObject) => {
-      this.customers = Object.values(customersObject);
-      this.filteredClients = this.customers;
-    },
-    (error) => {
-      console.error('Error fetching customers:', error);
-    }
-  );
-}
+    this.customerService.getAllCustomers().subscribe(
+      (customersObject) => {
+        this.customers = Object.values(customersObject);
+        this.filteredClients = this.customers;
+      },
+      (error) => {
+        console.error('Error fetching customers:', error);
+      }
+    );
+  }
 
 
   onClientSearchTermChange(event: Event): void {
@@ -141,18 +144,34 @@ export class AddTaskComponent implements OnInit {
     if (this.addTaskForm.valid) {
       if (this.isEditMode && this.editingtask) {
         this.taskService.updateTask(this.editingtask.id, this.addTaskForm.value).subscribe(response => {
-          console.log('Task updated successfully', response);
+          
+          this.message = 'Task Updated Successfully';
+          this.snackbarClass = 'alert-success';
+          setTimeout(() => {
+            this.message = '';
+            this.snackbarClass = '';
+          }, 3000);
           this.router.navigate(['/taskManagement']);
         }, error => {
           console.error('Error updating task:', error);
         });
       } else {
         this.taskService.saveTask(this.addTaskForm.value).subscribe(response => {
-          console.log('Task created successfully', response);
+          this.message = 'Task Created Successfully';
+          this.snackbarClass = 'alert-success';
+          setTimeout(() => {
+            this.message = '';
+            this.snackbarClass = '';
+          }, 3000);
           this.addTaskForm.reset();
           this.router.navigate(['/taskManagement']);
         }, error => {
-          console.error('Error creating task:', error);
+          this.message = error;
+          this.snackbarClass = 'alert-danger';
+          setTimeout(() => {
+            this.message = '';
+            this.snackbarClass = '';
+          }, 3000);
         });
       }
     }

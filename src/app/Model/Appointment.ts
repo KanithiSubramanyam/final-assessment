@@ -1,12 +1,14 @@
 export class Appointment {
-    id: number;
+    id?: string;
     title: string;
     description : string;
-    startDate: Date;
-    endDate: Date;
+    startDateTime: Date;
+    endDateTime: Date;
     location: string;
-    attendes : string[];
+    attendees : string[];
     recurrence : 'None' | 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
-    clientName: string;
-    clientEmail: string;
+    customer: string;
+    customerEmail: string;
+    userName: string;
+    userEmail: string;
 }
