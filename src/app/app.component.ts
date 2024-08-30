@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, Input, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { SidebarComponent } from './homepage/sidebar/sidebar.component';
@@ -26,11 +26,31 @@ export class AppComponent {
   @ViewChild(LogoutWarningComponent) warningModal!: LogoutWarningComponent;
   tokenExpirationTimer: any;
 
+  @Input() message : string | null;
+
+  @Input() snackbarClass : string | null;
+
   constructor(private appService: AppService, private authService: AuthService) {
     this.appService.startWarningTimer$.subscribe((duration) => {
       this.startWarningTimer(duration);
     });
   }
+
+  showSnackbar = false;
+
+  showAlert(message: string, snackbarClass: string) {
+    this.message = message;
+    this.snackbarClass = snackbarClass;
+    this.showSnackbar = true;
+    setTimeout(() => {
+      this.closeSnackbar();
+    }, 3000);
+  }
+
+  closeSnackbar() {
+    this.showSnackbar = false;
+  }
+
 
   ngOnInit() {
     this.authService.autoLogin();

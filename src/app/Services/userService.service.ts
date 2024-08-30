@@ -102,7 +102,6 @@ export class UserService {
 
   getCurrentUserData(id){
       return this.http.get<userDetails>(`${this.dataBaseUrl.replace('.json', '')}/${id}.json`);
-
   }
 
 }

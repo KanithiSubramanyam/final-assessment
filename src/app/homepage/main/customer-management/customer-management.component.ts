@@ -4,11 +4,12 @@ import { RouterLink, Router } from '@angular/router';
 import { CustomerService } from '../../../Services/customer.service';
 import { Customer } from '../../../Model/customer';
 import { FormsModule } from '@angular/forms';
+import { SnackbarComponent } from '../../../snackbar/snackbar.component';
 
 @Component({
   selector: 'customer-management',
   standalone: true,
-  imports: [CommonModule, RouterLink,FormsModule],
+  imports: [CommonModule, RouterLink,FormsModule, SnackbarComponent],
   templateUrl: './customer-management.component.html',
   styleUrls: ['./customer-management.component.css']  // Corrected from `styleUrl` to `styleUrls`
 })
@@ -16,6 +17,9 @@ export class CustomerManagementComponent implements OnInit {
   customers: Customer[] = [];
   filteredCustomers: Customer[] = [];
   searchTerm: string = '';
+  message: string = ''
+  snackbarClass: string = '';
+
 
   constructor(private customerService: CustomerService, private router: Router) {}
 
@@ -65,18 +69,28 @@ export class CustomerManagementComponent implements OnInit {
   }
 
   OnDeleteCustomerClicked(id: string, index: number): void {
-    console.log('Attempting to delete customer with ID:', id);  // Debugging line
   
     const removedCustomer = this.customers.splice(index, 1)[0];
   
     this.customerService.deleteCustomer(id).subscribe({
       next: () => {
+          this.message = 'Customer deleted successfully';
+          this.snackbarClass = 'alert-success';
+          setTimeout(() => {
+            this.message = '';
+            this.snackbarClass = '';
+          }, 3000);      
         console.log(`Customer with ID ${id} has been deleted`);
         this.fetchCustomers();
   
       },
       error: (error) => {
-        console.error('Error deleting customer:', error);
+        this.message = error.message;
+        this.snackbarClass = 'alert-danger';
+        setTimeout(() => {
+          this.message = '';
+          this.snackbarClass = '';
+        }, 3000);   
         this.customers.splice(index, 0, removedCustomer);  // Revert removal in case of error
       }
     });

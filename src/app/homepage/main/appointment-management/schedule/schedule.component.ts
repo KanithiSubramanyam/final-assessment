@@ -8,11 +8,15 @@ import { TaskService } from '../../../../Services/task.service';
 import { userDetails } from '../../../../Model/userDetails';
 import { UserService } from '../../../../Services/userService.service';
 import { Customer } from '../../../../Model/customer';
+<<<<<<< HEAD
+=======
+import { SnackbarComponent } from '../../../../snackbar/snackbar.component';
+>>>>>>> 93fd32b7ea1e16eebcd20e756c3f002e70e34cd0
 
 @Component({
   selector: 'app-schedule',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, SnackbarComponent],
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css']
 })
@@ -29,6 +33,9 @@ export class ScheduleComponent implements OnInit {
   customers: any[] = [];
   filteredCustomers: Customer[] = [];
   searchTerm = '';
+
+  message: string
+  snackbarClass: string
 
   recurrenceOptions = ['None', 'Daily', 'Weekly', 'Monthly'];
 
@@ -50,7 +57,9 @@ export class ScheduleComponent implements OnInit {
       attendees: [''],
       recurrence: ['None'],
       customer: ['', Validators.required],
-      customerEmail: ['']
+      customerEmail: [''],
+      userName : [''],
+      userEmail : [''],
     });
 
     if (history.state.appointment) {
@@ -58,6 +67,7 @@ export class ScheduleComponent implements OnInit {
       this.isEditMode = true;
       this.scheduleForm.patchValue(this.editingAppointment);
     }
+
 
     this.userService.getCurrentUser().subscribe(userDetails => {
       if (userDetails) {
@@ -105,11 +115,11 @@ export class ScheduleComponent implements OnInit {
     this.selectedCustomer = customer;
     this.scheduleForm.get('customer')?.setValue(customer.firstName + ' ' + customer.lastName);
     this.scheduleForm.get('customerEmail')?.setValue(customer.email);
-    
+    this.scheduleForm.get('userName')?.setValue(this.currentUser.firstName + ' ' + this.currentUser.lastName);
+    this.scheduleForm.get('userEmail')?.setValue(this.currentUser.email);
     // Find the task related to this customer
     this.selectedTask = this.assignedTasks.find(task => task.clientToEmail === customer.email) || null;
 
-    // Set up date pickers constraints based on selected task
     if (this.selectedTask) {
       this.setupDateConstraints();
     }
@@ -133,14 +143,43 @@ export class ScheduleComponent implements OnInit {
     if (this.isEditMode && this.editingAppointment) {
       this.appointmentService.updateAppointment(this.editingAppointment.id, this.scheduleForm.value).subscribe(() => {
         this.sendEmailNotification();
+        this.message = 'Appointment updated Successful !!';
+        this.snackbarClass = 'alert-success';
+        setTimeout(() => {
+          this.message = '';
+          this.snackbarClass = '';
+        }, 3000);
         this.router.navigate(['/appointmentManagement/view']);
-      });
+      },
+      (error) => {
+        this.message = error;
+        this.snackbarClass = 'alert-danger';
+        setTimeout(() => {
+          this.message = '';
+          this.snackbarClass = '';
+        }, 3000);      
+      }); 
+    
     } else {
       this.appointmentService.saveAppointment(this.scheduleForm.value).subscribe(() => {
         this.sendEmailNotification();
+        this.message = 'Appointment created Successful !!';
+        this.snackbarClass = 'alert-success';
+        setTimeout(() => {
+          this.message = '';
+          this.snackbarClass = '';
+        }, 3000);
         this.scheduleForm.reset();
         this.router.navigate(['/appointmentManagement/view']);
-      });
+      },
+    (error) => {
+      this.message = error;
+      this.snackbarClass = 'alert-danger';
+      setTimeout(() => {
+        this.message = '';
+        this.snackbarClass = '';
+      }, 3000);      
+    });
     }
   }
 
