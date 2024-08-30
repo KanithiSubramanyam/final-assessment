@@ -5,13 +5,14 @@
       class="col-lg-4 text-center shadow-lg pb-4 rounded-3"
       style="height: fit-content"
     >
-      <img
-        [src]="profile"
-        alt="Profile Photo"
-        class="rounded-circle img-fluid mb-3"
-        width="150"
-        height="150"
-      />
+    <div class="form-group">
+      <label for="profileImage">Profile Image</label>
+      <input type="file" id="profileImage" (change)="onFileChange($event)" class="form-control" />
+      <div *ngIf="profileImageUrl">
+        <img [src]="profileImageUrl" alt="Profile Image" class="img-thumbnail mt-2" />
+      </div>
+    </div>
+    
       <h3>{{ userForm.get("firstName")?.value | uppercase }} {{ userForm.get("lastName")?.value | uppercase }}</h3>
       <p>created on:{{ userData?.createdAt }}</p>
       <change-password *ngIf="isReadOnly"></change-password>

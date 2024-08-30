@@ -30,6 +30,7 @@ export class ProfileComponent implements OnInit {
   isAdmin: boolean = false; // Track if the logged-in user is an admin
   isEditingOtherUser: boolean = false; // Track if the admin is editing another user
   roleOptions: { value: string, label: string }[] = [];
+  profileImageUrl: string | ArrayBuffer | null = null;
 
 
   constructor(
@@ -78,6 +79,7 @@ export class ProfileComponent implements OnInit {
             next: (data: userDetails) => {
               this.userData = data;
               this.userForm.patchValue(this.userData);
+              this.profileImageUrl=this.userData.photoUrl;
                // Ensure the role is set correctly in the form
             this.userForm.get('role')?.setValue(this.userData.role);
 
@@ -186,5 +188,27 @@ export class ProfileComponent implements OnInit {
         }
       );
     }
+  }
+
+  onFileChange(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => this.profileImageUrl = reader.result;
+      reader.readAsDataURL(file);
+
+      // this.userService.updateUserImage(file).subscribe({
+      //   next: () => console.log('User image updated successfully'),
+      //   error: (err) => console.error('Error updating user image:', err)
+      // });
+    }
+  }
+
+  onSaveProfile(): void {
+    const updatedData = this.userForm.getRawValue();
+    this.userService.updateUserDetails(updatedData).subscribe({
+      next: () => console.log('User details updated successfully'),
+      error: (err) => console.error('Error updating user details:', err)
+    });
   }
 }
