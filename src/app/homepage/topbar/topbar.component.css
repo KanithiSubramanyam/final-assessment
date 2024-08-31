@@ -1,16 +1,4 @@
 
-  .navbar {
-    height: 70px; 
-    padding: 0.5rem 1rem; 
-    line-height: 80px; 
-    display: flex;
-    align-items: center; 
-  }
-  
-  .navbar-brand {
-    font-size: 1.5rem; 
-  }
-  
   .profile-menu {
     width: 300px;
     padding: 1rem;

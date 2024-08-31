@@ -81,10 +81,12 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     if (this.isLoginMode) {
       if (this.loginForm.valid) {
+        console.log(this.loginForm.value);
         this.authObs = this.authService.logIn(this.loginForm.value.email, this.loginForm.value.password);
       }
     } else {
       if (this.signupForm.valid) {
+        console.log(this.signupForm.value);
         const user = {
           email: this.signupForm.value.email,
           password: this.signupForm.value.password,

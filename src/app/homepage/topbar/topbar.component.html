@@ -1,22 +1,26 @@
 <div>
   <snackbar [message]="message" [snackbarClass]="snackbarClass"></snackbar>
 </div>
-<nav class="navbar navbar-expand-lg navbar-white bg-white shadow">
+<nav class="navbar navbar-expand-lg navbar-white bg-white shadow d-flex">
   <div class="container-fluid">
-    <div class="ms-auto position-relative">
-      <img [src]="profile" loading="lazy" alt="Profile" width="40" height="40" class="rounded-circle" (click)="toggleProfileMenu()">
-      
-
-      <div *ngIf="isProfileMenuOpen" class="profile-menu position-absolute end-0 mt-2 p-3 bg-white border rounded shadow-lg Column" style="height:fit-content;">
-        <div class="d-flex flex-column justify-content-center align-items-center row-6">
-          <img [src]="profile" loading="lazy" alt="Profile" class="rounded-circle h-50 w-50">
-          <p class="text-center">created on: 12/12/2024</p> 
-        </div>
-        <div class="d-flex justify-content-between row-6">
-          <button class="btn btn-primary me-2" (click)="closeProfileMenu()" [routerLink]="['user/profile']">Profile Details</button>
-          <button class="btn btn-danger" (click)="logout()">Logout</button>
+    <div class="ms-auto position-relative d-flex">
+      <div class="align-content-center">
+        <div class="pe-3 fw-semibold fs-6">{{ userDetails.firstName | uppercase }} {{ userDetails.lastName | uppercase }}</div>
+      </div>
+      <div>
+        <img [src]="profile" loading="lazy" alt="Profile" width="40" height="40" class="rounded-circle" (click)="toggleProfileMenu()"> 
+        <div *ngIf="isProfileMenuOpen" class="profile-menu position-absolute end-0 mt-2 p-3 bg-white border rounded shadow-lg Column" style="height:fit-content;">
+          <div class="d-flex flex-column justify-content-center align-items-center row-6">
+            <img [src]="profile" loading="lazy" alt="Profile" class="rounded-circle h-50 w-50">
+            <p class="text-center">created on: 12/12/2024</p> 
+          </div>
+          <div class="d-flex justify-content-between row-6">
+            <button class="btn btn-primary me-2" (click)="closeProfileMenu()" [routerLink]="['user/profile']">Profile Details</button>
+            <button class="btn btn-danger" (click)="logout()">Logout</button>
+          </div>
         </div>
       </div>
+
     </div>
   </div>
 </nav>
