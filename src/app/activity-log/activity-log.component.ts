@@ -20,6 +20,7 @@ export class ActivityLogComponent implements OnInit {
   currentPage = 1;
   totalPages = 1;
   searchTerm: string = '';
+  itemsPerPageOptions = [10, 20, 30, 50]; // Options for items per page
 
   constructor(private activityLogService: ActivityLogService) {}
 
@@ -74,8 +75,44 @@ export class ActivityLogComponent implements OnInit {
   
 
   get totalPagesArray(): number[] {
-    return Array(this.totalPages).fill(0).map((_, i) => i + 1);
+    const totalPagesToShow = 3;
+    const pages: number[] = [];
+  
+    if (this.totalPages <= totalPagesToShow * 2 + 1) {
+      // If total pages are less than the combined visible pages, show all pages
+      for (let i = 1; i <= this.totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      const startPages = [];
+      const endPages = [];
+      let middlePages = [];
+  
+      if (this.currentPage <= totalPagesToShow) {
+        // Near the start of the pagination
+        for (let i = 1; i <= totalPagesToShow + 1; i++) {
+          startPages.push(i);
+        }
+        middlePages.push(-1); // Indicating ellipsis
+      } else if (this.currentPage >= this.totalPages - totalPagesToShow) {
+        // Near the end of the pagination
+        middlePages.push(-1); // Indicating ellipsis
+        for (let i = this.totalPages - totalPagesToShow; i <= this.totalPages; i++) {
+          endPages.push(i);
+        }
+      } else {
+        // Somewhere in the middle
+        middlePages.push(-1); // Indicating ellipsis before middle pages
+        for (let i = this.currentPage - 1; i <= this.currentPage + 1; i++) {
+          middlePages.push(i);
+        }
+        middlePages.push(-1); // Indicating ellipsis after middle pages
+      }
+  
+      // Always include the first and last pages
+      pages.push(1, ...startPages, ...middlePages, ...endPages, this.totalPages);
+    }
+  
+    return pages.filter((page, index, array) => array.indexOf(page) === index); // Remove duplicates
   }
 }
-
-
