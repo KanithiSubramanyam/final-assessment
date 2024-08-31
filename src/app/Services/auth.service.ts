@@ -22,7 +22,7 @@ export class AuthService {
 
   private signupUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=';
   private signinUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=';
-  private webApi = 'AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM';
+  public webApi = 'AIzaSyDVj7HtNPKKIQ8WJvaDNKgoTeacABkwaHM';
   private databaseUrl = 'https://final-assessment-1-default-rtdb.asia-southeast1.firebasedatabase.app';
   private updateProfileUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.webApi}`;
   private updatePasswordUrl = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.webApi}`;
@@ -92,15 +92,14 @@ export class AuthService {
       .pipe(
         catchError(this.handleError),
         tap(res => {
-          console.log(res);
+          // console.log(res);
           this.handleCreateUser(res, true);
 
           this.getUserProfile(res.localId).subscribe(userData => {
             userData.lastLoginAt = new Date();
             this.userDetailsData.next(userData);
             this.http.put(`${this.databaseUrl}/users/${res.localId}.json`, userData)
-              .subscribe();
-
+              .subscribe(); 
             this.activityLogService.addActivityLog('Logged in to the application');
           });
         })
@@ -108,8 +107,17 @@ export class AuthService {
   }
 
   getUserProfile(uid: string): Observable<userDetails> {
-    return this.http.get<userDetails>(`${this.databaseUrl}/users/${uid}.json`);
+    const url = `${this.databaseUrl}/users/${uid}.json`;
+    console.log('Fetching user profile from URL:', url);
+    return this.http.get<userDetails>(url).pipe(
+      tap(data => console.log('User Profile Data:', data)),
+      catchError(error => {
+        console.error('Error fetching user profile:', error);
+        return throwError(error);
+      })
+    );
   }
+  
 
   autoLogin() {
     const user = JSON.parse(sessionStorage.getItem('localUser') || '{}');
@@ -239,14 +247,6 @@ export class AuthService {
     );
   }
 
-
-
-
-
-
-
-
-
   getToken(): string | null {
     const user = JSON.parse(sessionStorage.getItem('localUser') || '{}');
     return user ? user._token : null;
@@ -270,16 +270,32 @@ export class AuthService {
     return `otpauth://totp/${issuer}:${email}?secret=${secret}&issuer=${issuer}`;
   }
 
-  isMfaEnabled(mfaBtn: boolean, uid: string, secretKey: string) {
-    return this.getUserProfile(uid).pipe(
-      map(userData => {
-        userData.mfaBtn = mfaBtn;
-        userData.mfaSecertKey = secretKey;
-        return this.http.put(`${this.databaseUrl}/users/${uid}.json`, userData);
-      }),
-      catchError(this.handleError)
-    );
-  }
+  // isMfaEnabled(mfaBtn: boolean, uid: string, secretKey: string) {
+  //   console.log('MFA Button:', uid);
+  //   return this.getUserProfile(uid).pipe(
+  //     tap(userData => {
+  //       if (!userData) {
+  //         throw new Error('User data is null or undefined');
+  //       }
+  //       console.log('Fetched User Data:', userData);
+  //     }),
+  //     map(userData => {
+  //       userData.mfaBtn = mfaBtn;
+  //       userData.mfaSecertKey = secretKey; // Correct typo if needed
+  //       console.log('Updated User Data:', userData);
+  //       return this.http.put(`${this.databaseUrl}/users/${uid}.json`, userData).pipe(
+  //         tap(response => console.log('PUT Response:', response)),
+  //         catchError(error => {
+  //           console.error('PUT Error:', error);
+  //           return throwError(error);
+  //         })
+  //       );
+  //     }),
+  //     catchError(this.handleError)
+  //   );
+  // }
+  
+  
 
   updateUserProfile(userId: string, userData: userDetails): Observable<any> {
     this.activityLogService.addActivityLog('Profile has been updated');

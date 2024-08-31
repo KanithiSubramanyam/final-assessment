@@ -8,14 +8,24 @@
       class="col-lg-4 text-center shadow-lg pb-4 rounded-3"
       style="height: fit-content"
     >
-    <div class="form-group">
+    <!-- <div class="form-group">
       <label for="profileImage">Profile Image</label>
       <input type="file" id="profileImage" (change)="onFileChange($event)" class="form-control" />
       <div *ngIf="profileImageUrl">
         <img [src]="profileImageUrl" alt="Profile Image" class="img-thumbnail mt-2" />
       </div>
-    </div>
+    </div> -->
     
+    <div class="container mt-3">
+      <div class="picture-container">
+          <div class="picture">
+              <img [src]="profileImageUrl || 'assets/images/profile.jpg'" class="picture-src" id="wizardPicturePreview" title="Profile Picture" />
+              <input type="file" id="wizard-picture" (change)="onFileChange($event)" />
+          </div>
+      </div>
+  </div>
+
+  
       <h3>{{ userForm.get("firstName")?.value | uppercase }} {{ userForm.get("lastName")?.value | uppercase }}</h3>
       <p>created on:{{ userData?.createdAt }}</p>
       <change-password *ngIf="isReadOnly"></change-password>
@@ -27,6 +37,7 @@
           <button class="btn btn-outline-primary mt-3" (click)="closeMFA()">Is MFA Enable? Close</button>
         </div>
       </div>
+      
       <button class="btn btn-primary mt-3" *ngIf="backToUser" [routerLink] = "['/userManagement/users']">Back to Users</button>
     </div>
 
