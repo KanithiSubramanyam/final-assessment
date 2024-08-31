@@ -50,7 +50,8 @@ export class ProfileComponent implements OnInit {
       role: [{ value: '', disabled: true }, Validators.required],
       phone: ['', Validators.required],
       gender: [{ value: '' }, Validators.required],
-      address: ['', Validators.required]
+      address: ['', Validators.required],
+      photoUrl: ['']
     });
 
     // Fetch current user data
@@ -147,7 +148,14 @@ export class ProfileComponent implements OnInit {
       this.snackbarClass = '';
     }, 3000);
 
-    this.authService.isMfaEnabled(this.isMfaEnabledBtn, uid, qrCodeSecret);
+    console.log(this.isMfaEnabledBtn, uid, qrCodeSecret);
+    this.authService.getUserProfile(uid).subscribe(userData => {
+      userData.mfaBtn = this.isMfaEnabledBtn;
+      userData.mfaSecertKey = qrCodeSecret;
+      this.authService.updateUserProfile(uid, userData).subscribe();
+    });
+
+    // this.authService.isMfaEnabled(this.isMfaEnabledBtn, uid, qrCodeSecret);
 
     // Generate the QR code data URL
     this.qrdata = this.authService.generateMsAuthenticatoQrCode(qrCodeSecret, email, issuer);
@@ -217,24 +225,45 @@ export class ProfileComponent implements OnInit {
   }
 
   onFileChange(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = e => this.profileImageUrl = reader.result;
-      reader.readAsDataURL(file);
-
-      // this.userService.updateUserImage(file).subscribe({
-      //   next: () => console.log('User image updated successfully'),
-      //   error: (err) => console.error('Error updating user image:', err)
-      // });
-    }
+    // const file = event.target.files[0];
+    // if (file) {
+    //   const filePath = `${this.userData.id}_${file.name}`;
+    //   this.userService.uploadFile(file, filePath).subscribe({
+    //     next: (imageUrl) => {
+    //       if (imageUrl) {
+    //         const user = JSON.parse(sessionStorage.getItem('localUser'));
+    //         const idToken = user.idToken;
+    //         const updatedData = { displayName: this.userData.displayName, photoUrl: imageUrl };
+            
+    //         console.log(imageUrl);
+    //         this.userService.updateUserProfile(idToken, updatedData.displayName, updatedData.photoUrl).subscribe({
+    //           next: () => {
+    //             console.log('User profile updated successfully');
+    //             this.profileImageUrl = imageUrl; 
+    //           },
+    //           error: (err) => console.error('Error updating user profile:', err)
+    //         });
+    //       } else {
+    //         console.error('Failed to get image URL');
+    //       }
+    //     },
+    //     error: (err) => console.error('Error uploading file:', err)
+    //   });
+    // }
   }
+  
 
-  onSaveProfile(): void {
-    const updatedData = this.userForm.getRawValue();
-    this.userService.updateUserDetails(updatedData).subscribe({
-      next: () => console.log('User details updated successfully'),
-      error: (err) => console.error('Error updating user details:', err)
-    });
-  }
+  
+  // onSaveProfile(file): void {
+  //   const updatedData = {
+  //     ...this.userData,
+  //     photoUrl: file,
+  //   };
+  //   console.log(file);
+  //   // this.userService.updateProfilePhoto(this.userData.id, file).subscribe({
+  //   //   next: () => console.log('User details updated successfully'),
+  //   //   error: (err) => console.error('Error updating user details:', err)
+  //   // });
+  // }
+  
 }

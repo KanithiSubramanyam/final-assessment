@@ -5,32 +5,31 @@ import { Observable, of } from 'rxjs';
 import { AuthService } from '../Services/auth.service';
 import { RolesService } from '../Services/Roles.service';
 import { UserService } from '../Services/userService.service';
-
 export const canActivate = (
-  router: ActivatedRouteSnapshot, 
+  route: ActivatedRouteSnapshot, 
   state: RouterStateSnapshot
 ): Observable<boolean | UrlTree> => {
   const authService = inject(AuthService);
-  const route = inject(Router);
+  const router = inject(Router);
   const userService = inject(UserService);
 
   return authService.user.pipe(
     take(1),
     switchMap(user => {
       if (!user) {
-        return of(route.createUrlTree(['/login']));
+        return of(router.createUrlTree(['/login']));
       }
 
-      console.log('User:', user);
-      const requiredRoles = router.data['roles'] as Array<string> || [];
+      const requiredRoles = route.data['roles'] as Array<string> || [];
 
+      console.log('Required roles:', requiredRoles);
       if (requiredRoles.length > 0) {
         return userService.getCurrentUser().pipe(
           map(userData => {
             const userRole = userData.role;
             return requiredRoles.includes(userRole)
               ? true
-              : route.createUrlTree(['/not-authorized']);
+              : router.createUrlTree(['/not-authorized']);
           })
         );
       }

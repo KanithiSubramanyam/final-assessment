@@ -37,7 +37,7 @@ ngOnInit() {
   this.userService.getCurrentUser().subscribe(userDetails => {
     if (userDetails) {
         this.userRole = userDetails.role.toUpperCase();
-        console.log('current login user role', this.userRole);
+        // console.log('current login user role', this.userRole);
     } else {
         console.log('User role could not be fetched.');
     }

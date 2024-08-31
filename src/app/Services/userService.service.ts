@@ -1,7 +1,7 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { catchError, exhaustMap, map, take } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, exhaustMap, map, switchMap, take } from 'rxjs/operators';
 import { AuthResponse } from '../Model/AuthResponse';
 import { User } from '../Model/User';
 import { AuthService } from './auth.service';
@@ -29,7 +29,6 @@ export class UserService {
       })
     );
   }
-
 
   //get current user data
   getCurrentUser() {
@@ -99,9 +98,53 @@ export class UserService {
     });
   }
 
-
   getCurrentUserData(id){
       return this.http.get<userDetails>(`${this.dataBaseUrl.replace('.json', '')}/${id}.json`);
   }
+
+  // updateProfilePhoto(id, updatedData: Partial<userDetails>): Observable<any> {
+  //   return this.http.patch<userDetails>(
+  //     `${this.dataBaseUrl.replace('.json', '')}/${id}.json`,updatedData);
+  // }
+
+  // private firebaseStorageUrl = 'final-assessment-1.appspot.com';
+
+  // uploadFile(file: File, path: string): Observable<string> {
+  //   const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/${this.firebaseStorageUrl}/o/${encodeURIComponent(path)}?uploadType=media&alt=media`;
+  //   const headers = new HttpHeaders({
+  //     'Content-Type': 'application/octet-stream'
+  //   });
+  
+  //   return this.http.post(uploadUrl, file, { headers: headers, responseType: 'text',  }).pipe(
+  //     switchMap(() => this.getDownloadUrl(path)),
+  //     catchError(err => {
+  //       console.error('Error uploading file:', err);
+  //       return of('');
+  //     })
+  //   );
+  // }
+  
+
+  // getDownloadUrl(path: string): Observable<string> {
+  //   const url = `https://firebasestorage.googleapis.com/v0/b/${this.firebaseStorageUrl}/o/${encodeURIComponent(path)}?uploadType=media&alt=media`;
+  //   return this.http.get(url, { responseType: 'text' });
+  // }
+  
+  
+  // updateUserProfile(idToken: string, displayName: string, photoUrl: string): Observable<any> {
+  //   const url = `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${this.authService.webApi}`;
+  //   const body = {
+  //     idToken: idToken,
+  //     displayName: displayName,
+  //     photoUrl: photoUrl,
+  //     returnSecureToken: true,
+  //   };
+  
+  //   return this.http.post(url, body, {
+  //     headers: new HttpHeaders({
+  //       'Content-Type': 'application/json',
+  //     }),
+  //   });
+  // }
 
 }
