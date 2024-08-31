@@ -47,10 +47,10 @@ export class ScheduleComponent implements OnInit {
   ngOnInit(): void {
     this.scheduleForm = this.fb.group({
       title: ['', Validators.required],
-      description: [''],
+      description: ['',Validators.required],
       startDateTime: ['', [Validators.required]],
       endDateTime: ['', [Validators.required]],
-      location: [''],
+      location: ['',Validators.required],
       attendees: [''],
       recurrence: ['None'],
       customer: ['', Validators.required],

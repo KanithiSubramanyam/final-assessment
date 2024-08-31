@@ -27,8 +27,26 @@
           <thead class="table-light">
             <tr>
               <th>S.no</th>
-              <th>Customer Name</th>
-              <th>Email</th>
+              <th (click)="sortCustomers('firstName')">
+                Customer Name
+                <i class="fas" 
+                   [ngClass]="{
+                     'fa-sort-up': sortField === 'firstName' && sortDirection === 'asc',
+                     'fa-sort-down': sortField === 'firstName' && sortDirection === 'desc',
+                     'fa-sort': sortField !== 'firstName',
+                     'active-sort': sortField === 'firstName'
+                   }"></i>
+              </th>
+              <th (click)="sortCustomers('email')">
+                Email
+                <i class="fas" 
+                   [ngClass]="{
+                     'fa-sort-up': sortField === 'email' && sortDirection === 'asc',
+                     'fa-sort-down': sortField === 'email' && sortDirection === 'desc',
+                     'fa-sort': sortField !== 'email',
+                     'active-sort': sortField === 'email'
+                   }"></i>
+              </th>
               <th>Phone</th>
               <th>Address</th>
               <th>Created Date</th>
