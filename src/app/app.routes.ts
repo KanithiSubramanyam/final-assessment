@@ -35,41 +35,43 @@ export const routes: Routes = [
     path: '',
     component: HomepageComponent,
     canActivate: [canActivate],
+    data : { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] },
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { 
         path: 'userManagement', 
-        component: UserManagementComponent, 
+        component: UserManagementComponent,
+        canActivate: [canActivate], 
         data: { roles: [RolesService.ADMIN] }, // Only Admin can access this
         children: [
-          { path: 'users', component: UsersComponent,  data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER] } },
-          { path: 'users/adduser', component: AddUserComponent,  data: { roles: [RolesService.ADMIN] } }
+          { path: 'users', component: UsersComponent, canActivate: [canActivate],  data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER] } },
+          { path: 'users/adduser', component: AddUserComponent, canActivate: [canActivate], data: { roles: [RolesService.ADMIN] } }
         ]
       },
-      { path: 'userManagement/permissions', component: PermissionsComponent, data: { roles: [RolesService.ADMIN] }  },
-      { path: 'userManagement/roles', component: RolesComponent, data: { roles: [RolesService.ADMIN] } },
-      { path: 'user/profile', component: ProfileComponent },
-      { path: 'taskManagement', component: TaskManagementComponent },
-      { path: 'taskManagement/taskDetails', component: TaskDetailsComponent },
+      { path: 'userManagement/permissions', component: PermissionsComponent, canActivate: [canActivate], data: { roles: [RolesService.ADMIN] }  },
+      { path: 'userManagement/roles', component: RolesComponent, canActivate: [canActivate], data: { roles: [RolesService.ADMIN] } },
+      { path: 'user/profile', component: ProfileComponent, canActivate: [canActivate], data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
+      { path: 'taskManagement', component: TaskManagementComponent, data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
+      { path: 'taskManagement/taskDetails', component: TaskDetailsComponent, canActivate: [canActivate], data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
       // { path: 'taskManagement/edit/:id', component: AddTaskComponent },
-      { path: 'dairyManagement', component: DairyManagementComponent },
-      { path: 'userManagement/users/adduser', component: AddUserComponent },
-      { path: 'userManagement/users/viewProfile/:id', component: ProfileComponent },
-      { path: 'userManagement/users/editProfile/:id', component: ProfileComponent },
-      { path: 'taskManagement/addtask', component: AddTaskComponent },
+      { path: 'dairyManagement', component: DairyManagementComponent, canActivate: [canActivate],data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
+      { path: 'userManagement/users/viewProfile/:id', component: ProfileComponent, canActivate: [canActivate],data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
+      { path: 'userManagement/users/editProfile/:id', component: ProfileComponent, data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
+      { path: 'taskManagement/addtask', component: AddTaskComponent, canActivate: [canActivate],data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
       {
         path: 'appointmentManagement',
-        component: AppointmentManagementComponent, // This should have a router-outlet
+        component: AppointmentManagementComponent, canActivate: [canActivate],data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] },
+         // This should have a router-outlet
         children: [
-          { path: 'view', component: ViewComponent },
-          { path: 'schedule', component: ScheduleComponent },
+          { path: 'view', component: ViewComponent, canActivate: [canActivate],data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
+          { path: 'schedule', component: ScheduleComponent, canActivate: [canActivate],data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
         ]
       },
-      { path:'customerManagement', component: CustomerManagementComponent},
-      { path:'customerManagement/addCustomer', component: AddCustomerComponent},
-      { path:'customerManagement/customerDetails', component: CustomerDetailsComponent},
-      { path: 'activityLog', component: ActivityLogComponent, data: { roles: [RolesService.ADMIN] } },
+      { path:'customerManagement', component: CustomerManagementComponent, canActivate: [canActivate],data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] }},
+      { path:'customerManagement/addCustomer', component: AddCustomerComponent, canActivate: [canActivate],data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] }},
+      { path:'customerManagement/customerDetails', component: CustomerDetailsComponent, canActivate: [canActivate],data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] }},
+      { path: 'activityLog', component: ActivityLogComponent, canActivate: [canActivate],data: { roles: [RolesService.ADMIN] } },
     ]
   },
   { path: '**', component: NotFoundComponent },

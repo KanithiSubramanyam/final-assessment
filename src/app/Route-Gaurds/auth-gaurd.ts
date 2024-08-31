@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { AuthService } from '../Services/auth.service';
 import { RolesService } from '../Services/Roles.service';
 import { UserService } from '../Services/userService.service';
+
 export const canActivate = (
   route: ActivatedRouteSnapshot, 
   state: RouterStateSnapshot
@@ -21,20 +22,21 @@ export const canActivate = (
       }
 
       const requiredRoles = route.data['roles'] as Array<string> || [];
+      // console.log('Required roles:', requiredRoles);
 
-      console.log('Required roles:', requiredRoles);
       if (requiredRoles.length > 0) {
         return userService.getCurrentUser().pipe(
           map(userData => {
             const userRole = userData.role;
-            return requiredRoles.includes(userRole)
+            // console.log('User role:', userRole);
+            return requiredRoles.includes(userRole.toUpperCase())
               ? true
               : router.createUrlTree(['/not-authorized']);
           })
         );
       }
-      // If no roles are required for this route, allow access
-      return of(true);
+
+      return of(true); // No roles required, allow access
     })
   );
 };
