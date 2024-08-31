@@ -8,7 +8,7 @@ export class userDetails {
     public address: string = '',
     public gender: string = '',
     public phone: string = '',
-    public photoUrl: string = '',
+    public photoUrl: any = '',
     public emailVerified: boolean = false,
     public role: string = 'user',
     public passwordLastChangedAt: Date = new Date(),

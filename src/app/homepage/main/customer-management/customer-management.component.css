@@ -1,0 +1,22 @@
+
+  /* Default icon color */
+.table th i.fas {
+    color: #6c757d; /* Bootstrap's secondary color */
+    transition: color 0.3s ease;
+  }
+  
+  /* Active sort icon color */
+  .table th i.active-sort {
+    color: #007bff; /* Bootstrap's primary color or any color of your choice */
+  }
+  
+  /* Ascending sort icon */
+  .table th i.fa-sort-up {
+    color: #007bff; /* Bootstrap's primary color or any color of your choice */
+  }
+  
+  /* Descending sort icon */
+  .table th i.fa-sort-down {
+    color: #007bff; /* Bootstrap's primary color or any color of your choice */
+  }
+  

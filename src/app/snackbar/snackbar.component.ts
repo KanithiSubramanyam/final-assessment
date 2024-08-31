@@ -16,7 +16,7 @@ export class SnackbarComponent {
   @Input() snackbarClass : string | null;
 
   constructor(){
-    console.log('snackbar called', this.message)
+    // console.log('snackbar called', this.message)
   }
 
   showSnackbar = true;

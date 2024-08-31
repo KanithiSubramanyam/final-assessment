@@ -10,7 +10,7 @@ export class AuthInterceptorService implements HttpInterceptor{
         // console.log('Intercepted!', req);
         return this.authService.user.pipe(take(1), exhaustMap(user => {
             // console.log('user', user);
-            if(!user){
+            if(!user){ 
                 return next.handle(req);
             }
             const modifiedReq = req.clone({

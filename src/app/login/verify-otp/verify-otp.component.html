@@ -1,19 +1,73 @@
 <div>
+  <snackbar [message]="message" [snackbarClass]="snackbarClass"></snackbar>
+</div>
 
+<!-- <div>
     <snackbar [message]="message" [snackbarClass]="snackbarClass"></snackbar>
-</div>
-<div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="card p-4 shadow-lg" style="max-width: 400px; width: 100%;">
-        <h3 class="text-center mb-4">Verify 2FA</h3>
+  </div> -->
+
+<section class="vh-100">
+  <div class="container-fluid h-custom">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-9 col-lg-6 col-xl-5">
+        <img [src]="signInImage" class="img-fluid" alt="Sample image" />
+      </div>
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
         <form [formGroup]="otpForm" (ngSubmit)="onSubmit()">
-            <div class="mb-3">
-                <label for="otpInput" class="form-label">Enter OTP</label>
-                <input type="text" class="form-control" id="otpInput" placeholder="OTP" required formControlName="otp">
+          <div
+            class="d-flex flex-row align-items-center justify-content-center"
+          >
+            <!-- <p class="lead fw-normal mb-0 me-3">LOGO</p> -->
+            <p class="lead fw-bold mb-0 text-center">Verify 2FA</p>
+          </div>
+
+          <div class="divider d-flex align-items-center my-4">
+            <p class="text-center fw-bold mx-3 mb-0">
+              <i class="fa-solid fa-lg fa-key"></i>
+            </p>
+          </div>
+
+          <div data-mdb-input-init class="form-group form-outline mb-4">
+            <input
+              type="text"
+              class="form-control form-control-lg bg-transparent border-bottom"
+              id="otpInput"
+              placeholder="Enter a valid OTP"
+              required
+              formControlName="otp"
+            />
+
+            <div
+              *ngIf="
+                otpForm.get('otp')?.invalid &&
+                (otpForm.get('otp')?.dirty || otpForm.get('otp')?.touched)
+              "
+              class="text-danger"
+            >
+              <div *ngIf="otpForm.get('otp')?.errors?.['required']">
+                OTP is required.
+              </div>
+              <div *ngIf="otpForm.get('otp')?.errors?.['otp']">
+                Invalid OTP.
+              </div>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Verify OTP</button>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg text-center"
+            data-mdb-button-init
+            data-mdb-ripple-init
+            style="padding-left: 2.5rem; padding-right: 2.5rem"
+          >
+            Verify OTP
+          </button>
+          <p class="large fw-semibold fs-6 text-end mt-3 pt-1 mb-0">
+            Want to go -
+            <a [routerLink]="['/login']" class="link-Success">Back</a>
+          </p>
         </form>
-        <!-- <div class="text-center mt-3">
-            <a href="#" id="resendOtpLink" class="text-secondary">Resend OTP</a>
-        </div> -->
+      </div>
     </div>
-</div>
+  </div>
+</section>

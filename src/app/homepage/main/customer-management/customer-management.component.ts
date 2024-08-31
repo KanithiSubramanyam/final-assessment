@@ -5,6 +5,7 @@ import { CustomerService } from '../../../Services/customer.service';
 import { Customer } from '../../../Model/Customer';
 import { FormsModule } from '@angular/forms';
 import { SnackbarComponent } from '../../../snackbar/snackbar.component';
+import { SortingService } from '../../../utilities/sorting.service';
 
 @Component({
   selector: 'customer-management',
@@ -19,9 +20,11 @@ export class CustomerManagementComponent implements OnInit {
   searchTerm: string = '';
   message: string = ''
   snackbarClass: string = '';
+  sortField: string = 'firstName'; 
+  sortDirection: 'asc' | 'desc' = 'asc'; 
 
 
-  constructor(private customerService: CustomerService, private router: Router) {}
+  constructor(private customerService: CustomerService, private router: Router,private sortingService:SortingService) {}
 
   ngOnInit(): void {
     this.fetchCustomers();
@@ -34,7 +37,17 @@ export class CustomerManagementComponent implements OnInit {
         ...data[key]
       }));
       this.filteredCustomers = [...this.customers];  // Initialize filteredCustomers
+      this.applyFilter(); 
+      this.applySorting();
     });
+  }
+
+  applySorting(): void {
+    this.filteredCustomers = this.sortingService.sortByField(
+      this.filteredCustomers,
+      this.sortField,
+      this.sortDirection
+    );
   }
   
   applyFilter() {
@@ -96,9 +109,15 @@ export class CustomerManagementComponent implements OnInit {
     });
   }
 
-  
-  
-  
+  sortCustomers(field: string): void {
+    if (this.sortField === field) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'asc';  // Default to ascending when a new field is selected
+    }
+    this.applySorting();
+  }
   
   
 }
