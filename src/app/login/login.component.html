@@ -2,100 +2,276 @@
   <snackbar [message]="message" [snackbarClass]="snackbarClass"></snackbar>
 </div>
 
-<div class="container d-flex justify-content-center align-items-center vh-100">
-  <div class="row w-100 justify-content-center">
-    <div class="col-md-8">
-      <div class="card border rounded-3 shadow-lg">
-        <div class="row no-gutters">
-          <div class="col-md-6 d-flex justify-content-center align-items-center p-0" [ngClass]="{'order-md-2': isLoginMode, 'order-md-1': !isLoginMode}">
-            <img *ngIf="isLoginMode; else signupImage" src="https://via.placeholder.com/300" alt="Login Image" class="w-100 h-100 ">
-            <ng-template #signupImage>
-              <img src="https://via.placeholder.com/300?text=Sign+Up+Image" alt="Sign Up Image" class="">
-            </ng-template>
-          </div>
-
-          <div class="col-md-6 d-flex justify-content-center align-items-center" [ngClass]="{'order-md-1': isLoginMode, 'order-md-2': !isLoginMode}">
-            <div class="form-container p-4 w-100">
-              <div *ngIf="isLoginMode">
-                <h1 class="h4 mb-3 fw-normal text-center">Please sign in</h1>
-                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                  <div class="form-floating mb-3">
-                    <input type="email" id="loginEmail" class="form-control" placeholder="name@example.com" formControlName="email">
-                    <label for="loginEmail">Email address</label>
-                    <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)" class="text-danger">
-                      <div *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</div>
-                      <div *ngIf="loginForm.get('email')?.errors?.['email']">Invalid email format.</div>
-                    </div>
-                  </div>
-                  <div class="form-floating mb-3">
-                    <input type="password" id="loginPassword" class="form-control" placeholder="Password" formControlName="password">
-                    <label for="loginPassword">Password</label>
-                    <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="text-danger">
-                      <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
-                      <div *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters.</div>
-                      <div *ngIf="signupForm.get('password').hasError('invalidPassword') && signupForm.get('password').touched">
-                        Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- sending secertKey to verifyOtp -->
-
-                  <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="loginForm.invalid">Sign in</button>
-
-                  <a  class="d-block mb-3 text-center" [routerLink] ="['/login/forget-password']">Forgot password?</a>
-                  <a  class="d-block text-center" (click)="onSwitchMode()">Create account?</a>
-                </form>
-              </div>
-
-              <div *ngIf="!isLoginMode">
-                <h1 class="h4 mb-3 fw-normal text-center">Create an account</h1>
-                <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-                  <div class="form-floating mb-3">
-                    <input type="text" id="firstName" class="form-control" placeholder="First Name" formControlName="firstName">
-                    <label for="firstName">First Name</label>
-                    <div *ngIf="signupForm.get('firstName')?.invalid && (signupForm.get('firstName')?.dirty || signupForm.get('firstName')?.touched)" class="text-danger">
-                      <div *ngIf="signupForm.get('firstName')?.errors?.['required']">First Name is required.</div>
-                      <div *ngIf="signupForm.get('firstName')?.errors?.['minlength']">First Name must be at least 2 characters.</div>
-                    </div>
-                  </div>
-                  <div class="form-floating mb-3">
-                    <input type="text" id="lastName" class="form-control" placeholder="Last Name" formControlName="lastName">
-                    <label for="lastName">Last Name</label>
-                    <div *ngIf="signupForm.get('lastName')?.invalid && (signupForm.get('lastName')?.dirty || signupForm.get('lastName')?.touched)" class="text-danger">
-                      <div *ngIf="signupForm.get('lastName')?.errors?.['required']">Last Name is required.</div>
-                      <div *ngIf="signupForm.get('lastName')?.errors?.['minlength']">Last Name must be at least 2 characters.</div>
-                    </div>
-                  </div>
-                  <div class="form-floating mb-3">
-                    <input type="email" id="signupEmail" class="form-control" placeholder="name@example.com" formControlName="email">
-                    <label for="signupEmail">Email address</label>
-                    <div *ngIf="signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched)" class="text-danger">
-                      <div *ngIf="signupForm.get('email')?.errors?.['required']">Email is required.</div>
-                      <div *ngIf="signupForm.get('email')?.errors?.['email']">Invalid email format.</div>
-                    </div>
-                  </div>
-                  <div class="form-floating mb-3">
-                    <input type="password" id="signupPassword" class="form-control" placeholder="Password" formControlName="password">
-                    <label for="signupPassword">Password</label>
-                    <div *ngIf="signupForm.get('password')?.invalid && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched)" class="text-danger">
-                      <div *ngIf="signupForm.get('password')?.errors?.['required']">Password is required.</div>
-                      <div *ngIf="signupForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters.</div>
-                      <div *ngIf="signupForm.get('password').hasError('invalidPassword') && signupForm.get('password').touched">
-                        Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.
-                      </div>
-                    </div>
-                  </div>
-                  <button type="submit" class="w-100 btn btn-lg btn-primary mb-2" [disabled]="signupForm.invalid">Sign up</button>
-                  <a class="d-block text-center" (click)="onSwitchMode()">Back to login</a>
-                </form>
-              </div>
-
+<section class="vh-100">
+  <div class="container-fluid h-custom">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-9 col-lg-6 col-xl-5">
+        <img
+          [src]="signInImage"
+          class="img-fluid"
+          alt="Sample image"
+        />
+      </div>
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        <div *ngIf="isLoginMode">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div
+              class="d-flex flex-row align-items-center justify-content-center"
+            >
+            <!-- <p class="lead fw-normal mb-0 me-3">LOGO</p> -->
+              <p class="lead fw-bold mb-0 text-center">Log In</p>
             </div>
-          </div>
 
+            <div class="divider d-flex align-items-center my-4">
+              <p class="text-center fw-bold mx-3 mb-0"><i class="fa-regular fa-lg fa-user"></i></p>
+            </div>
+
+            <div data-mdb-input-init class="form-group form-outline mb-4">
+              <input
+                type="email"
+                id="loginEmail"
+                class="form-control form-control-lg  bg-transparent border-bottom"
+                placeholder="Enter a valid email address"
+                formControlName="email"
+              />
+              <div
+                *ngIf="
+                  loginForm.get('email')?.invalid &&
+                  (loginForm.get('email')?.dirty ||
+                    loginForm.get('email')?.touched)
+                "
+                class="text-danger"
+              >
+                <div *ngIf="loginForm.get('email')?.errors?.['required']">
+                  Email is required.
+                </div>
+                <div *ngIf="loginForm.get('email')?.errors?.['email']">
+                  Invalid email format.
+                </div>
+              </div>
+            </div>
+
+            <div data-mdb-input-init class="form-group form-outline mb-3">
+              <input
+                type="password"
+                id="loginPassword"
+                class="form-control form-control-lg  bg-transparent border-bottom"
+                placeholder="Enter Password"
+                formControlName="password"
+              />
+              <div
+                *ngIf="
+                  loginForm.get('password')?.invalid &&
+                  (loginForm.get('password')?.dirty ||
+                    loginForm.get('password')?.touched)
+                "
+                class="text-danger"
+              >
+                <div *ngIf="loginForm.get('password')?.errors?.['required']">
+                  Password is required.
+                </div>
+                <div *ngIf="loginForm.get('password')?.errors?.['minlength']">
+                  Password must be at least 8 characters.
+                </div>
+                <div
+                  *ngIf="
+                    loginForm.get('password').hasError('invalidPassword') &&
+                    loginForm.get('password').touched
+                  "
+                >
+                  Password must contain at least one uppercase letter, one
+                  lowercase letter, one number, and one special character.
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg"
+              data-mdb-button-init
+              data-mdb-ripple-init
+              style="padding-left: 2.5rem; padding-right: 2.5rem"
+              [disabled]="loginForm.invalid"
+            >
+              Sign in
+            </button>
+            <div class="d-flex justify-content-between align-items-center">
+              <!-- Checkbox -->
+              <div class="form-check my-2">
+                <input
+                  class="form-check-input me-2"
+                  type="checkbox"
+                  value=""
+                  id="form2Example3"
+                />
+                <label class="form-check-label" for="form2Example3">
+                  Remember me
+                </label>
+              </div>
+              <a
+                class="d-block text-body mb-3 text-center "
+                [routerLink]="['/login/forget-password']"
+                >Forgot password?</a
+              >
+            </div>
+
+            <p class="large fw-bold mt-2 pt-1 mb-0">
+              Don't have an account?
+              <a (click)="onSwitchMode()" class="link-danger">Register</a>
+            </p>
+          </form>
+        </div>
+
+        <div *ngIf="!isLoginMode">
+          <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+            <div
+              class="d-flex flex-row align-items-center justify-content-center"
+            >
+            <!-- <p class="lead fw-normal mb-0 me-3">LOGO</p> -->
+              <p class="lead fw-bold mb-0 text-center"> Register </p>
+            </div>
+
+            <div class="divider d-flex align-items-center my-4">
+              <p class="text-center fw-bold mx-3 mb-0"><i class="fa-regular fa-lg fa-user"></i></p>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <div data-mdb-input-init class="form-group form-outline">
+                  <input
+                    type="text"
+                    id="firstName"
+                    class="form-control  form-control-lg bg-transparent border-bottom"
+                    placeholder="Enter First Name"
+                    formControlName="firstName"
+                  />
+                  <div
+                    *ngIf="
+                      signupForm.get('firstName')?.invalid &&
+                      (signupForm.get('firstName')?.dirty ||
+                        signupForm.get('firstName')?.touched)
+                    "
+                    class="text-danger"
+                  >
+                    <div
+                      *ngIf="signupForm.get('firstName')?.errors?.['required']"
+                    >
+                      First Name is required.
+                    </div>
+                    <div
+                      *ngIf="signupForm.get('firstName')?.errors?.['minlength']"
+                    >
+                      First Name must be at least 2 characters.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-4">
+                <div data-mdb-input-init class="form-group form-outline">
+                  <input
+                    type="text"
+                    id="lastName"
+                    class="form-control  form-control-lg bg-transparent border-bottom"
+                    placeholder="Enter Last Name"
+                    formControlName="lastName"
+                  />
+                  <div
+                    *ngIf="
+                      signupForm.get('lastName')?.invalid &&
+                      (signupForm.get('lastName')?.dirty ||
+                        signupForm.get('lastName')?.touched)
+                    "
+                    class="text-danger"
+                  >
+                    <div
+                      *ngIf="signupForm.get('lastName')?.errors?.['required']"
+                    >
+                      Last Name is required.
+                    </div>
+                    <div
+                      *ngIf="signupForm.get('lastName')?.errors?.['minlength']"
+                    >
+                      Last Name must be at least 2 characters.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div data-mdb-input-init class="form-group form-outline mb-4">
+              <input
+                type="email"
+                id="signupEmail"
+                class="form-control  form-control-lg bg-transparent border-bottom"
+                placeholder="Enter a valid Email"
+                formControlName="email"
+              />
+              <div
+                *ngIf="
+                  signupForm.get('email')?.invalid &&
+                  (signupForm.get('email')?.dirty ||
+                    signupForm.get('email')?.touched)
+                "
+                class="text-danger"
+              >
+                <div *ngIf="signupForm.get('email')?.errors?.['required']">
+                  Email is required.
+                </div>
+                <div *ngIf="signupForm.get('email')?.errors?.['email']">
+                  Invalid email format.
+                </div>
+              </div>
+            </div>
+            <div data-mdb-input-init class="form-group form-outline mb-3">
+              <input
+                type="Enter password"
+                id="signupPassword"
+                class="form-control  form-control-lg  bg-transparent border-bottom"
+                placeholder="Enter Password"
+                formControlName="password"
+              />
+              <div
+                *ngIf="
+                  signupForm.get('password')?.invalid &&
+                  (signupForm.get('password')?.dirty ||
+                    signupForm.get('password')?.touched)
+                "
+                class="text-danger"
+              >
+                <div *ngIf="signupForm.get('password')?.errors?.['required']">
+                  Password is required.
+                </div>
+                <div *ngIf="signupForm.get('password')?.errors?.['minlength']">
+                  Password must be at least 8 characters.
+                </div>
+                <div
+                  *ngIf="
+                    signupForm.get('password').hasError('invalidPassword') &&
+                    signupForm.get('password').touched
+                  "
+                >
+                  Password must contain at least one uppercase letter, one
+                  lowercase letter, one number, and one special character.
+                </div>
+              </div>
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg"
+              data-mdb-button-init
+              data-mdb-ripple-init
+              style="padding-left: 2.5rem; padding-right: 2.5rem"
+              [disabled]="loginForm.invalid"
+            >
+              Sign up
+            </button>
+            <p class="large fw-bold mt-2 pt-1 mb-0">
+              Don't have an account?
+              <a (click)="onSwitchMode()" class="link-danger">Back to login</a>
+            </p>
+          </form>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>

@@ -43,7 +43,10 @@ export class LoginComponent implements OnInit {
   mfaEnabledBtn: boolean = false;
 
   message: string = '';
+
   snackbarClass: string = '';
+
+  signInImage = 'assets/images/signin.jpg';
 
   constructor(private fb: FormBuilder) {
     this.createForms();

@@ -18,6 +18,7 @@ export class ForgetPasswordComponent implements OnInit {
 
   message : string
   snackbarClass : string
+  signInImage = 'assets/images/signin.jpg';
 
   forgetPasswordForm: FormGroup;
   http : HttpClient = inject(HttpClient);
