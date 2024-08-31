@@ -6,7 +6,7 @@ import { AuthService } from '../../../../Services/auth.service';
 import { UserService } from '../../../../Services/userService.service';
 import { CustomerService } from '../../../../Services/customer.service';
 import { userDetails } from '../../../../Model/userDetails';
-import { Customer } from '../../../../Model/customer';
+import { Customer } from '../../../../Model/Customer';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -88,6 +88,7 @@ export class AddTaskComponent implements OnInit {
   fetchCustomers(): void {
     this.customerService.getAllCustomers().subscribe(
       (customersObject) => {
+        console.log(customersObject)
         this.customers = Object.values(customersObject);
         this.filteredClients = this.customers;
       },

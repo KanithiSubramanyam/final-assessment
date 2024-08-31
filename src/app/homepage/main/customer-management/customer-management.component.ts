@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { CustomerService } from '../../../Services/customer.service';
-import { Customer } from '../../../Model/customer';
+import { Customer } from '../../../Model/Customer';
 import { FormsModule } from '@angular/forms';
 import { SnackbarComponent } from '../../../snackbar/snackbar.component';
 

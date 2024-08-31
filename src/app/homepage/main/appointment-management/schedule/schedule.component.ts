@@ -7,7 +7,7 @@ import { Task } from '../../../../Model/task';
 import { TaskService } from '../../../../Services/task.service';
 import { userDetails } from '../../../../Model/userDetails';
 import { UserService } from '../../../../Services/userService.service';
-import { Customer } from '../../../../Model/customer';
+import { Customer } from '../../../../Model/Customer';
 import { SnackbarComponent } from '../../../../snackbar/snackbar.component';
 
 @Component({
