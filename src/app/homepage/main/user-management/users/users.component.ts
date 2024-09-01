@@ -27,12 +27,19 @@ export class UsersComponent implements OnInit {
   sortAscending: boolean = true;
   searchTerm: string = '';
 
-  ngOnInit() {
+
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalPages: number = 1;
+
+ngOnInit() {
     this.userService.getAllUsers().subscribe({
       next: (res) => {
         this.users = Object.values(res); 
         console.log(this.users)
         this.filteredUsers = [...this.users]; // Initialize filtered users with all users
+        this.calculateTotalPages();
+        this.updatePagedUsers();
       },
       error: (err) => {
         console.log(err);
@@ -72,6 +79,8 @@ export class UsersComponent implements OnInit {
         user.email.toLowerCase().includes(lowerSearchTerm)
       );
     }
+    this.calculateTotalPages();
+    this.setPage(1);  // Reset to first page after filtering
   }
 
   highlightText(text: string): string {
@@ -81,4 +90,34 @@ export class UsersComponent implements OnInit {
     const regex = new RegExp(`(${this.searchTerm})`, 'gi');
     return text.replace(regex, `<mark>$1</mark>`);
   }
+
+  calculateTotalPages() {
+    this.totalPages = Math.ceil(this.filteredUsers.length / this.itemsPerPage);
+  }
+
+  setPage(page: number): void {
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+    this.currentPage = page;
+    this.updatePagedUsers();
+  }
+
+  get pagesToShow(): number[] {
+    const pages: number[] = [];
+    const startPage = Math.max(1, this.currentPage - 2);
+    const endPage = Math.min(this.totalPages, this.currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+
+  updatePagedUsers(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    this.filteredUsers = this.users.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
 }
