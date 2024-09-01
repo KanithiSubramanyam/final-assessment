@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
   <snackbar [message]="message" [snackbarClass]="snackbarClass"></snackbar>
 </div>
 <div
@@ -12,7 +12,7 @@
       </h4>
 
       <form [formGroup]="addTaskForm" (ngSubmit)="onSubmit()">
-        <!-- Client Name -->
+        <!-- Client Name 
         <div class="row">
           <div class="mb-3 col-md-6">
             <label for="clientName" class="form-label">Client Name</label>
@@ -62,7 +62,7 @@
                 </li>
               </ul>
             </div>
-            <!-- Hidden input to store selected client's email -->
+            <!-- Hidden input to store selected client's email 
             <input type="hidden" formControlName="clientName" />
             <div
               *ngIf="
@@ -74,7 +74,7 @@
               Please select a client.
             </div>
 
-            <!-- Hidden input to store selected client's name -->
+            <!-- Hidden input to store selected client's name 
             <input type="hidden" formControlName="clientName" />
             <div
               *ngIf="
@@ -86,7 +86,7 @@
               Please select a client.
             </div>
 
-            <!-- Hidden input to store selected client's name -->
+            <!-- Hidden input to store selected client's name
             <input type="hidden" formControlName="clientName" />
             <div
               *ngIf="
@@ -98,7 +98,7 @@
               Please select a client.
             </div>
           </div>
-          <!-- Assigned To -->
+          <!-- Assigned To
           <div class="mb-3 col-md-6">
             <label for="assignedTo" class="form-label">Assigned To</label>
             <div class="position-relative">
@@ -143,7 +143,7 @@
                 </li>
               </ul>
             </div>
-            <!-- Hidden input to store selected user's email -->
+            <!-- Hidden input to store selected user's email 
             <input type="hidden" formControlName="assignedTo" />
             <div
               *ngIf="
@@ -200,7 +200,7 @@ placeholder="Enter Due Date and Time"
           </div>
         </div>
 
-        <!-- Task Title -->
+        <!-- Task Title
 
         <div class="row">
           <div class="mb-3 col-md-6">
@@ -227,7 +227,7 @@ placeholder="Enter Due Date and Time"
             </div>
           </div>
 
-          <!-- Status -->
+          <!-- Status 
           <div class="mb-3 col-md-6">
             <label for="status" class="form-label">Status</label>
             <select
@@ -252,6 +252,206 @@ placeholder="Enter Due Date and Time"
           </div>
         </div>
 
+        <!-- Description 
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea
+            id="description"
+            class="form-control"
+            formControlName="description"
+            rows="3"
+            placeholder="Task Description"
+          ></textarea>
+        </div>
+
+        <!-- Due Date and Time 
+
+        <!-- Priority 
+
+        <!-- Submit Button
+        <button
+          type="submit"
+          class="btn btn-primary text-center"
+          [disabled]="addTaskForm.invalid"
+        >
+          {{ isEditMode ? "Save Changes" : "Save Task" }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div> -->
+
+<div>
+  <snackbar [message]="message" [snackbarClass]="snackbarClass"></snackbar>
+</div>
+<div class="container mt-4">
+  <div
+    class="card shadow-sm border-light rounded"
+    style="max-width: 800px; margin: auto; max-height: calc(100vh - 150px); overflow-y: auto;"
+  >
+    <div class="card-header bg-primary text-white rounded-top">
+      <h4 class="mb-0 text-center">{{ isEditMode ? "Edit Task" : "Create New Task" }}</h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="addTaskForm" (ngSubmit)="onSubmit()">
+        <!-- Client Name -->
+        <div class="mb-3">
+          <label for="clientName" class="form-label">Client Name</label>
+          <div class="position-relative">
+            <button
+              class="btn btn-light w-100 d-flex justify-content-between align-items-center dropdown-toggle"
+              type="button"
+              id="dropdownClientButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              {{ selectedClient ? selectedClient.firstName + " " + selectedClient.lastName : "Select Client" }}
+              <span class="dropdown-toggle-icon ms-2"></span>
+            </button>
+            <ul
+              class="dropdown-menu w-100 mt-0"
+              aria-labelledby="dropdownClientButton"
+            >
+              <div class="px-3 py-2">
+                <input
+                  type="text"
+                  class="form-control mb-2"
+                  placeholder="Search client..."
+                  [value]="clientSearchTerm"
+                  (input)="onClientSearchTermChange($event)"
+                />
+              </div>
+              <li *ngFor="let client of filteredClients">
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  (click)="selectClient(client); $event.preventDefault()"
+                >
+                  {{ client.firstName }} {{ client.lastName }} ({{ client.email }})
+                </a>
+              </li>
+              <li *ngIf="filteredClients.length === 0">
+                <span class="dropdown-item text-danger">No clients found.</span>
+              </li>
+            </ul>
+          </div>
+          <input type="hidden" formControlName="clientName" />
+          <div *ngIf="addTaskForm.get('clientName')?.touched && addTaskForm.get('clientName')?.invalid" class="text-danger mt-1">
+            Please select a client.
+          </div>
+        </div>
+
+        <!-- Assigned To -->
+        <div class="mb-3">
+          <label for="assignedTo" class="form-label">Assigned To</label>
+          <div class="position-relative">
+            <button
+              class="btn btn-light w-100 d-flex justify-content-between align-items-center dropdown-toggle"
+              type="button"
+              id="dropdownUserButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              {{ selectedUser ? selectedUser.firstName + " " + selectedUser.lastName : "Select User" }}
+              <span class="dropdown-toggle-icon ms-2"></span>
+            </button>
+            <ul
+              class="dropdown-menu w-100 mt-0"
+              aria-labelledby="dropdownUserButton"
+            >
+              <div class="px-3 py-2">
+                <input
+                  type="text"
+                  class="form-control mb-2"
+                  placeholder="Search user..."
+                  [value]="searchTerm"
+                  (input)="onSearchTermChange($event)"
+                />
+              </div>
+              <li *ngFor="let user of filteredUsers">
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  (click)="selectUser(user); $event.preventDefault()"
+                >
+                  {{ user.firstName }} {{ user.lastName }} ({{ user.email }})
+                </a>
+              </li>
+              <li *ngIf="filteredUsers.length === 0">
+                <span class="dropdown-item text-danger">No users found.</span>
+              </li>
+            </ul>
+          </div>
+          <input type="hidden" formControlName="assignedTo" />
+          <div *ngIf="addTaskForm.get('assignedTo')?.touched && addTaskForm.get('assignedTo')?.invalid" class="text-danger mt-1">
+            Please select a user to assign.
+          </div>
+        </div>
+
+        <!-- Task Title -->
+        <div class="mb-3">
+          <label for="taskTitle" class="form-label">Task Title</label>
+          <input
+            id="taskTitle"
+            formControlName="taskTitle"
+            type="text"
+            class="form-control"
+            placeholder="Enter Task Title"
+          />
+          <div *ngIf="addTaskForm.get('taskTitle')?.touched && addTaskForm.get('taskTitle')?.invalid" class="text-danger mt-1">
+            Task title is required.
+          </div>
+        </div>
+
+        <!-- Due Date and Time -->
+        <div class="mb-3">
+          <label for="dueDate" class="form-label">Due Date and Time</label>
+          <input
+            id="dueDate"
+            formControlName="dueDate"
+            type="datetime-local"
+            class="form-control"
+            placeholder="Enter Due Date and Time"
+          />
+          <div *ngIf="addTaskForm.get('dueDate')?.touched && addTaskForm.get('dueDate')?.invalid" class="text-danger mt-1">
+            Due date and time are required.
+          </div>
+        </div>
+
+        <!-- Priority -->
+        <div class="mb-3">
+          <label for="priority" class="form-label">Priority</label>
+          <select
+            id="priority"
+            class="form-select"
+            formControlName="priority"
+          >
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+          <div *ngIf="addTaskForm.get('priority')?.touched && addTaskForm.get('priority')?.invalid" class="text-danger mt-1">
+            Please select a priority level.
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="mb-3">
+          <label for="status" class="form-label">Status</label>
+          <select
+            id="status"
+            class="form-select"
+            formControlName="status"
+          >
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <div *ngIf="addTaskForm.get('status')?.touched && addTaskForm.get('status')?.invalid" class="text-danger mt-1">
+            Please select a status.
+          </div>
+        </div>
+
         <!-- Description -->
         <div class="mb-3">
           <label for="description" class="form-label">Description</label>
@@ -264,14 +464,10 @@ placeholder="Enter Due Date and Time"
           ></textarea>
         </div>
 
-        <!-- Due Date and Time -->
-
-        <!-- Priority -->
-
         <!-- Submit Button -->
         <button
           type="submit"
-          class="btn btn-primary text-center"
+          class="btn btn-primary w-100"
           [disabled]="addTaskForm.invalid"
         >
           {{ isEditMode ? "Save Changes" : "Save Task" }}
@@ -280,3 +476,4 @@ placeholder="Enter Due Date and Time"
     </div>
   </div>
 </div>
+

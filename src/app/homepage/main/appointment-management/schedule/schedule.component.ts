@@ -16,6 +16,7 @@ import { SnackbarComponent } from '../../../../snackbar/snackbar.component';
   imports: [ReactiveFormsModule, CommonModule, SnackbarComponent],
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css']
+  
 })
 export class ScheduleComponent implements OnInit {
   scheduleForm: FormGroup;
