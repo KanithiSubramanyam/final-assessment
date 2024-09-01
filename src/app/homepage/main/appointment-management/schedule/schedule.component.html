@@ -6,7 +6,7 @@
     style="max-width: 800px; margin: auto; max-height: calc(100vh - 150px); overflow-y: auto;"
   >
     <div class="card-header bg-primary text-white rounded-top">
-      <h4 class="mb-0">{{ isEditMode ? 'Edit Appointment' : 'Schedule Appointment' }}</h4>
+      <h4 class="mb-0 text-center">{{ isEditMode ? 'Edit Appointment' : 'Schedule Appointment' }}</h4>
     </div>
     <div class="card-body">
       <form [formGroup]="scheduleForm" (ngSubmit)="onSubmit()">
