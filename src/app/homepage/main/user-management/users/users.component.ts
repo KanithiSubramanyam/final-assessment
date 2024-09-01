@@ -31,6 +31,7 @@ export class UsersComponent implements OnInit {
     this.userService.getAllUsers().subscribe({
       next: (res) => {
         this.users = Object.values(res); 
+        console.log(this.users)
         this.filteredUsers = [...this.users]; // Initialize filtered users with all users
       },
       error: (err) => {

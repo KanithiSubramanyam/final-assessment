@@ -142,6 +142,7 @@ export class TaskManagementComponent {
 
   isSearchMatch(task: any): boolean {
     const term = this.searchTerm.toLowerCase();
+    
     return (
       task.clientName.toLowerCase().includes(term) ||
       task.taskTitle.toLowerCase().includes(term) ||

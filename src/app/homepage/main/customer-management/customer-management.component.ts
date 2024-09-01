@@ -59,6 +59,7 @@ export class CustomerManagementComponent implements OnInit {
         (customer.email?.toLowerCase().includes(lowerSearchTerm) || '') ||
         (customer.phone?.toLowerCase().includes(lowerSearchTerm) || '') ||
         (customer.address?.toLowerCase().includes(lowerSearchTerm) || '') 
+        
       );
     } else {
       this.filteredCustomers = [...this.customers];
