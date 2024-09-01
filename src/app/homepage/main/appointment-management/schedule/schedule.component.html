@@ -1,245 +1,171 @@
+
 <snackbar [message]="message" [snackbarClass]="snackbarClass"></snackbar>
-<div class="container mt-4"
-style="overflow-y: auto; viewport-width: auto; height: 90vh"
->
-  <div class="card shadow-sm border-light rounded">
-    <div class="card-header text-center fw-semibold bg-light">
-      <h4 class="mb-0">
-        {{ isEditMode ? "Edit Appointment" : "Schedule Appointment" }}
-      </h4>
+<div class="container mt-4">
+  <div
+    class="card shadow-sm border-light rounded"
+    style="max-width: 600px; margin: auto; max-height: calc(100vh - 150px); overflow-y: auto;"
+  >
+    <div class="card-header bg-primary text-white rounded-top">
+      <h4 class="mb-0">{{ isEditMode ? 'Edit Appointment' : 'Schedule Appointment' }}</h4>
     </div>
     <div class="card-body">
       <form [formGroup]="scheduleForm" (ngSubmit)="onSubmit()">
         <!-- Appointment Customer -->
-
-        <div class="row">
-          <!-- Appointment Title -->
-          <div class="mb-3 col-md-6">
-            <label for="title" class="form-label">Appointment Title</label>
-            <input
-              id="title"
-              formControlName="title"
-              type="text"
-              class="form-control"
-              [ngClass]="{
-                'is-invalid':
-                  scheduleForm.get('title')?.touched &&
-                  scheduleForm.get('title')?.invalid
-              }"
-            />
-            <div
-              *ngIf="
-                scheduleForm.get('title')?.touched &&
-                scheduleForm.get('title')?.invalid
-              "
-              class="text-danger mt-1"
+        <div class="mb-3">
+          <label for="assignedTo" class="form-label">Appointment Customer</label>
+          <div class="position-relative">
+            <button
+              class="btn btn-light w-100 d-flex justify-content-between align-items-center dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
             >
-              Title is required.
-            </div>
+              {{ selectedCustomer ? selectedCustomer.firstName + ' ' + selectedCustomer.lastName : 'Select Customer' }}
+              <span class="dropdown-toggle-icon ms-2"></span>
+            </button>
+            <ul class="dropdown-menu w-100 mt-0" aria-labelledby="dropdownMenuButton">
+              <div class="px-3 py-2">
+                <input
+                  type="text"
+                  class="form-control mb-2"
+                  placeholder="Search Customer..."
+                  [value]="searchTerm"
+                  (input)="onSearchTermChange($event)"
+                />
+              </div>
+              <li *ngFor="let customer of filteredCustomers">
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  (click)="selectCustomer(customer); $event.preventDefault();"
+                >
+                  {{ customer.firstName }} {{ customer.lastName }} ({{ customer.email }})
+                </a>
+              </li>
+              <li *ngIf="filteredCustomers.length === 0">
+                <span class="dropdown-item text-danger">No customers found.</span>
+              </li>
+            </ul>
           </div>
-          <div class="mb-3 col-md-6">
-            <label for="assignedTo" class="form-label"
-              >Appointment Customer</label
-            >
-            <div class="position-relative">
-              <button
-                class="btn btn-light w-100 d-flex justify-content-between align-items-center dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                {{
-                  selectedCustomer
-                    ? selectedCustomer.firstName +
-                      " " +
-                      selectedCustomer.lastName
-                    : "Select Customer"
-                }}
-                <span class="dropdown-toggle-icon ms-2"></span>
-              </button>
-              <ul
-                class="dropdown-menu w-100 mt-0"
-                aria-labelledby="dropdownMenuButton"
-              >
-                <div class="px-3 py-2">
-                  <input
-                    type="text"
-                    class="form-control mb-2"
-                    placeholder="Search Customer..."
-                    [value]="searchTerm"
-                    (input)="onSearchTermChange($event)"
-                  />
-                </div>
-                <li *ngFor="let customer of filteredCustomers">
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    (click)="selectCustomer(customer); $event.preventDefault()"
-                  >
-                    {{ customer.firstName }} {{ customer.lastName }} ({{
-                      customer.email
-                    }})
-                  </a>
-                </li>
-                <li *ngIf="filteredCustomers.length === 0">
-                  <span class="dropdown-item text-danger"
-                    >No customers found.</span
-                  >
-                </li>
-              </ul>
-            </div>
-            <input type="hidden" formControlName="customerEmail" />
-            <div
-              *ngIf="
-                scheduleForm.get('customerEmail')?.touched &&
-                scheduleForm.get('customerEmail')?.invalid
-              "
-              class="text-danger mt-1"
-            >
-              Please select a customer.
-            </div>
+          <input type="hidden" formControlName="customerEmail" />
+          <div
+            *ngIf="scheduleForm.get('customerEmail')?.touched && scheduleForm.get('customerEmail')?.invalid"
+            class="text-danger mt-1"
+          >
+            Please select a customer.
           </div>
         </div>
 
-        <div class="row">
-          <!-- Start Date and Time -->
-          <div class="mb-3 col-md-6">
-            <label for="startDateTime" class="form-label"
-              >Start Date and Time</label
-            >
-            <input
-              id="startDateTime"
-              formControlName="startDateTime"
-              type="datetime-local"
-              class="form-control"
-              [ngClass]="{
-                'is-invalid':
-                  scheduleForm.get('startDateTime')?.touched &&
-                  scheduleForm.get('startDateTime')?.invalid
-              }"
-            />
-            <div
-              *ngIf="
-                scheduleForm.get('startDateTime')?.touched &&
-                scheduleForm.get('startDateTime')?.invalid
-              "
-              class="text-danger mt-1"
-            >
-              Start date and time are required.
-            </div>
-          </div>
-
-          <!-- End Date and Time -->
-          <div class="mb-3 col-md-6">
-            <label for="endDateTime" class="form-label"
-              >End Date and Time</label
-            >
-            <input
-              id="endDateTime"
-              formControlName="endDateTime"
-              type="datetime-local"
-              class="form-control"
-              [ngClass]="{
-                'is-invalid':
-                  scheduleForm.get('endDateTime')?.touched &&
-                  scheduleForm.get('endDateTime')?.invalid
-              }"
-            />
-            <div
-              *ngIf="
-                scheduleForm.get('endDateTime')?.touched &&
-                scheduleForm.get('endDateTime')?.invalid
-              "
-              class="text-danger mt-1"
-            >
-              End date and time are required.
-            </div>
+        <!-- Appointment Title -->
+        <div class="mb-3">
+          <label for="title" class="form-label">Appointment Title</label>
+          <input
+            id="title"
+            formControlName="title"
+            type="text"
+            class="form-control"
+            [ngClass]="{'is-invalid': scheduleForm.get('title')?.touched && scheduleForm.get('title')?.invalid}"
+          />
+          <div
+            *ngIf="scheduleForm.get('title')?.touched && scheduleForm.get('title')?.invalid"
+            class="text-danger mt-1"
+          >
+            Title is required.
           </div>
         </div>
 
         <!-- Description -->
-
-        <div class="row">
-          <!-- Location -->
-          <div class="mb-3 col-md-6">
-            <label for="location" class="form-label">Location</label>
-            <input
-              id="location"
-              formControlName="location"
-              type="text"
-              class="form-control"
-              [ngClass]="{
-                'is-invalid':
-                  scheduleForm.get('location')?.touched &&
-                  scheduleForm.get('location')?.invalid
-              }"
-            />
-            <div
-              *ngIf="
-                scheduleForm.get('location')?.touched &&
-                scheduleForm.get('location')?.invalid
-              "
-              class="text-danger mt-1"
-            >
-              Location is required.
-            </div>
-          </div>
-
-          <!-- Attendees -->
-          <div class="mb-3 col-md-6">
-            <label for="attendees" class="form-label">Attendees</label>
-            <input
-              id="attendees"
-              formControlName="attendees"
-              type="text"
-              class="form-control"
-              [ngClass]="{
-                'is-invalid':
-                  scheduleForm.get('attendees')?.touched &&
-                  scheduleForm.get('attendees')?.invalid
-              }"
-            />
-            <div
-              *ngIf="
-                scheduleForm.get('attendees')?.touched &&
-                scheduleForm.get('attendees')?.invalid
-              "
-              class="text-danger mt-1"
-            >
-              Please enter at least one attendee.
-            </div>
-          </div>
-        </div>
-
         <div class="mb-3">
           <label for="description" class="form-label">Description</label>
           <textarea
             id="description"
             formControlName="description"
             class="form-control"
-            [ngClass]="{
-              'is-invalid':
-                scheduleForm.get('description')?.touched &&
-                scheduleForm.get('description')?.invalid
-            }"
+            [ngClass]="{'is-invalid': scheduleForm.get('description')?.touched && scheduleForm.get('description')?.invalid}"
           ></textarea>
           <div
-            *ngIf="
-              scheduleForm.get('description')?.touched &&
-              scheduleForm.get('description')?.invalid
-            "
+            *ngIf="scheduleForm.get('description')?.touched && scheduleForm.get('description')?.invalid"
             class="text-danger mt-1"
           >
             Description is required.
           </div>
         </div>
-        <button
-          type="submit"
-          class="btn btn-primary w-25"
-          [disabled]="scheduleForm.invalid"
-        >
-          {{ isEditMode ? "Save Changes" : "Submit" }}
+
+        <!-- Start Date and Time -->
+        <div class="mb-3">
+          <label for="startDateTime" class="form-label">Start Date and Time</label>
+          <input
+            id="startDateTime"
+            formControlName="startDateTime"
+            type="datetime-local"
+            class="form-control"
+            [ngClass]="{'is-invalid': scheduleForm.get('startDateTime')?.touched && scheduleForm.get('startDateTime')?.invalid}"
+          />
+          <div
+            *ngIf="scheduleForm.get('startDateTime')?.touched && scheduleForm.get('startDateTime')?.invalid"
+            class="text-danger mt-1"
+          >
+            Start date and time are required.
+          </div>
+        </div>
+
+        <!-- End Date and Time -->
+        <div class="mb-3">
+          <label for="endDateTime" class="form-label">End Date and Time</label>
+          <input
+            id="endDateTime"
+            formControlName="endDateTime"
+            type="datetime-local"
+            class="form-control"
+            [ngClass]="{'is-invalid': scheduleForm.get('endDateTime')?.touched && scheduleForm.get('endDateTime')?.invalid}"
+          />
+          <div
+            *ngIf="scheduleForm.get('endDateTime')?.touched && scheduleForm.get('endDateTime')?.invalid"
+            class="text-danger mt-1"
+          >
+            End date and time are required.
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="mb-3">
+          <label for="location" class="form-label">Location</label>
+          <input
+            id="location"
+            formControlName="location"
+            type="text"
+            class="form-control"
+            [ngClass]="{'is-invalid': scheduleForm.get('location')?.touched && scheduleForm.get('location')?.invalid}"
+          />
+          <div
+            *ngIf="scheduleForm.get('location')?.touched && scheduleForm.get('location')?.invalid"
+            class="text-danger mt-1"
+          >
+            Location is required.
+          </div>
+        </div>
+
+        <!-- Attendees -->
+        <div class="mb-3">
+          <label for="attendees" class="form-label">Attendees</label>
+          <input
+            id="attendees"
+            formControlName="attendees"
+            type="text"
+            class="form-control"
+            [ngClass]="{'is-invalid': scheduleForm.get('attendees')?.touched && scheduleForm.get('attendees')?.invalid}"
+          />
+          <div
+            *ngIf="scheduleForm.get('attendees')?.touched && scheduleForm.get('attendees')?.invalid"
+            class="text-danger mt-1"
+          >
+            Please enter at least one attendee.
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100" [disabled]="scheduleForm.invalid">
+          {{ isEditMode ? 'Save Changes' : 'Submit' }}
         </button>
       </form>
     </div>
