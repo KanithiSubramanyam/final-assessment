@@ -108,7 +108,7 @@ export class AuthService {
 
   getUserProfile(uid: string): Observable<userDetails> {
     const url = `${this.databaseUrl}/users/${uid}.json`;
-    console.log('Fetching user profile from URL:', url);
+    // console.log('Fetching user profile from URL:', url);
     return this.http.get<userDetails>(url).pipe(
       tap(data => console.log('User Profile Data:', data)),
       catchError(error => {
@@ -177,7 +177,9 @@ export class AuthService {
       res.idToken,
       expiresIn
     );
-    sessionStorage.setItem('localUser', JSON.stringify(localUser));
+    if(login){
+      sessionStorage.setItem('localUser', JSON.stringify(localUser));
+    }
     this.user.next(localUser);
     this.autoLogout(+res.expiresIn * 1000);
   }
@@ -298,7 +300,7 @@ export class AuthService {
   
 
   updateUserProfile(userId: string, userData: userDetails): Observable<any> {
-    this.activityLogService.addActivityLog('Profile has been updated');
+    // this.activityLogService.addActivityLog('Profile has been updated');
     return this.http.put(`${this.databaseUrl}/users/${userId}.json`, userData)
       .pipe(
         catchError(this.handleError)

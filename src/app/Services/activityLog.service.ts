@@ -38,7 +38,7 @@ export class ActivityLogService {
 
   addActivityLog(logData: ActivityLog | string) {
     if (logData instanceof ActivityLog) {
-      console.log("logData is an instance of ActivityLog");
+      // console.log("logData is an instance of ActivityLog");
       this.logData = logData;
       this.postLogData();
     } else if (typeof logData === "string") {
@@ -49,9 +49,7 @@ export class ActivityLogService {
             userDetails.id,
             userDetails.email,
             userDetails.role,
-            `${
-              userDetails.email
-            } has ${logData} at ${new Date().toDateString()}`,
+            `${userDetails.email} has ${logData} at ${new Date().toDateString()}`,
             new Date()
           );
           this.postLogData();

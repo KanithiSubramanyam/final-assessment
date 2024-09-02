@@ -5,7 +5,6 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { DashboardComponent } from './homepage/main/dashboard/dashboard.component';
 import { UserManagementComponent } from './homepage/main/user-management/user-management.component';
 import { UsersComponent } from './homepage/main/user-management/users/users.component';
-import { PermissionsComponent } from './homepage/main/user-management/permissions/permissions.component';
 import { RolesComponent } from './homepage/main/user-management/roles/roles.component';
 import { ProfileComponent } from './homepage/main/profile/profile.component';
 import { TaskManagementComponent } from './homepage/main/task-management/task-management.component';
@@ -49,12 +48,10 @@ export const routes: Routes = [
           { path: 'users/adduser', component: AddUserComponent, canActivate: [canActivate], data: { roles: [RolesService.ADMIN] } }
         ]
       },
-      { path: 'userManagement/permissions', component: PermissionsComponent, canActivate: [canActivate], data: { roles: [RolesService.ADMIN] }  },
       { path: 'userManagement/roles', component: RolesComponent, canActivate: [canActivate], data: { roles: [RolesService.ADMIN] } },
       { path: 'user/profile', component: ProfileComponent, canActivate: [canActivate], data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
       { path: 'taskManagement', component: TaskManagementComponent, data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
       { path: 'taskManagement/taskDetails', component: TaskDetailsComponent, canActivate: [canActivate], data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
-      // { path: 'taskManagement/edit/:id', component: AddTaskComponent },
       { path: 'dairyManagement', component: DairyManagementComponent, canActivate: [canActivate],data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
       { path: 'userManagement/users/viewProfile/:id', component: ProfileComponent, canActivate: [canActivate],data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },
       { path: 'userManagement/users/editProfile/:id', component: ProfileComponent, data: { roles: [RolesService.ADMIN, RolesService.ACCOUNTMANAGER, RolesService.USER] } },

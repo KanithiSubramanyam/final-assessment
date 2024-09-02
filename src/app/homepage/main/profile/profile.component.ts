@@ -148,7 +148,7 @@ export class ProfileComponent implements OnInit {
       this.snackbarClass = '';
     }, 3000);
 
-    console.log(this.isMfaEnabledBtn, uid, qrCodeSecret);
+    // console.log(this.isMfaEnabledBtn, uid, qrCodeSecret);
     this.authService.getUserProfile(uid).subscribe(userData => {
       userData.mfaBtn = this.isMfaEnabledBtn;
       userData.mfaSecertKey = qrCodeSecret;

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { AppointmentService } from '../../../../Services/appointment.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -135,6 +135,26 @@ export class ScheduleComponent implements OnInit {
 
     endDateInput.min = currentDate;
     endDateInput.max = dueDate;
+
+    this.scheduleForm.get('startDateTime')?.setValidators([
+      Validators.required,
+      (control: AbstractControl): ValidationErrors | null => {
+        const date = new Date(control.value);
+        return date >= new Date(currentDate) && date <= new Date(dueDate) ? null : { dateRange: true };
+      }
+    ]);
+
+    this.scheduleForm.get('endDateTime')?.setValidators([
+      Validators.required,
+      (control: AbstractControl): ValidationErrors | null => {
+        const date = new Date(control.value);
+        return date >= new Date(currentDate) && date <= new Date(dueDate) ? null : { dateRange: true };
+      }
+    ]);
+
+    this.scheduleForm.get('startDateTime')?.updateValueAndValidity();
+    this.scheduleForm.get('endDateTime')?.updateValueAndValidity();
+    
   }
 
   onSubmit(): void {
